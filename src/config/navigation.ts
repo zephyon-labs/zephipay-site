@@ -6,29 +6,29 @@ export type NavigationItem = {
 export const primaryNavigation: NavigationItem[] = [
   {
     label: "Personal",
-    href: "/personal",
+    href: "/#personal",
   },
   {
     label: "Creators",
-    href: "/creators",
+    href: "/#creators",
   },
   {
     label: "Business",
-    href: "/business",
+    href: "/#business",
   },
   {
     label: "Security",
-    href: "/security",
+    href: "/#security",
   },
 ];
 
 export const utilityNavigation: NavigationItem[] = [
   {
-    label: "About",
-    href: "/about",
+    label: "Platform",
+    href: "/#platform",
   },
   {
-    label: "FAQ",
-    href: "/faq",
+    label: "Design system",
+    href: "/design",
   },
 ];

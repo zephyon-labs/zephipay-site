@@ -132,7 +132,11 @@ export function SiteHeader() {
 
             <ThemeToggle />
 
-            <Button href="/beta" size="sm">
+            <Button
+              href={siteConfig.betaUrl}
+              external
+              size="sm"
+            >
               Join beta
             </Button>
           </div>
@@ -222,7 +226,8 @@ export function SiteHeader() {
               </div>
 
               <Button
-                href="/beta"
+                href={siteConfig.betaUrl}
+                external
                 className="mt-4 w-full"
               >
                 Join the ZephiPay beta
