@@ -88,10 +88,12 @@ const options: ThemeOption[] = [
 
 type ThemeToggleProps = {
   className?: string;
+  showAdaptiveLabel?: boolean;
 };
 
 export function ThemeToggle({
   className,
+  showAdaptiveLabel = true,
 }: ThemeToggleProps) {
   const {
     preference,
@@ -123,13 +125,14 @@ export function ThemeToggle({
               aria-pressed={isActive}
               title={option.label}
               className={cn(
+                "zephipay-theme-orb",
                 "inline-flex h-8 w-8 items-center justify-center",
                 "rounded-full transition-all duration-200",
                 "focus-visible:outline-none",
                 "focus-visible:ring-2",
                 "focus-visible:ring-brand-primary/50",
                 isActive
-                  ? "bg-brand-primary text-brand-contrast shadow-[0_6px_18px_var(--glow-primary)]"
+                  ? "zephipay-theme-orb-active bg-brand-primary text-brand-contrast shadow-[0_6px_18px_var(--glow-primary)]"
                   : "text-foreground-muted hover:bg-surface-secondary hover:text-foreground",
               )}
             >
@@ -139,7 +142,7 @@ export function ThemeToggle({
         })}
       </div>
 
-      {preference === "adaptive" && (
+      {showAdaptiveLabel && preference === "adaptive" && (
         <span className="pr-2 text-xs capitalize text-foreground-muted">
           Local atmosphere: {dayPeriod}
         </span>

@@ -81,3 +81,721 @@ body {
     ),
     var(--background);
 }
+
+/* ZephiPay ambient atmosphere ------------------------------------- */
+
+.zephipay-ambient {
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--background) 96%, transparent),
+      var(--background)
+    );
+}
+
+.zephipay-ambient-orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(110px);
+  opacity: 0.16;
+  will-change: transform;
+}
+
+.zephipay-ambient-orb-primary {
+  right: -22rem;
+  top: 1rem;
+  width: 54rem;
+  height: 54rem;
+  background: var(--brand-primary);
+  animation: zephipay-ambient-drift-primary 52s ease-in-out infinite alternate;
+}
+
+.zephipay-ambient-orb-secondary {
+  bottom: -30rem;
+  left: -24rem;
+  width: 52rem;
+  height: 52rem;
+  background: var(--brand-secondary);
+  opacity: 0.1;
+  animation: zephipay-ambient-drift-secondary 62s ease-in-out infinite alternate;
+}
+
+.zephipay-ambient-horizon {
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  top: 42rem;
+  height: 1px;
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in srgb, var(--brand-primary) 24%, transparent),
+      transparent
+    );
+  opacity: 0.32;
+  animation: zephipay-horizon-breathe 18s ease-in-out infinite alternate;
+}
+
+.zephipay-ambient-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(
+      color-mix(in srgb, var(--foreground) 2.5%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--foreground) 2.5%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 96px 96px;
+  mask-image:
+    linear-gradient(
+      to bottom,
+      transparent 0%,
+      black 24%,
+      black 78%,
+      transparent 100%
+    );
+  opacity: 0.16;
+}
+
+.zephipay-ambient-vignette {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      circle at center,
+      transparent 30%,
+      color-mix(in srgb, var(--background) 78%, transparent) 100%
+    );
+}
+
+@keyframes zephipay-ambient-drift-primary {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  to {
+    transform: translate3d(-9rem, 7rem, 0) scale(1.1);
+  }
+}
+
+@keyframes zephipay-ambient-drift-secondary {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  to {
+    transform: translate3d(10rem, -7rem, 0) scale(1.12);
+  }
+}
+
+@keyframes zephipay-horizon-breathe {
+  from {
+    opacity: 0.18;
+    transform: scaleX(0.92);
+  }
+
+  to {
+    opacity: 0.54;
+    transform: scaleX(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zephipay-ambient-orb,
+  .zephipay-ambient-horizon {
+    animation: none;
+  }
+}
+
+/* ZephiPay living metal motion ----------------------------------- */
+
+.zephipay-ambient::before {
+  content: "";
+  position: absolute;
+  inset: -12%;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      circle at 72% 18%,
+      color-mix(in srgb, var(--brand-primary) 8%, transparent),
+      transparent 38%
+    ),
+    radial-gradient(
+      circle at 24% 76%,
+      color-mix(in srgb, var(--brand-secondary) 5%, transparent),
+      transparent 42%
+    );
+  opacity: 0.48;
+  transform: scale(0.985);
+  animation:
+    zephipay-atmosphere-breathe 48s ease-in-out infinite alternate;
+}
+
+/* Theme controls: machined steel with restrained blue energy. */
+
+.zephipay-theme-orb {
+  position: relative;
+  isolation: isolate;
+  transform: translateY(0) scale(1);
+  will-change: transform, box-shadow, filter;
+}
+
+.zephipay-theme-orb::before {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  z-index: -1;
+  border-radius: inherit;
+  background:
+    radial-gradient(
+      circle at 30% 18%,
+      rgba(255, 255, 255, 0.24),
+      transparent 34%
+    ),
+    linear-gradient(
+      145deg,
+      rgba(126, 181, 226, 0.08),
+      rgba(20, 36, 52, 0.04) 48%,
+      rgba(114, 220, 255, 0.08)
+    );
+  opacity: 0.44;
+  transition:
+    opacity 220ms ease,
+    filter 220ms ease;
+}
+
+.zephipay-theme-orb:not(.zephipay-theme-orb-active) {
+  animation:
+    zephipay-steel-breathe 8.5s ease-in-out infinite;
+}
+
+.zephipay-theme-orb:nth-child(2) {
+  animation-delay: -2.1s;
+}
+
+.zephipay-theme-orb:nth-child(3) {
+  animation-delay: -4.2s;
+}
+
+.zephipay-theme-orb:nth-child(4) {
+  animation-delay: -6.3s;
+}
+
+.zephipay-theme-orb:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.08);
+}
+
+.zephipay-theme-orb:hover::before {
+  opacity: 0.76;
+  filter: saturate(1.14);
+}
+
+.zephipay-theme-orb-active {
+  animation:
+    zephipay-active-orb-breathe 6.8s ease-in-out infinite;
+}
+
+/* Logo: a brief reflection crossing polished metal. */
+
+.zephipay-logo-shell {
+  isolation: isolate;
+}
+
+.zephipay-logo-sheen {
+  background:
+    linear-gradient(
+      105deg,
+      transparent 0%,
+      rgba(147, 207, 255, 0.02) 22%,
+      rgba(211, 235, 255, 0.28) 48%,
+      rgba(100, 183, 255, 0.09) 62%,
+      transparent 100%
+    );
+  filter: blur(0.6px);
+  opacity: 0;
+  transform: translateX(-220%) skewX(-18deg);
+  animation:
+    zephipay-logo-reflection 17s ease-in-out infinite;
+}
+
+.zephipay-logo-shell:hover .zephipay-logo-sheen {
+  animation-duration: 4.8s;
+}
+
+/* Mega menu: fast and calm. No bounce, scaling, or spring motion. */
+
+.zephipay-mega-menu {
+  transform-origin: top center;
+  animation:
+    zephipay-menu-enter 180ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Buttons already lift through their variants. This adds a controlled
+   metallic response rather than increasing the movement distance. */
+
+.zephipay-button-motion {
+  will-change: transform, box-shadow, filter;
+}
+
+.zephipay-button-motion:hover {
+  filter: brightness(1.025) saturate(1.035);
+}
+
+.zephipay-button-motion:active {
+  filter: brightness(0.99);
+  transition-duration: 90ms;
+}
+
+
+@keyframes zephipay-atmosphere-breathe {
+  0% {
+    opacity: 0.34;
+    transform: scale(0.985) translate3d(0, 0, 0);
+  }
+
+  50% {
+    opacity: 0.42;
+  }
+
+  100% {
+    opacity: 0.42;
+    transform: scale(1.025) translate3d(-1.5%, 1%, 0);
+  }
+}
+
+@keyframes zephipay-steel-breathe {
+  0%,
+  100% {
+    transform: translateY(0) scale(0.985);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.025),
+      0 0 0 rgba(101, 184, 255, 0);
+  }
+
+  50% {
+    transform: translateY(0) scale(1);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.07),
+      0 0 12px rgba(101, 184, 255, 0.055);
+  }
+}
+
+@keyframes zephipay-active-orb-breathe {
+  0%,
+  100% {
+    filter: brightness(1) saturate(1);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.22),
+      0 5px 15px color-mix(
+        in srgb,
+        var(--glow-primary) 68%,
+        transparent
+      );
+  }
+
+  50% {
+    filter: brightness(1.075) saturate(1.08);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.32),
+      0 7px 21px color-mix(
+        in srgb,
+        var(--glow-primary) 82%,
+        transparent
+      );
+  }
+}
+
+@keyframes zephipay-logo-reflection {
+  0%,
+  76% {
+    opacity: 0;
+    transform: translateX(-220%) skewX(-18deg);
+  }
+
+  79% {
+    opacity: 0.12;
+  }
+
+  84% {
+    opacity: 0.68;
+  }
+
+  89% {
+    opacity: 0;
+    transform: translateX(520%) skewX(-18deg);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(520%) skewX(-18deg);
+  }
+}
+
+@keyframes zephipay-menu-enter {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+
+/* Motion accessibility -------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .zephipay-ambient::before,
+  .zephipay-theme-orb,
+  .zephipay-theme-orb-active,
+  .zephipay-logo-sheen,
+  .zephipay-mega-menu {
+    animation: none !important;
+  }
+
+  .zephipay-theme-orb,
+  .zephipay-button-motion,
+  .zephipay-logo-shell img {
+    transform: none !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ZephiPay directional lighting ---------------------------------- */
+
+.zephipay-ambient-directional-light,
+.zephipay-ambient-hero-halo,
+.zephipay-ambient-steel-reflection {
+  position: absolute;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+/*
+  Upper-right illumination:
+  cool blue reflected light rather than a neon glow.
+*/
+.zephipay-ambient-directional-light {
+  right: -10rem;
+  top: -8rem;
+  width: 58rem;
+  height: 42rem;
+  background:
+    radial-gradient(
+      ellipse at 58% 42%,
+      rgba(102, 174, 224, 0.16) 0%,
+      rgba(72, 135, 184, 0.09) 28%,
+      rgba(32, 67, 96, 0.035) 52%,
+      transparent 72%
+    );
+  filter: blur(34px);
+  opacity: 0.74;
+  transform: rotate(-8deg);
+  animation:
+    zephipay-directional-light-shift 34s ease-in-out infinite alternate;
+}
+
+/*
+  Hero halo:
+  kept away from the headline itself so the typography remains crisp.
+*/
+.zephipay-ambient-hero-halo {
+  left: 3%;
+  top: 7rem;
+  width: 64rem;
+  height: 39rem;
+  background:
+    radial-gradient(
+      ellipse at 42% 46%,
+      rgba(68, 133, 188, 0.095),
+      rgba(35, 79, 116, 0.035) 42%,
+      transparent 70%
+    );
+  filter: blur(48px);
+  opacity: 0.64;
+  animation:
+    zephipay-hero-light-breathe 28s ease-in-out infinite alternate;
+}
+
+/*
+  Lower-left steel reflection:
+  broad, dim, and slightly cyan to create depth beneath the hero.
+*/
+.zephipay-ambient-steel-reflection {
+  left: -18rem;
+  top: 31rem;
+  width: 56rem;
+  height: 36rem;
+  background:
+    radial-gradient(
+      ellipse at 56% 46%,
+      rgba(91, 174, 203, 0.085),
+      rgba(42, 88, 112, 0.035) 42%,
+      transparent 72%
+    );
+  filter: blur(46px);
+  opacity: 0.54;
+  transform: rotate(7deg);
+  animation:
+    zephipay-steel-light-shift 42s ease-in-out infinite alternate;
+}
+
+/*
+  Existing grid retained, but made visible enough to establish scale.
+  Still intentionally faint.
+*/
+.zephipay-ambient-grid {
+  opacity: 0.23;
+  background-size: 104px 104px;
+}
+
+/*
+  Slightly strengthen the horizon without turning it into a Tron line.
+*/
+.zephipay-ambient-horizon {
+  opacity: 0.4;
+}
+
+/*
+  Reduce the old giant-orb dominance. The directional lighting now does
+  more of the visual work.
+*/
+.zephipay-ambient-orb-primary {
+  opacity: 0.12;
+}
+
+.zephipay-ambient-orb-secondary {
+  opacity: 0.075;
+}
+
+
+@keyframes zephipay-directional-light-shift {
+  0% {
+    opacity: 0.58;
+    transform: translate3d(0, 0, 0) rotate(-8deg) scale(0.98);
+  }
+
+  50% {
+    opacity: 0.76;
+  }
+
+  100% {
+    opacity: 0.66;
+    transform: translate3d(-3.5rem, 2rem, 0) rotate(-5deg) scale(1.035);
+  }
+}
+
+@keyframes zephipay-hero-light-breathe {
+  0% {
+    opacity: 0.5;
+    transform: translate3d(0, 0, 0) scale(0.985);
+  }
+
+  100% {
+    opacity: 0.72;
+    transform: translate3d(2rem, 1rem, 0) scale(1.025);
+  }
+}
+
+@keyframes zephipay-steel-light-shift {
+  0% {
+    opacity: 0.42;
+    transform: translate3d(0, 0, 0) rotate(7deg) scale(0.98);
+  }
+
+  100% {
+    opacity: 0.62;
+    transform: translate3d(3rem, -1.5rem, 0) rotate(4deg) scale(1.04);
+  }
+}
+
+
+@media (max-width: 768px) {
+  .zephipay-ambient-directional-light {
+    right: -27rem;
+    top: -10rem;
+    opacity: 0.56;
+  }
+
+  .zephipay-ambient-hero-halo {
+    left: -22rem;
+    top: 8rem;
+    opacity: 0.5;
+  }
+
+  .zephipay-ambient-steel-reflection {
+    left: -30rem;
+    top: 35rem;
+    opacity: 0.4;
+  }
+
+  .zephipay-ambient-grid {
+    opacity: 0.16;
+    background-size: 88px 88px;
+  }
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+  .zephipay-ambient-directional-light,
+  .zephipay-ambient-hero-halo,
+  .zephipay-ambient-steel-reflection {
+    animation: none !important;
+  }
+}
+
+/*
+  There is no visible orb.
+
+  This atmosphere merely gives the expanding waves something subtle
+  to illuminate as they travel outward.
+*/
+.zephyon-pulse-field__atmosphere {
+  position: absolute;
+  inset: 12%;
+  border-radius: 9999px;
+  background:
+    radial-gradient(
+      circle,
+      rgba(75, 145, 194, 0.035) 0%,
+      rgba(45, 99, 137, 0.018) 38%,
+      transparent 72%
+    );
+  filter: blur(34px);
+  opacity: 0.5;
+}
+
+/*
+  The origin is intentionally almost invisible.
+
+  It exists only to give the eye a subconscious starting point.
+*/
+.zephyon-pulse-field__origin {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0.34rem;
+  height: 0.34rem;
+  border-radius: 9999px;
+  background:
+    radial-gradient(
+      circle,
+      rgba(178, 220, 246, 0.25),
+      rgba(75, 151, 201, 0.08) 42%,
+      transparent 76%
+    );
+  box-shadow:
+    0 0 10px rgba(84, 165, 217, 0.035);
+  opacity: 0.16;
+  transform: translate(-50%, -50%);
+}
+
+/*
+  Each wave begins at the same nearly invisible source, becomes
+  momentarily readable, then dissolves into the page.
+*/
+.zephyon-pulse-field__ring {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 9999px;
+  border:
+    1px solid rgba(89, 166, 216, 0.16);
+  box-shadow:
+    0 0 22px rgba(63, 137, 188, 0.025),
+    inset 0 0 18px rgba(135, 204, 241, 0.018);
+  opacity: 0;
+  transform:
+    translate(-50%, -50%)
+    scale(0.08);
+  transform-origin: center;
+  will-change: transform, opacity, filter;
+  animation:
+    zephyon-radiating-wave 8.4s
+    cubic-bezier(0.18, 0.62, 0.22, 1)
+    infinite;
+}
+
+.zephyon-pulse-field__ring--one {
+  animation-delay: 0s;
+}
+
+.zephyon-pulse-field__ring--two {
+  animation-delay: 2.8s;
+}
+
+.zephyon-pulse-field__ring--three {
+  animation-delay: 5.6s;
+}
+
+
+@keyframes zephyon-radiating-wave {
+  0% {
+    opacity: 0;
+    filter: brightness(0.72);
+    transform:
+      translate(-50%, -50%)
+      scale(0.08);
+  }
+
+  7% {
+    opacity: 0.08;
+  }
+
+  18% {
+    opacity: 0.2;
+    filter: brightness(1);
+  }
+
+  46% {
+    opacity: 0.115;
+    filter: brightness(0.92);
+  }
+
+  76% {
+    opacity: 0.038;
+  }
+
+  100% {
+    opacity: 0;
+    filter: brightness(0.72);
+    transform:
+      translate(-50%, -50%)
+      scale(10.4);
+  }
+}
+
+
+@media (max-width: 1280px) {
+  .zephyon-pulse-field {
+    right: -9rem;
+    width: 38rem;
+    height: 38rem;
+  }
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+  .zephyon-pulse-field__ring {
+    animation: none !important;
+    opacity: 0.055;
+    transform:
+      translate(-50%, -50%)
+      scale(7);
+  }
+
+  .zephyon-pulse-field__origin {
+    opacity: 0.08;
+  }
+}
+

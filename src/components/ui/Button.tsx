@@ -44,7 +44,7 @@ type LinkButtonProps = SharedButtonProps &
 export type ButtonProps = NativeButtonProps | LinkButtonProps;
 
 const baseClasses =
-  "inline-flex items-center justify-center gap-2 rounded-full font-medium whitespace-nowrap transition-all duration-200 ease-out outline-none focus-visible:ring-2 focus-visible:ring-[#65B8FF]/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#05070A] disabled:pointer-events-none disabled:opacity-50";
+  "zephipay-button-motion inline-flex items-center justify-center gap-2 rounded-full font-medium whitespace-nowrap transition-all duration-200 ease-out outline-none focus-visible:ring-2 focus-visible:ring-[#65B8FF]/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#05070A] disabled:pointer-events-none disabled:opacity-50";
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary:

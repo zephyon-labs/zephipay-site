@@ -30,6 +30,7 @@ export function BrandMark({
       <span
         aria-hidden="true"
         className={cn(
+          "zephipay-logo-shell",
           "relative flex h-10 w-14 items-center justify-center",
           "overflow-hidden rounded-xl",
           "border border-border-default",
@@ -48,6 +49,11 @@ export function BrandMark({
             "opacity-70 transition-opacity duration-200",
             "group-hover:opacity-100",
           )}
+        />
+
+        <span
+          aria-hidden="true"
+          className="zephipay-logo-sheen pointer-events-none absolute inset-y-0 -left-1/2 z-10 w-1/3"
         />
 
         <Image

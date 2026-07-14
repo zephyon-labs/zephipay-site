@@ -1,6 +1,9 @@
+import { AmbientBackground } from "@/components/marketing/AmbientBackground";
 import { AudienceGrid } from "@/components/marketing/AudienceGrid";
 import { NetworkMetrics } from "@/components/marketing/NetworkMetrics";
+import { RuntimeFlow } from "@/components/marketing/RuntimeFlow";
 import { SiteHeader } from "@/components/layout/SiteHeader";
+import { SiteFooter } from "@/components/layout/SiteFooter";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { Button } from "@/components/ui/Button";
@@ -8,14 +11,15 @@ import { siteConfig } from "@/config/site";
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen bg-background text-foreground">
+    <main className="relative isolate min-h-screen overflow-hidden bg-transparent text-foreground">
       <SiteHeader />
+      <AmbientBackground />
 
       <Section
         spacing="lg"
         className="relative overflow-hidden pt-40 sm:pt-44"
       >
-        <div
+          <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 -z-10"
         >
@@ -23,7 +27,7 @@ export default function HomePage() {
           <div className="absolute bottom-[-20rem] left-[-12rem] h-[34rem] w-[34rem] rounded-full bg-[radial-gradient(circle,var(--glow-secondary),transparent_70%)] opacity-60 blur-3xl" />
         </div>
 
-        <Container>
+        <Container className="relative z-10">
           <div className="max-w-4xl">
             <p className="text-sm font-medium uppercase tracking-[0.18em] text-brand-secondary">
               Modern payments, without the noise
@@ -89,6 +93,15 @@ export default function HomePage() {
         </Container>
       </Section>
 
+      <Section
+        id="runtime"
+        className="scroll-mt-28"
+      >
+        <Container>
+          <RuntimeFlow />
+        </Container>
+      </Section>
+
       <Section id="platform" className="scroll-mt-28">
         <Container>
           <div className="border-t border-border-subtle pt-16">
@@ -97,13 +110,14 @@ export default function HomePage() {
                 Built for every way value moves
               </p>
 
-              <h2 className="mt-3 text-4xl font-semibold tracking-[-0.04em] sm:text-5xl">
-                One experience. Different needs.
+              <h2 className="mt-3 text-3xl font-semibold tracking-[-0.04em] sm:text-4xl">
+                Built for everyone.
               </h2>
 
               <p className="mt-6 text-lg leading-8 text-foreground-secondary">
-                Choose the experience that fits you. Each card reveals the
-                capabilities ZephiPay is being built to support.
+                Personal payments, creator commerce, business tools, and
+                intelligent systems—one calm experience with different ways
+                to move value.
               </p>
             </div>
 
@@ -113,6 +127,98 @@ export default function HomePage() {
           </div>
         </Container>
       </Section>
+
+      <Section id="why-zephipay">
+        <Container>
+          <div className="border-t border-border-subtle pt-20">
+
+            <div className="mx-auto max-w-4xl text-center">
+
+              <p className="text-sm uppercase tracking-[0.18em] text-brand-secondary">
+                WHY ZEPHIPAY
+              </p>
+
+              <h2 className="mt-6 text-5xl font-semibold tracking-[-0.05em] sm:text-6xl">
+                Modern payments.
+                <br />
+                Without the complexity.
+              </h2>
+
+              <p className="mt-6 text-xl text-brand-primary font-medium">
+                Built for tomorrow. Useful today.
+              </p>
+
+              <p className="mx-auto mt-8 max-w-3xl text-lg leading-8 text-foreground-secondary">
+                People shouldn&apos;t have to think about payment rails,
+                wallets, settlement networks, compliance, or infrastructure.
+                ZephiPay brings modern payments into one familiar experience
+                while the Zephyon Runtime quietly coordinates everything
+                beneath the surface.
+              </p>
+
+            </div>
+
+            <div className="mt-20 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+
+              {[
+                {
+                  title: "Fast",
+                  body:
+                    "Payments should feel immediate, whether you're paying a friend, creator, or business."
+                },
+                {
+                  title: "Verifiable",
+                  body:
+                    "Every payment leaves behind a deterministic receipt that can be independently verified."
+                },
+                {
+                  title: "Connected",
+                  body:
+                    "Traditional banking, blockchain settlement, and future payment rails belong behind one familiar experience."
+                },
+                {
+                  title: "Future Ready",
+                  body:
+                    "Designed for people today. Ready for intelligent commerce tomorrow."
+                }
+              ].map((item)=>(
+                <div
+                  key={item.title}
+                  className="rounded-3xl border border-border-subtle bg-surface-glass p-8 shadow-[var(--shadow-soft)]"
+                >
+                  <h3 className="text-xl font-semibold">
+                    {item.title}
+                  </h3>
+
+                  <p className="mt-5 leading-7 text-foreground-secondary">
+                    {item.body}
+                  </p>
+                </div>
+              ))}
+
+            </div>
+
+            <div className="mt-24 rounded-[2rem] border border-border-default bg-surface-glass p-12 text-center shadow-[var(--shadow-medium)]">
+
+              <p className="text-4xl font-semibold tracking-[-0.04em] sm:text-5xl">
+                Every payment becomes
+                <br />
+                a trusted economic event.
+              </p>
+
+              <p className="mx-auto mt-8 max-w-3xl text-lg leading-8 text-foreground-secondary">
+                Identity. Policy. Compliance. Settlement.
+                Verification. Observability.
+                Coordinated quietly through the Zephyon Runtime.
+              </p>
+
+            </div>
+
+          </div>
+        </Container>
+      </Section>
+
+
 
       <Section
         id="security"
@@ -159,6 +265,7 @@ export default function HomePage() {
           </div>
         </Container>
       </Section>
+      <SiteFooter />
     </main>
   );
 }

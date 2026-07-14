@@ -1,201 +1,50 @@
-"use client";
-
-import {
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-
-import { cn } from "@/utils/cn";
-
-type Metrics = {
-  volumeUsd: number;
-  verifiedPayments: number;
-  verifiedReceipts: number;
-  runtimeSuccessRate: number;
-  averageProcessingMs: number;
+type MetricItem = {
+  label: string;
+  value: string;
 };
 
-type ActivityEvent = {
-  id: number;
-  amountUsd: number;
-  type: string;
-  durationMs: number;
-};
-
-const INITIAL_METRICS: Metrics = {
-  volumeUsd: 4287.42,
-  verifiedPayments: 184,
-  verifiedReceipts: 184,
-  runtimeSuccessRate: 99.98,
-  averageProcessingMs: 412,
-};
-
-const activityTypes = [
-  "Peer payment verified",
-  "Creator payment verified",
-  "Merchant payment verified",
-  "Agent payment verified",
+const metrics: MetricItem[] = [
+  {
+    label: "Volume processed",
+    value: "—",
+  },
+  {
+    label: "Verified payments",
+    value: "—",
+  },
+  {
+    label: "Verified receipts",
+    value: "—",
+  },
+  {
+    label: "Runtime success",
+    value: "—",
+  },
 ];
 
-function formatCurrency(value: number): string {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(value);
-}
-
-function createActivity(id: number): ActivityEvent {
-  const amountUsd =
-    Math.round((4 + Math.random() * 196) * 100) / 100;
-
-  const durationMs =
-    Math.round(260 + Math.random() * 360);
-
-  const type =
-    activityTypes[
-      Math.floor(Math.random() * activityTypes.length)
-    ];
-
-  return {
-    id,
-    amountUsd,
-    type,
-    durationMs,
-  };
-}
+const futureTelemetry = [
+  "Live network volume",
+  "Verified settlements",
+  "Deterministic receipts",
+  "Runtime performance",
+];
 
 export function NetworkMetrics() {
-  const [metrics, setMetrics] =
-    useState<Metrics>(INITIAL_METRICS);
-
-  const [activities, setActivities] =
-    useState<ActivityEvent[]>([
-      {
-        id: 1,
-        amountUsd: 42.17,
-        type: "Peer payment verified",
-        durationMs: 384,
-      },
-      {
-        id: 2,
-        amountUsd: 18.5,
-        type: "Creator payment verified",
-        durationMs: 421,
-      },
-      {
-        id: 3,
-        amountUsd: 91.25,
-        type: "Merchant payment verified",
-        durationMs: 397,
-      },
-    ]);
-
-  const [isRunning, setIsRunning] = useState(true);
-
-  useEffect(() => {
-    if (!isRunning) {
-      return;
-    }
-
-    const intervalId = window.setInterval(() => {
-      const activity = createActivity(Date.now());
-
-      setActivities((current) => [
-        activity,
-        ...current,
-      ].slice(0, 4));
-
-      setMetrics((current) => {
-        const nextPayments =
-          current.verifiedPayments + 1;
-
-        const nextAverage =
-          Math.round(
-            (
-              current.averageProcessingMs *
-                current.verifiedPayments +
-              activity.durationMs
-            ) / nextPayments,
-          );
-
-        return {
-          volumeUsd:
-            Math.round(
-              (
-                current.volumeUsd +
-                activity.amountUsd
-              ) * 100,
-            ) / 100,
-
-          verifiedPayments: nextPayments,
-
-          verifiedReceipts:
-            current.verifiedReceipts + 1,
-
-          runtimeSuccessRate:
-            current.runtimeSuccessRate,
-
-          averageProcessingMs: nextAverage,
-        };
-      });
-    }, 4200);
-
-    return () => {
-      window.clearInterval(intervalId);
-    };
-  }, [isRunning]);
-
-  const metricItems = useMemo(
-    () => [
-      {
-        label: "Beta volume processed",
-        value: formatCurrency(metrics.volumeUsd),
-      },
-      {
-        label: "Verified payments",
-        value: metrics.verifiedPayments.toLocaleString(),
-      },
-      {
-        label: "Verified receipts",
-        value: metrics.verifiedReceipts.toLocaleString(),
-      },
-      {
-        label: "Runtime success",
-        value: `${metrics.runtimeSuccessRate.toFixed(2)}%`,
-      },
-    ],
-    [metrics],
-  );
-
   return (
     <section
       aria-labelledby="network-metrics-heading"
-      className={cn(
-        "overflow-hidden rounded-[1.65rem]",
-        "border border-border-default",
-        "bg-surface-glass",
-        "shadow-[var(--shadow-soft)]",
-        "backdrop-blur-2xl",
-      )}
+      className="overflow-hidden rounded-[1.65rem] border border-border-default bg-surface-glass shadow-[var(--shadow-soft)] backdrop-blur-2xl"
     >
       <div className="flex flex-col gap-4 border-b border-border-subtle px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-7">
         <div>
           <div className="flex items-center gap-3">
             <span
               aria-hidden="true"
-              className={cn(
-                "h-2.5 w-2.5 rounded-full",
-                isRunning
-                  ? "bg-success shadow-[0_0_14px_var(--success)]"
-                  : "bg-foreground-muted",
-              )}
+              className="h-2.5 w-2.5 rounded-full bg-neutral-500"
             />
 
             <p className="text-sm font-medium uppercase tracking-[0.16em] text-brand-secondary">
-              Beta telemetry preview
+              Zephyon telemetry
             </p>
           </div>
 
@@ -203,42 +52,27 @@ export function NetworkMetrics() {
             id="network-metrics-heading"
             className="mt-2 text-xl font-semibold tracking-[-0.03em] sm:text-2xl"
           >
-            The network is moving.
+            Awaiting First Verified Settlement
           </h2>
+
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-foreground-secondary">
+            Public runtime telemetry activates automatically after the first
+            verified settlement through the Zephyon Runtime.
+          </p>
         </div>
 
-        <button
-          type="button"
-          onClick={() =>
-            setIsRunning((current) => !current)
-          }
-          aria-pressed={!isRunning}
-          className={cn(
-            "inline-flex h-10 items-center justify-center",
-            "rounded-full border border-border-default",
-            "bg-surface-secondary px-4",
-            "text-sm font-medium text-foreground-secondary",
-            "transition-all duration-200",
-            "hover:border-border-strong",
-            "hover:text-foreground",
-            "focus-visible:outline-none",
-            "focus-visible:ring-2",
-            "focus-visible:ring-brand-primary/45",
-          )}
-        >
-          {isRunning
-            ? "Pause preview"
-            : "Resume preview"}
-        </button>
+        <div className="inline-flex w-fit items-center rounded-full border border-border-default bg-surface-secondary px-4 py-2 text-xs font-medium uppercase tracking-[0.12em] text-foreground-muted">
+          Status pending
+        </div>
       </div>
 
       <div className="grid sm:grid-cols-2 xl:grid-cols-4">
-        {metricItems.map((metric) => (
+        {metrics.map((metric) => (
           <div
             key={metric.label}
             className="border-b border-border-subtle p-5 sm:p-6 xl:border-b-0 xl:border-r last:xl:border-r-0"
           >
-            <p className="font-mono text-2xl font-semibold tracking-[-0.04em] sm:text-3xl">
+            <p className="font-mono text-2xl font-semibold tracking-[-0.04em] text-foreground-muted sm:text-3xl">
               {metric.value}
             </p>
 
@@ -252,52 +86,43 @@ export function NetworkMetrics() {
       <div className="grid gap-6 px-5 py-6 sm:px-7 lg:grid-cols-[0.72fr_1.28fr]">
         <div>
           <p className="text-sm uppercase tracking-[0.14em] text-foreground-muted">
-            Average runtime processing
+            Current status
           </p>
 
-          <p className="mt-2 font-mono text-2xl font-semibold">
-            {metrics.averageProcessingMs} ms
+          <p className="mt-2 text-lg font-semibold">
+            Awaiting First Verified Settlement
           </p>
 
           <p className="mt-3 max-w-sm text-sm leading-6 text-foreground-secondary">
-            Demonstration values update locally. Production
-            metrics will be supplied by verified Zephyon
-            Runtime telemetry.
+            No simulated transactions. No inflated activity. Every future
+            number shown here will come from verified runtime telemetry.
           </p>
         </div>
 
         <div>
           <p className="text-sm uppercase tracking-[0.14em] text-foreground-muted">
-            Recent beta activity
+            Telemetry will display
           </p>
 
-          <div
-            className="mt-3 space-y-2"
-            aria-live="polite"
-          >
-            {activities.map((activity) => (
+          <div className="mt-3 grid gap-2 sm:grid-cols-2">
+            {futureTelemetry.map((item) => (
               <div
-                key={activity.id}
-                className="grid grid-cols-[1fr_auto] gap-3 rounded-xl border border-border-subtle bg-surface-secondary px-4 py-2.5"
+                key={item}
+                className="rounded-xl border border-border-subtle bg-surface-secondary px-4 py-3 text-sm text-foreground-secondary"
               >
-                <div>
-                  <p className="text-sm font-medium">
-                    {activity.type}
-                  </p>
-
-                  <p className="mt-1 text-xs text-foreground-muted">
-                    Receipt generated ·{" "}
-                    {activity.durationMs} ms
-                  </p>
-                </div>
-
-                <p className="font-mono text-sm text-brand-primary">
-                  +{formatCurrency(activity.amountUsd)}
-                </p>
+                <span className="mr-2 text-brand-primary">◇</span>
+                {item}
               </div>
             ))}
           </div>
         </div>
+      </div>
+
+      <div className="border-t border-border-subtle px-5 py-4 sm:px-7">
+        <p className="text-xs leading-5 text-foreground-muted">
+          Devnet and beta values represent test activity only and do not
+          indicate production funds or mainnet transaction volume.
+        </p>
       </div>
     </section>
   );
