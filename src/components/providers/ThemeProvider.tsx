@@ -86,6 +86,7 @@ function applyTheme(
   const resolvedTheme = resolveTheme(preference, dayPeriod);
 
   document.documentElement.dataset.theme = resolvedTheme;
+  document.documentElement.dataset.themePreference = preference;
   document.documentElement.dataset.period = dayPeriod;
   document.documentElement.style.colorScheme = resolvedTheme;
 

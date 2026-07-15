@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
@@ -28,6 +29,52 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+        <Script
+          id="zephyon-theme-init"
+          strategy="beforeInteractive"
+        >
+          {`
+            (() => {
+              try {
+                const stored =
+                  localStorage.getItem("zephyon-theme") || "system";
+
+                const hour = new Date().getHours();
+
+                const period =
+                  hour >= 6 && hour < 10
+                    ? "morning"
+                    : hour >= 10 && hour < 17
+                      ? "day"
+                      : hour >= 17 && hour < 21
+                        ? "evening"
+                        : "night";
+
+                const systemDark =
+                  window.matchMedia(
+                    "(prefers-color-scheme: dark)"
+                  ).matches;
+
+                const theme =
+                  stored === "adaptive"
+                    ? period === "morning" || period === "day"
+                      ? "light"
+                      : "dark"
+                    : stored === "system"
+                      ? systemDark
+                        ? "dark"
+                        : "light"
+                      : stored;
+
+                document.documentElement.dataset.theme = theme;
+                document.documentElement.dataset.themePreference = stored;
+                document.documentElement.dataset.period = period;
+                document.documentElement.style.colorScheme = theme;
+              } catch {}
+            })();
+          `}
+        </Script>
+
         <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>

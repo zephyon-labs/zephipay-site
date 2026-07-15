@@ -1,153 +1,486 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ZephiPay Design System v1 -------------------------------------- */
+
+:root,
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --background: #f5f5f7;
+  --foreground: #1d1d1f;
+
+  --foreground-secondary: #515154;
+  --foreground-muted: #7b7b81;
+
+  --surface-glass: rgba(255, 255, 255, 0.82);
+  --surface-secondary: #ececf0;
+  --surface-elevated: #ffffff;
+
+  --border-subtle: rgba(29, 29, 31, 0.08);
+  --border-default: rgba(29, 29, 31, 0.13);
+  --border-strong: rgba(29, 29, 31, 0.22);
+
+  --brand-primary: #2997ff;
+  --brand-secondary: #0071e3;
+  --brand-contrast: #ffffff;
+
+  --glow-primary: rgba(41, 151, 255, 0.2);
+  --glow-secondary: rgba(0, 113, 227, 0.12);
+
+  --shadow-soft:
+    0 1px 2px rgba(0, 0, 0, 0.025),
+    0 10px 30px rgba(0, 0, 0, 0.045);
+
+  --shadow-medium:
+    0 1px 2px rgba(0, 0, 0, 0.035),
+    0 18px 54px rgba(0, 0, 0, 0.085);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --background: #05070a;
+  --foreground: #f4f8fc;
+
+  --foreground-secondary: #aab8c7;
+  --foreground-muted: #718093;
+
+  --surface-glass: rgba(10, 15, 21, 0.84);
+  --surface-secondary: #101720;
+  --surface-elevated: #151f2b;
+
+  --border-subtle: rgba(255, 255, 255, 0.07);
+  --border-default: rgba(255, 255, 255, 0.11);
+  --border-strong: rgba(255, 255, 255, 0.19);
+
+  --brand-primary: #65b8ff;
+  --brand-secondary: #73e7ff;
+  --brand-contrast: #05070a;
+
+  --glow-primary: rgba(101, 184, 255, 0.2);
+  --glow-secondary: rgba(115, 231, 255, 0.1);
+
+  --shadow-soft:
+    0 1px 2px rgba(0, 0, 0, 0.15),
+    0 12px 34px rgba(0, 0, 0, 0.24);
+
+  --shadow-medium:
+    0 1px 2px rgba(0, 0, 0, 0.18),
+    0 24px 72px rgba(0, 0, 0, 0.42);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+
+  --color-foreground-secondary: var(--foreground-secondary);
+  --color-foreground-muted: var(--foreground-muted);
+
+  --color-surface-glass: var(--surface-glass);
+  --color-surface-secondary: var(--surface-secondary);
+  --color-surface-elevated: var(--surface-elevated);
+
+  --color-border-subtle: var(--border-subtle);
+  --color-border-default: var(--border-default);
+  --color-border-strong: var(--border-strong);
+
+  --color-brand-primary: var(--brand-primary);
+  --color-brand-secondary: var(--brand-secondary);
+  --color-brand-contrast: var(--brand-contrast);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  min-height: 100%;
+  background: var(--background);
 }
 
 body {
+  min-height: 100%;
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family:
+    var(--font-geist-sans),
+    Arial,
+    Helvetica,
+    sans-serif;
+  transition:
+    background-color 260ms ease,
+    color 220ms ease;
 }
 
+/* Time-aware Zephyon atmosphere ---------------------------------- */
 
-/* Time-aware Zephyon atmosphere */
-:root[data-period="morning"] body {
+/* Daytime: bright air, soft blue reflection, restrained warmth. */
+
+:root[data-theme="light"][data-period="morning"] body {
   background:
     radial-gradient(
-      circle at 78% 8%,
-      rgba(111, 190, 255, 0.16),
-      transparent 34rem
+      ellipse at 10% 4%,
+      rgba(255, 142, 105, 0.16),
+      transparent 27rem
     ),
     radial-gradient(
-      circle at 12% 28%,
-      rgba(255, 191, 128, 0.08),
-      transparent 28rem
+      ellipse at 34% 0%,
+      rgba(255, 194, 151, 0.11),
+      transparent 31rem
     ),
-    var(--background);
+    radial-gradient(
+      circle at 86% 3%,
+      rgba(41, 151, 255, 0.09),
+      transparent 35rem
+    ),
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.56),
+      transparent 31rem
+    ),
+    #f6f6f8;
 }
 
-:root[data-period="day"] body {
+:root[data-theme="light"][data-period="day"] body {
   background:
     radial-gradient(
-      circle at 80% 5%,
-      rgba(90, 177, 235, 0.13),
+      circle at 84% 3%,
+      rgba(41, 151, 255, 0.07),
       transparent 36rem
     ),
-    var(--background);
-}
-
-:root[data-period="evening"] body {
-  background:
-    radial-gradient(
-      circle at 82% 8%,
-      rgba(232, 137, 102, 0.1),
-      transparent 32rem
-    ),
-    radial-gradient(
-      circle at 18% 22%,
-      rgba(72, 134, 210, 0.13),
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.4),
       transparent 34rem
     ),
-    var(--background);
+    #f5f5f7;
 }
 
-:root[data-period="night"] body {
+/* Evening and night preserve ZephiPay's steel-blue identity. */
+
+:root[data-theme="dark"][data-period="evening"] body {
   background:
     radial-gradient(
-      circle at 80% 6%,
-      rgba(61, 134, 211, 0.16),
+      ellipse at 82% 2%,
+      rgba(255, 122, 76, 0.13),
+      transparent 29rem
+    ),
+    radial-gradient(
+      ellipse at 62% 5%,
+      rgba(242, 101, 162, 0.1),
       transparent 34rem
     ),
     radial-gradient(
-      circle at 15% 25%,
-      rgba(49, 214, 225, 0.06),
+      ellipse at 38% 8%,
+      rgba(133, 92, 206, 0.095),
+      transparent 38rem
+    ),
+    radial-gradient(
+      circle at 15% 24%,
+      rgba(59, 123, 190, 0.1),
+      transparent 35rem
+    ),
+    var(--background);
+}
+
+:root[data-theme="dark"][data-period="night"] body {
+  background:
+    radial-gradient(
+      circle at 82% 5%,
+      rgba(61, 134, 211, 0.11),
+      transparent 34rem
+    ),
+    radial-gradient(
+      circle at 14% 24%,
+      rgba(49, 214, 225, 0.035),
       transparent 30rem
     ),
     var(--background);
 }
 
-/* ZephiPay ambient atmosphere ------------------------------------- */
+/*
+  Explicit theme selections still receive an appropriate atmosphere,
+  regardless of the actual local period.
+*/
 
-.zephipay-ambient {
+:root[data-theme="light"][data-period="evening"] body,
+:root[data-theme="light"][data-period="night"] body {
+  background:
+    radial-gradient(
+      circle at 82% 4%,
+      rgba(41, 151, 255, 0.07),
+      transparent 34rem
+    ),
+    var(--background);
+}
+
+:root[data-theme="dark"][data-period="morning"] body,
+:root[data-theme="dark"][data-period="day"] body {
+  background:
+    radial-gradient(
+      circle at 82% 5%,
+      rgba(82, 155, 220, 0.09),
+      transparent 34rem
+    ),
+    var(--background);
+}
+
+/* ZephiPay time-aware environments ------------------------------- */
+
+.zephipay-environment {
+  background: var(--background);
+  transition: background-color 320ms ease;
+}
+
+.zephipay-environment-base,
+.zephipay-environment-scene,
+.zephipay-environment-grid,
+.zephipay-environment-vignette,
+.zephipay-environment-scene > div {
+  position: absolute;
+  inset: 0;
+}
+
+.zephipay-environment-scene {
+  opacity: 0;
+  transition: opacity 1200ms ease-in-out;
+}
+
+/* Explicit theme selections -------------------------------------- */
+
+/* Sun always means a clean, intentional daytime environment. */
+:root[data-theme-preference="light"]
+  .zephipay-environment-day {
+  opacity: 1;
+}
+
+/* Moon always means the dedicated night environment. */
+:root[data-theme-preference="dark"]
+  .zephipay-environment-night {
+  opacity: 1;
+}
+
+/* System follows the operating system's resolved appearance. */
+:root[data-theme-preference="system"][data-theme="light"]
+  .zephipay-environment-day {
+  opacity: 1;
+}
+
+:root[data-theme-preference="system"][data-theme="dark"]
+  .zephipay-environment-night {
+  opacity: 1;
+}
+
+/* Adaptive follows the actual local period. */
+:root[data-theme-preference="adaptive"][data-period="morning"]
+  .zephipay-environment-morning {
+  opacity: 1;
+}
+
+:root[data-theme-preference="adaptive"][data-period="day"]
+  .zephipay-environment-day {
+  opacity: 1;
+}
+
+:root[data-theme-preference="adaptive"][data-period="evening"]
+  .zephipay-environment-evening {
+  opacity: 1;
+}
+
+:root[data-theme-preference="adaptive"][data-period="night"]
+  .zephipay-environment-night {
+  opacity: 1;
+}
+
+/* Initial fallback before the preference is applied. */
+:root:not([data-theme-preference])[data-theme="light"]
+  .zephipay-environment-day {
+  opacity: 1;
+}
+
+:root:not([data-theme-preference])[data-theme="dark"]
+  .zephipay-environment-night {
+  opacity: 1;
+}
+
+
+/* Morning --------------------------------------------------------- */
+
+.zephipay-environment-morning {
   background:
     linear-gradient(
       180deg,
-      color-mix(in srgb, var(--background) 96%, transparent),
-      var(--background)
+      #faf9f7 0%,
+      #f7f7f8 58%,
+      #f5f6f8 100%
     );
 }
 
-.zephipay-ambient-orb {
-  position: absolute;
-  border-radius: 9999px;
-  filter: blur(110px);
-  opacity: 0.16;
-  will-change: transform;
+.zephipay-environment-morning-coral {
+  background:
+    radial-gradient(
+      ellipse 38rem 27rem at 8% 4%,
+      rgba(255, 126, 92, 0.27),
+      rgba(255, 156, 113, 0.12) 42%,
+      transparent 72%
+    );
 }
 
-.zephipay-ambient-orb-primary {
-  right: -22rem;
-  top: 1rem;
-  width: 54rem;
-  height: 54rem;
-  background: var(--brand-primary);
-  animation: zephipay-ambient-drift-primary 52s ease-in-out infinite alternate;
+.zephipay-environment-morning-gold {
+  background:
+    radial-gradient(
+      ellipse 34rem 24rem at 34% -4%,
+      rgba(255, 195, 126, 0.21),
+      transparent 70%
+    );
 }
 
-.zephipay-ambient-orb-secondary {
-  bottom: -30rem;
-  left: -24rem;
-  width: 52rem;
-  height: 52rem;
-  background: var(--brand-secondary);
-  opacity: 0.1;
-  animation: zephipay-ambient-drift-secondary 62s ease-in-out infinite alternate;
+.zephipay-environment-morning-blue {
+  background:
+    radial-gradient(
+      ellipse 42rem 32rem at 91% 2%,
+      rgba(75, 164, 236, 0.14),
+      transparent 72%
+    );
 }
 
-.zephipay-ambient-horizon {
-  position: absolute;
-  left: 8%;
-  right: 8%;
-  top: 42rem;
+
+/* Day ------------------------------------------------------------- */
+
+.zephipay-environment-day {
+  background:
+    linear-gradient(
+      180deg,
+      #fbfbfc 0%,
+      #f6f6f8 62%,
+      #f4f5f7 100%
+    );
+}
+
+.zephipay-environment-day-light {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.82),
+      rgba(255, 255, 255, 0.12) 40rem,
+      transparent 62rem
+    );
+}
+
+.zephipay-environment-day-blue {
+  background:
+    radial-gradient(
+      ellipse 44rem 34rem at 92% 0%,
+      rgba(56, 153, 232, 0.095),
+      transparent 74%
+    );
+}
+
+
+/* Evening --------------------------------------------------------- */
+
+.zephipay-environment-evening {
+  background:
+    linear-gradient(
+      180deg,
+      #11101b 0%,
+      #0a0d16 42%,
+      #05070a 100%
+    );
+}
+
+.zephipay-environment-evening-coral {
+  background:
+    radial-gradient(
+      ellipse 46rem 24rem at 88% 2%,
+      rgba(255, 112, 65, 0.2),
+      transparent 72%
+    );
+}
+
+.zephipay-environment-evening-pink {
+  background:
+    radial-gradient(
+      ellipse 48rem 29rem at 66% 1%,
+      rgba(232, 82, 154, 0.16),
+      transparent 72%
+    );
+}
+
+.zephipay-environment-evening-violet {
+  background:
+    radial-gradient(
+      ellipse 52rem 34rem at 39% 4%,
+      rgba(120, 78, 207, 0.15),
+      transparent 74%
+    );
+}
+
+.zephipay-environment-evening-horizon {
+  top: 33rem;
   height: 1px;
   background:
     linear-gradient(
       90deg,
-      transparent,
-      color-mix(in srgb, var(--brand-primary) 24%, transparent),
-      transparent
+      transparent 5%,
+      rgba(126, 86, 210, 0.12),
+      rgba(235, 91, 157, 0.18),
+      rgba(255, 127, 73, 0.15),
+      transparent 94%
     );
-  opacity: 0.32;
-  animation: zephipay-horizon-breathe 18s ease-in-out infinite alternate;
+  opacity: 0.72;
 }
 
-.zephipay-ambient-grid {
-  position: absolute;
-  inset: 0;
+
+/* Night ----------------------------------------------------------- */
+
+.zephipay-environment-night {
+  background:
+    linear-gradient(
+      180deg,
+      #07101a 0%,
+      #05090e 48%,
+      #05070a 100%
+    );
+}
+
+.zephipay-environment-night-blue {
+  background:
+    radial-gradient(
+      ellipse 48rem 38rem at 90% 5%,
+      rgba(49, 119, 189, 0.12),
+      transparent 74%
+    );
+}
+
+.zephipay-environment-night-cyan {
+  background:
+    radial-gradient(
+      ellipse 40rem 32rem at 8% 35%,
+      rgba(41, 173, 190, 0.04),
+      transparent 74%
+    );
+}
+
+
+/* Shared depth ---------------------------------------------------- */
+
+.zephipay-environment-grid {
   background-image:
     linear-gradient(
-      color-mix(in srgb, var(--foreground) 2.5%, transparent) 1px,
+      color-mix(
+        in srgb,
+        var(--foreground) 2.2%,
+        transparent
+      ) 1px,
       transparent 1px
     ),
     linear-gradient(
       90deg,
-      color-mix(in srgb, var(--foreground) 2.5%, transparent) 1px,
+      color-mix(
+        in srgb,
+        var(--foreground) 2.2%,
+        transparent
+      ) 1px,
       transparent 1px
     );
   background-size: 96px 96px;
@@ -155,60 +488,84 @@ body {
     linear-gradient(
       to bottom,
       transparent 0%,
-      black 24%,
-      black 78%,
+      black 26%,
+      black 76%,
       transparent 100%
     );
-  opacity: 0.16;
+  opacity: 0.13;
 }
 
-.zephipay-ambient-vignette {
-  position: absolute;
-  inset: 0;
+:root[data-theme="light"] .zephipay-environment-grid {
+  opacity: 0.075;
+}
+
+.zephipay-environment-vignette {
   background:
     radial-gradient(
-      circle at center,
-      transparent 30%,
-      color-mix(in srgb, var(--background) 78%, transparent) 100%
+      ellipse at center,
+      transparent 28%,
+      color-mix(
+        in srgb,
+        var(--background) 55%,
+        transparent
+      ) 100%
     );
+  opacity: 0.55;
 }
 
-@keyframes zephipay-ambient-drift-primary {
+:root[data-theme="light"]
+  .zephipay-environment-vignette {
+  opacity: 0.22;
+}
+
+
+/* Calm environmental motion -------------------------------------- */
+
+.zephipay-environment-morning-coral,
+.zephipay-environment-evening-coral,
+.zephipay-environment-night-blue {
+  animation:
+    zephipay-environment-shift 34s
+    ease-in-out infinite alternate;
+}
+
+.zephipay-environment-morning-blue,
+.zephipay-environment-evening-violet,
+.zephipay-environment-night-cyan {
+  animation:
+    zephipay-environment-shift-reverse 42s
+    ease-in-out infinite alternate;
+}
+
+@keyframes zephipay-environment-shift {
   from {
     transform: translate3d(0, 0, 0) scale(1);
   }
 
   to {
-    transform: translate3d(-9rem, 7rem, 0) scale(1.1);
+    transform: translate3d(-2.5rem, 1.25rem, 0)
+      scale(1.035);
   }
 }
 
-@keyframes zephipay-ambient-drift-secondary {
+@keyframes zephipay-environment-shift-reverse {
   from {
-    transform: translate3d(0, 0, 0) scale(1);
+    transform: translate3d(0, 0, 0) scale(1.015);
   }
 
   to {
-    transform: translate3d(10rem, -7rem, 0) scale(1.12);
-  }
-}
-
-@keyframes zephipay-horizon-breathe {
-  from {
-    opacity: 0.18;
-    transform: scaleX(0.92);
-  }
-
-  to {
-    opacity: 0.54;
-    transform: scaleX(1);
+    transform: translate3d(2rem, -1rem, 0)
+      scale(0.985);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .zephipay-ambient-orb,
-  .zephipay-ambient-horizon {
-    animation: none;
+  .zephipay-environment-scene > div {
+    animation: none !important;
+  }
+
+  .zephipay-environment-scene {
+    transition: none;
   }
 }
 
@@ -467,16 +824,6 @@ body {
     transform: none !important;
     transition-duration: 0.01ms !important;
   }
-}
-
-/* ZephiPay directional lighting ---------------------------------- */
-
-.zephipay-ambient-directional-light,
-.zephipay-ambient-hero-halo,
-.zephipay-ambient-steel-reflection {
-  position: absolute;
-  pointer-events: none;
-  will-change: transform, opacity;
 }
 
 /*
@@ -796,6 +1143,1066 @@ body {
 
   .zephyon-pulse-field__origin {
     opacity: 0.08;
+  }
+}
+
+/* ZephiPay interaction language ---------------------------------- */
+
+.zephipay-interactive-surface {
+  position: relative;
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    background-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.zephipay-interactive-surface::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      135deg,
+      color-mix(
+        in srgb,
+        var(--brand-primary) 32%,
+        transparent
+      ),
+      transparent 42%,
+      color-mix(
+        in srgb,
+        var(--brand-secondary) 14%,
+        transparent
+      )
+    );
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+
+.zephipay-interactive-surface:hover {
+  transform: translateY(-2px);
+  border-color:
+    color-mix(
+      in srgb,
+      var(--brand-primary) 36%,
+      var(--border-default)
+    );
+  box-shadow: var(--shadow-soft);
+}
+
+.zephipay-interactive-surface:hover::after {
+  opacity: 0.55;
+}
+
+.zephipay-selected-control {
+  border-color:
+    color-mix(
+      in srgb,
+      var(--brand-primary) 52%,
+      var(--border-default)
+    );
+  background:
+    color-mix(
+      in srgb,
+      var(--brand-primary) 14%,
+      var(--surface-elevated)
+    );
+  color: var(--foreground);
+  box-shadow:
+    inset 0 0 0 1px
+      color-mix(
+        in srgb,
+        var(--brand-primary) 15%,
+        transparent
+      ),
+    0 8px 26px var(--glow-primary);
+}
+
+.zephipay-control-hint {
+  position: relative;
+  padding-right: 1.4rem;
+}
+
+.zephipay-control-hint::after {
+  content: "";
+  position: absolute;
+  right: 0.45rem;
+  top: 50%;
+  width: 0.32rem;
+  height: 0.32rem;
+  border-radius: 9999px;
+  background: var(--brand-primary);
+  opacity: 0.52;
+  transform: translateY(-50%);
+}
+
+:root[data-theme="light"] .zephipay-ambient-grid {
+  opacity: 0.1;
+}
+
+:root[data-theme="light"] .zephipay-ambient-orb {
+  opacity: 0.055;
+}
+
+:root[data-theme="light"] .zephipay-ambient-vignette {
+  opacity: 0.42;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zephipay-interactive-surface {
+    transform: none !important;
+  }
+}
+
+/* ZephiPay morning atmosphere refinement v2 --------------------- */
+
+/*
+  Morning remains predominantly neutral, but now carries a stronger
+  sunrise presence through coral, warm gold, and cool atmospheric blue.
+*/
+
+.zephipay-environment-morning {
+  overflow: hidden;
+  background:
+    linear-gradient(
+      180deg,
+      #fbf8f5 0%,
+      #f8f7f7 46%,
+      #f4f6f8 100%
+    );
+}
+
+/* Stronger coral sunrise entering from the upper-left edge. */
+
+.zephipay-environment-morning-coral {
+  inset: -8% -4% 0 -8%;
+  background:
+    radial-gradient(
+      ellipse 46rem 31rem at 6% 3%,
+      rgba(255, 112, 76, 0.35) 0%,
+      rgba(255, 143, 101, 0.21) 28%,
+      rgba(255, 183, 142, 0.09) 51%,
+      transparent 74%
+    );
+  filter: blur(7px);
+  opacity: 0.94;
+}
+
+/* Warm daylight bridging the coral sunrise into the neutral page. */
+
+.zephipay-environment-morning-gold {
+  inset: -5% -6% 0 -4%;
+  background:
+    radial-gradient(
+      ellipse 47rem 28rem at 29% -2%,
+      rgba(255, 190, 116, 0.25) 0%,
+      rgba(255, 211, 160, 0.12) 39%,
+      transparent 72%
+    ),
+    linear-gradient(
+      108deg,
+      rgba(255, 210, 168, 0.08),
+      transparent 42%
+    );
+  filter: blur(10px);
+  opacity: 0.88;
+}
+
+/* Cool air on the opposite side keeps the sunrise balanced. */
+
+.zephipay-environment-morning-blue {
+  inset: -7% -10% 0 0;
+  background:
+    radial-gradient(
+      ellipse 52rem 40rem at 96% 1%,
+      rgba(67, 157, 235, 0.2) 0%,
+      rgba(108, 188, 244, 0.1) 36%,
+      transparent 73%
+    );
+  filter: blur(8px);
+  opacity: 0.9;
+}
+
+/*
+  A broad horizontal wash creates the sense of early light moving
+  across the interface without introducing a literal horizon line.
+*/
+
+.zephipay-environment-morning::before {
+  content: "";
+  position: absolute;
+  left: -12%;
+  right: -12%;
+  top: 12rem;
+  height: 34rem;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      102deg,
+      rgba(255, 164, 120, 0.105) 0%,
+      rgba(255, 215, 177, 0.055) 28%,
+      rgba(255, 255, 255, 0.02) 54%,
+      rgba(98, 179, 239, 0.06) 100%
+    );
+  filter: blur(32px);
+  opacity: 0.82;
+  transform: rotate(-2deg);
+}
+
+/*
+  Curved reflected light gives the scene depth while remaining abstract.
+  It should read as atmospheric refraction, not as a visible planet.
+*/
+
+.zephipay-environment-morning::after {
+  content: "";
+  position: absolute;
+  right: -15rem;
+  top: -16rem;
+  width: 42rem;
+  height: 42rem;
+  border-radius: 9999px;
+  pointer-events: none;
+  border:
+    1px solid rgba(107, 184, 239, 0.14);
+  box-shadow:
+    inset 0 0 80px rgba(104, 181, 235, 0.035),
+    0 0 90px rgba(101, 180, 238, 0.025);
+  opacity: 0.55;
+}
+
+/* Give the morning scene a subtle bright-air veil. */
+
+:root[data-theme-preference="adaptive"][data-period="morning"]
+  .zephipay-environment-vignette {
+  opacity: 0.12;
+}
+
+:root[data-theme-preference="adaptive"][data-period="morning"]
+  .zephipay-environment-grid {
+  opacity: 0.045;
+}
+
+/* Calm, barely perceptible atmospheric drift. */
+
+:root[data-theme-preference="adaptive"][data-period="morning"]
+  .zephipay-environment-morning::before {
+  animation:
+    zephipay-morning-light-drift 38s
+    ease-in-out infinite alternate;
+}
+
+@keyframes zephipay-morning-light-drift {
+  from {
+    opacity: 0.72;
+    transform:
+      translate3d(0, 0, 0)
+      rotate(-2deg)
+      scale(0.985);
+  }
+
+  to {
+    opacity: 0.9;
+    transform:
+      translate3d(2.5rem, 1rem, 0)
+      rotate(-1deg)
+      scale(1.025);
+  }
+}
+
+@media (max-width: 900px) {
+  .zephipay-environment-morning-coral {
+    background:
+      radial-gradient(
+        ellipse 35rem 28rem at 0% 2%,
+        rgba(255, 112, 76, 0.28),
+        rgba(255, 151, 108, 0.14) 38%,
+        transparent 73%
+      );
+  }
+
+  .zephipay-environment-morning-blue {
+    background:
+      radial-gradient(
+        ellipse 38rem 34rem at 100% 0%,
+        rgba(67, 157, 235, 0.15),
+        transparent 72%
+      );
+  }
+
+  .zephipay-environment-morning::after {
+    right: -24rem;
+    top: -18rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zephipay-environment-morning::before {
+    animation: none !important;
+  }
+}
+
+/* ZephiPay atmospheric cloud layers ----------------------------- */
+
+.zephipay-environment-clouds {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: 0.55;
+  mix-blend-mode: soft-light;
+  will-change: transform, opacity;
+}
+
+.zephipay-environment-clouds::before,
+.zephipay-environment-clouds::after {
+  content: "";
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(34px);
+  transform-origin: center;
+}
+
+/* Morning clouds: warm edges with cool atmospheric balance. */
+
+.zephipay-environment-clouds-morning::before {
+  left: -9rem;
+  top: 3rem;
+  width: 44rem;
+  height: 12rem;
+  background:
+    radial-gradient(
+      ellipse at 18% 58%,
+      rgba(255, 255, 255, 0.72),
+      rgba(255, 226, 205, 0.34) 34%,
+      transparent 72%
+    ),
+    radial-gradient(
+      ellipse at 54% 48%,
+      rgba(255, 244, 234, 0.48),
+      transparent 68%
+    ),
+    radial-gradient(
+      ellipse at 85% 54%,
+      rgba(255, 205, 176, 0.22),
+      transparent 68%
+    );
+  opacity: 0.68;
+  transform: rotate(-3deg);
+}
+
+.zephipay-environment-clouds-morning::after {
+  right: -13rem;
+  top: 9rem;
+  width: 40rem;
+  height: 11rem;
+  background:
+    radial-gradient(
+      ellipse at 28% 50%,
+      rgba(255, 255, 255, 0.44),
+      rgba(201, 230, 250, 0.2) 40%,
+      transparent 72%
+    ),
+    radial-gradient(
+      ellipse at 70% 56%,
+      rgba(225, 240, 251, 0.32),
+      transparent 68%
+    );
+  opacity: 0.5;
+  transform: rotate(3deg);
+}
+
+/* Evening clouds: coral, rose, and violet catching the sunset. */
+
+.zephipay-environment-clouds-evening {
+  mix-blend-mode: screen;
+  opacity: 0.42;
+}
+
+.zephipay-environment-clouds-evening::before {
+  left: -7rem;
+  top: 8rem;
+  width: 46rem;
+  height: 12rem;
+  background:
+    radial-gradient(
+      ellipse at 20% 54%,
+      rgba(255, 118, 78, 0.25),
+      transparent 66%
+    ),
+    radial-gradient(
+      ellipse at 52% 50%,
+      rgba(242, 105, 165, 0.23),
+      transparent 68%
+    ),
+    radial-gradient(
+      ellipse at 84% 55%,
+      rgba(151, 107, 224, 0.19),
+      transparent 70%
+    );
+  transform: rotate(-2deg);
+}
+
+.zephipay-environment-clouds-evening::after {
+  right: -10rem;
+  top: 16rem;
+  width: 42rem;
+  height: 10rem;
+  background:
+    radial-gradient(
+      ellipse at 28% 50%,
+      rgba(244, 114, 151, 0.18),
+      transparent 68%
+    ),
+    radial-gradient(
+      ellipse at 70% 52%,
+      rgba(121, 95, 201, 0.2),
+      transparent 70%
+    );
+  transform: rotate(2deg);
+}
+
+/* Slow atmospheric drift, never obvious movement. */
+
+:root[data-theme-preference="adaptive"][data-period="morning"]
+  .zephipay-environment-clouds::before {
+  animation:
+    zephipay-cloud-drift-left 46s
+    ease-in-out infinite alternate;
+}
+
+:root[data-theme-preference="adaptive"][data-period="morning"]
+  .zephipay-environment-clouds::after {
+  animation:
+    zephipay-cloud-drift-right 58s
+    ease-in-out infinite alternate;
+}
+
+:root[data-theme-preference="adaptive"][data-period="evening"]
+  .zephipay-environment-clouds::before {
+  animation:
+    zephipay-cloud-drift-left 52s
+    ease-in-out infinite alternate;
+}
+
+:root[data-theme-preference="adaptive"][data-period="evening"]
+  .zephipay-environment-clouds::after {
+  animation:
+    zephipay-cloud-drift-right 64s
+    ease-in-out infinite alternate;
+}
+
+@keyframes zephipay-cloud-drift-left {
+  from {
+    opacity: 0.48;
+    transform:
+      translate3d(0, 0, 0)
+      rotate(-3deg)
+      scale(0.98);
+  }
+
+  to {
+    opacity: 0.72;
+    transform:
+      translate3d(3.5rem, 1rem, 0)
+      rotate(-1deg)
+      scale(1.035);
+  }
+}
+
+@keyframes zephipay-cloud-drift-right {
+  from {
+    opacity: 0.38;
+    transform:
+      translate3d(0, 0, 0)
+      rotate(3deg)
+      scale(1.015);
+  }
+
+  to {
+    opacity: 0.58;
+    transform:
+      translate3d(-3rem, 0.75rem, 0)
+      rotate(1deg)
+      scale(0.98);
+  }
+}
+
+@media (max-width: 900px) {
+  .zephipay-environment-clouds {
+    opacity: 0.38;
+  }
+
+  .zephipay-environment-clouds-morning::before,
+  .zephipay-environment-clouds-evening::before {
+    left: -18rem;
+  }
+
+  .zephipay-environment-clouds-morning::after,
+  .zephipay-environment-clouds-evening::after {
+    right: -21rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zephipay-environment-clouds::before,
+  .zephipay-environment-clouds::after {
+    animation: none !important;
+  }
+}
+
+/* ZephiPay visible morning cloud correction --------------------- */
+
+/*
+  The first cloud pass was being erased by soft-light blending,
+  extreme blur, and the bright morning canvas. This layer preserves
+  soft edges while introducing enough internal shape to read as vapor.
+*/
+
+.zephipay-environment-clouds-morning {
+  z-index: 4;
+  opacity: 0.82;
+  mix-blend-mode: normal;
+}
+
+/* Warm sunrise cloud bank entering from the upper-left. */
+
+.zephipay-environment-clouds-morning::before {
+  left: -10rem;
+  top: 3.2rem;
+  width: 52rem;
+  height: 17rem;
+  border-radius: 45% 55% 48% 52%;
+  background:
+    radial-gradient(
+      ellipse 10rem 5.2rem at 12% 61%,
+      rgba(255, 255, 255, 0.78) 0%,
+      rgba(255, 240, 228, 0.58) 42%,
+      transparent 74%
+    ),
+    radial-gradient(
+      ellipse 13rem 6rem at 29% 46%,
+      rgba(255, 251, 246, 0.76) 0%,
+      rgba(255, 225, 204, 0.46) 48%,
+      transparent 76%
+    ),
+    radial-gradient(
+      ellipse 15rem 7.4rem at 49% 57%,
+      rgba(255, 248, 241, 0.7) 0%,
+      rgba(255, 212, 187, 0.38) 50%,
+      transparent 77%
+    ),
+    radial-gradient(
+      ellipse 12rem 5.6rem at 69% 47%,
+      rgba(255, 255, 255, 0.6) 0%,
+      rgba(255, 221, 201, 0.3) 50%,
+      transparent 76%
+    ),
+    radial-gradient(
+      ellipse 12rem 5rem at 87% 62%,
+      rgba(255, 252, 248, 0.48) 0%,
+      rgba(255, 205, 177, 0.22) 52%,
+      transparent 76%
+    );
+  filter: blur(12px);
+  opacity: 0.86;
+  transform: rotate(-2deg);
+}
+
+/* Cooler, lighter vapor on the upper-right. */
+
+.zephipay-environment-clouds-morning::after {
+  right: -11rem;
+  top: 8.5rem;
+  width: 43rem;
+  height: 14rem;
+  border-radius: 52% 48% 56% 44%;
+  background:
+    radial-gradient(
+      ellipse 11rem 5.2rem at 17% 55%,
+      rgba(255, 255, 255, 0.55) 0%,
+      rgba(218, 238, 251, 0.32) 48%,
+      transparent 76%
+    ),
+    radial-gradient(
+      ellipse 14rem 6.6rem at 43% 44%,
+      rgba(255, 255, 255, 0.6) 0%,
+      rgba(205, 232, 249, 0.31) 50%,
+      transparent 77%
+    ),
+    radial-gradient(
+      ellipse 13rem 5.8rem at 70% 59%,
+      rgba(250, 253, 255, 0.46) 0%,
+      rgba(189, 223, 246, 0.24) 50%,
+      transparent 76%
+    ),
+    radial-gradient(
+      ellipse 9rem 4.5rem at 91% 48%,
+      rgba(255, 255, 255, 0.36) 0%,
+      rgba(183, 219, 244, 0.18) 52%,
+      transparent 76%
+    );
+  filter: blur(14px);
+  opacity: 0.65;
+  transform: rotate(2deg);
+}
+
+/*
+  Keep clouds behind the navigation and hero content but above the
+  base color fields.
+*/
+
+.zephipay-environment-morning-coral,
+.zephipay-environment-morning-gold,
+.zephipay-environment-morning-blue {
+  z-index: 1;
+}
+
+.zephipay-environment-morning::before,
+.zephipay-environment-morning::after {
+  z-index: 2;
+}
+
+.zephipay-environment-clouds-morning {
+  z-index: 3;
+}
+
+.zephipay-environment-grid,
+.zephipay-environment-vignette {
+  z-index: 5;
+}
+
+@media (max-width: 900px) {
+  .zephipay-environment-clouds-morning {
+    opacity: 0.66;
+  }
+
+  .zephipay-environment-clouds-morning::before {
+    left: -24rem;
+    width: 48rem;
+  }
+
+  .zephipay-environment-clouds-morning::after {
+    right: -25rem;
+    width: 42rem;
+  }
+}
+
+/* ZephiPay Atmospheric Layer v3 ---------------------------------- */
+
+/*
+  All environmental layers extend beyond the viewport. This prevents
+  gradient boundaries and transformed elements from creating visible
+  vertical seams near either edge.
+*/
+
+.zephipay-environment-scene,
+.zephipay-environment-base {
+  inset: -8%;
+}
+
+/*
+  Remove the earlier circular refraction outline. It was beginning to
+  read as a planet rather than atmosphere.
+*/
+
+.zephipay-environment-morning::after {
+  display: none;
+}
+
+/*
+  Keep the broad sunrise wash, but ensure it also extends beyond the
+  viewport so its transformed edge cannot create a vertical seam.
+*/
+
+.zephipay-environment-morning::before {
+  left: -20%;
+  right: -20%;
+}
+
+/* Shared procedural cloud system --------------------------------- */
+
+.zephipay-cloud-field {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.zephipay-cloud-layer {
+  position: absolute;
+  display: block;
+  border-radius: 9999px;
+  will-change: transform, opacity;
+}
+
+.zephipay-cloud-layer::before,
+.zephipay-cloud-layer::after {
+  content: "";
+  position: absolute;
+  border-radius: inherit;
+}
+
+/*
+  Morning clouds:
+  visible enough to suggest sunrise vapor, but quiet enough to remain
+  subordinate to the interface.
+*/
+
+.zephipay-cloud-field-morning {
+  opacity: 0.18;
+}
+
+.zephipay-cloud-field-morning .zephipay-cloud-layer {
+  filter: blur(22px);
+  background:
+    radial-gradient(
+      ellipse at 16% 56%,
+      rgba(255, 255, 255, 0.96) 0%,
+      rgba(255, 239, 228, 0.62) 35%,
+      transparent 68%
+    ),
+    radial-gradient(
+      ellipse at 43% 42%,
+      rgba(255, 250, 245, 0.86) 0%,
+      rgba(255, 220, 201, 0.44) 42%,
+      transparent 72%
+    ),
+    radial-gradient(
+      ellipse at 71% 58%,
+      rgba(255, 255, 255, 0.72) 0%,
+      rgba(255, 205, 179, 0.28) 44%,
+      transparent 72%
+    );
+}
+
+.zephipay-cloud-field-morning .zephipay-cloud-layer-a {
+  left: -10rem;
+  top: 5rem;
+  width: 48rem;
+  height: 12rem;
+  transform: rotate(-3deg);
+}
+
+.zephipay-cloud-field-morning .zephipay-cloud-layer-b {
+  right: -12rem;
+  top: 10rem;
+  width: 43rem;
+  height: 10rem;
+  opacity: 0.72;
+  transform: rotate(2deg) scale(0.94);
+}
+
+.zephipay-cloud-field-morning .zephipay-cloud-layer-c {
+  left: 21%;
+  top: 21rem;
+  width: 38rem;
+  height: 8rem;
+  opacity: 0.42;
+  transform: rotate(-1deg) scale(1.08);
+}
+
+/* Day clouds: cleaner, higher, and nearly transparent. */
+
+.zephipay-cloud-field-day {
+  opacity: 0.075;
+}
+
+.zephipay-cloud-field-day .zephipay-cloud-layer {
+  filter: blur(27px);
+  background:
+    radial-gradient(
+      ellipse at 20% 54%,
+      rgba(255, 255, 255, 0.98),
+      transparent 66%
+    ),
+    radial-gradient(
+      ellipse at 52% 43%,
+      rgba(255, 255, 255, 0.88),
+      rgba(215, 234, 249, 0.28) 43%,
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse at 82% 57%,
+      rgba(247, 252, 255, 0.72),
+      transparent 68%
+    );
+}
+
+.zephipay-cloud-field-day .zephipay-cloud-layer-a {
+  left: -12rem;
+  top: 4rem;
+  width: 50rem;
+  height: 10rem;
+}
+
+.zephipay-cloud-field-day .zephipay-cloud-layer-b {
+  right: -14rem;
+  top: 15rem;
+  width: 46rem;
+  height: 9rem;
+  opacity: 0.7;
+}
+
+.zephipay-cloud-field-day .zephipay-cloud-layer-c {
+  left: 34%;
+  top: 28rem;
+  width: 34rem;
+  height: 7rem;
+  opacity: 0.38;
+}
+
+/* Evening clouds: coral, rose, and violet catching the sunset. */
+
+.zephipay-cloud-field-evening {
+  opacity: 0.14;
+  mix-blend-mode: screen;
+}
+
+.zephipay-cloud-field-evening .zephipay-cloud-layer {
+  filter: blur(23px);
+  background:
+    radial-gradient(
+      ellipse at 17% 55%,
+      rgba(255, 139, 88, 0.9),
+      rgba(255, 108, 81, 0.38) 38%,
+      transparent 69%
+    ),
+    radial-gradient(
+      ellipse at 48% 43%,
+      rgba(245, 111, 169, 0.78),
+      rgba(219, 91, 176, 0.34) 42%,
+      transparent 72%
+    ),
+    radial-gradient(
+      ellipse at 79% 57%,
+      rgba(171, 126, 235, 0.7),
+      rgba(120, 92, 205, 0.28) 45%,
+      transparent 72%
+    );
+}
+
+.zephipay-cloud-field-evening .zephipay-cloud-layer-a {
+  left: -11rem;
+  top: 7rem;
+  width: 52rem;
+  height: 12rem;
+  transform: rotate(-3deg);
+}
+
+.zephipay-cloud-field-evening .zephipay-cloud-layer-b {
+  right: -12rem;
+  top: 14rem;
+  width: 47rem;
+  height: 11rem;
+  opacity: 0.8;
+  transform: rotate(2deg);
+}
+
+.zephipay-cloud-field-evening .zephipay-cloud-layer-c {
+  left: 24%;
+  top: 29rem;
+  width: 40rem;
+  height: 8rem;
+  opacity: 0.5;
+  transform: rotate(-1deg);
+}
+
+/* Night clouds: blue-gray silhouettes with faint moonlit edges. */
+
+.zephipay-cloud-field-night {
+  opacity: 0.055;
+  mix-blend-mode: screen;
+}
+
+.zephipay-cloud-field-night .zephipay-cloud-layer {
+  filter: blur(29px);
+  background:
+    radial-gradient(
+      ellipse at 17% 55%,
+      rgba(122, 160, 194, 0.62),
+      rgba(53, 85, 116, 0.26) 40%,
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse at 51% 43%,
+      rgba(89, 129, 166, 0.52),
+      rgba(43, 72, 101, 0.22) 44%,
+      transparent 72%
+    ),
+    radial-gradient(
+      ellipse at 82% 57%,
+      rgba(105, 151, 190, 0.42),
+      transparent 70%
+    );
+}
+
+.zephipay-cloud-field-night .zephipay-cloud-layer-a {
+  left: -14rem;
+  top: 8rem;
+  width: 52rem;
+  height: 11rem;
+}
+
+.zephipay-cloud-field-night .zephipay-cloud-layer-b {
+  right: -16rem;
+  top: 19rem;
+  width: 48rem;
+  height: 10rem;
+  opacity: 0.72;
+}
+
+.zephipay-cloud-field-night .zephipay-cloud-layer-c {
+  left: 31%;
+  top: 32rem;
+  width: 38rem;
+  height: 7rem;
+  opacity: 0.36;
+}
+
+/* Extremely slow drift ------------------------------------------- */
+
+.zephipay-cloud-layer-a {
+  animation:
+    zephipay-cloud-layer-a-drift 82s
+    ease-in-out infinite alternate;
+}
+
+.zephipay-cloud-layer-b {
+  animation:
+    zephipay-cloud-layer-b-drift 104s
+    ease-in-out infinite alternate;
+}
+
+.zephipay-cloud-layer-c {
+  animation:
+    zephipay-cloud-layer-c-drift 126s
+    ease-in-out infinite alternate;
+}
+
+@keyframes zephipay-cloud-layer-a-drift {
+  from {
+    transform:
+      translate3d(-2rem, 0, 0)
+      rotate(-3deg)
+      scale(0.98);
+  }
+
+  to {
+    transform:
+      translate3d(5rem, 1rem, 0)
+      rotate(-1deg)
+      scale(1.035);
+  }
+}
+
+@keyframes zephipay-cloud-layer-b-drift {
+  from {
+    transform:
+      translate3d(2rem, 0, 0)
+      rotate(2deg)
+      scale(1.015);
+  }
+
+  to {
+    transform:
+      translate3d(-5rem, 0.75rem, 0)
+      rotate(1deg)
+      scale(0.975);
+  }
+}
+
+@keyframes zephipay-cloud-layer-c-drift {
+  from {
+    transform:
+      translate3d(-1rem, 0, 0)
+      rotate(-1deg)
+      scale(1.02);
+  }
+
+  to {
+    transform:
+      translate3d(4rem, -0.6rem, 0)
+      rotate(1deg)
+      scale(0.985);
+  }
+}
+
+/* Keep shared overlays from becoming visible seams. */
+
+.zephipay-environment-grid,
+.zephipay-environment-vignette {
+  inset: -2px;
+}
+
+/* Homepage secondary action -------------------------------------- */
+
+/*
+  The outline CTA had white text inherited from the earlier dark-only
+  design. Give it a deliberate light-mode glass treatment.
+*/
+
+:root[data-theme="light"]
+  main > section:first-of-type a[href="#platform"] {
+  border-color: rgba(29, 29, 31, 0.16);
+  background: rgba(255, 255, 255, 0.72);
+  color: #1d1d1f;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.025),
+    0 9px 28px rgba(0, 0, 0, 0.045);
+  backdrop-filter: blur(18px);
+}
+
+:root[data-theme="light"]
+  main > section:first-of-type a[href="#platform"]:hover {
+  border-color: rgba(41, 151, 255, 0.34);
+  background: rgba(255, 255, 255, 0.92);
+  color: #0071e3;
+  transform: translateY(-1px);
+}
+
+/*
+  Keep outline actions readable even if the eventual destination
+  changes from /design.
+*/
+
+:root[data-theme="light"]
+  main > section:first-of-type a[class*="border"][class*="rounded"] {
+  color: #1d1d1f;
+}
+
+/* Responsive restraint ------------------------------------------- */
+
+@media (max-width: 900px) {
+  .zephipay-cloud-field-morning {
+    opacity: 0.13;
+  }
+
+  .zephipay-cloud-field-day {
+    opacity: 0.05;
+  }
+
+  .zephipay-cloud-field-evening {
+    opacity: 0.1;
+  }
+
+  .zephipay-cloud-field-night {
+    opacity: 0.04;
+  }
+
+  .zephipay-cloud-layer-c {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zephipay-cloud-layer {
+    animation: none !important;
   }
 }
 
