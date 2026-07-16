@@ -29,18 +29,29 @@ export default function HomePage() {
 
         <Container className="relative z-10">
           <div className="max-w-4xl">
-            <p className="text-sm font-medium uppercase tracking-[0.18em] text-brand-secondary">
-              Modern payments, without the noise
-            </p>
-
-            <h1 className="mt-5 text-5xl font-semibold tracking-[-0.05em] sm:text-7xl lg:text-[5.6rem] lg:leading-[0.98]">
-              Quietly futuristic.
+            <h1 className="max-w-5xl text-4xl font-semibold uppercase tracking-[-0.045em] sm:text-5xl lg:text-[4rem] xl:text-[4.35rem] lg:leading-[0.95]">
+              <span className="block leading-[0.95] text-foreground">
+                Transact intelligently.
+              </span>
+              <span className="mt-1 block leading-[0.95] text-brand-secondary">
+                Without complexity.
+              </span>
             </h1>
 
-            <p className="mt-8 max-w-3xl text-xl leading-9 text-foreground-secondary sm:text-2xl">
-              Payments that disappear into the background so people,
-              creators, businesses, and intelligent systems can focus on what
-              matters.
+            <p className="mt-8 text-xl font-medium tracking-[-0.025em] text-foreground sm:text-2xl">
+              Built for people, businesses, and AI.
+            </p>
+
+            <p className="mt-6 max-w-3xl text-lg leading-8 text-foreground-secondary sm:text-xl sm:leading-9">
+              Send money, accept payments, grow your business, or power
+              intelligent agents—all through one trusted platform designed to
+              make every transaction effortless, transparent, verifiable, and
+              ready for what&apos;s next.
+            </p>
+
+            <p className="mt-7 max-w-3xl text-base font-medium italic leading-7 text-foreground-secondary md:text-lg">
+              Because ZephiPay doesn&apos;t just move money—it preserves the
+              context that builds trust.
             </p>
 
             <div className="mt-10 flex flex-wrap items-center gap-4">
@@ -145,7 +156,7 @@ export default function HomePage() {
               </h2>
 
               <p className="mt-6 text-xl text-brand-primary font-medium">
-                Built for tomorrow. Useful today.
+                Send money, accept payments, grow your business, or power intelligent agents—all through one trusted platform designed to make every transaction effortless, transparent, verifiable, and ready for what&apos;s next.
               </p>
 
               <p className="mx-auto mt-8 max-w-3xl text-lg leading-8 text-foreground-secondary">
