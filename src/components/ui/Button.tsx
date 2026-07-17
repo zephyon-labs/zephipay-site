@@ -48,17 +48,17 @@ const baseClasses =
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
-    "border border-[#73E7FF]/30 bg-[#65B8FF] text-[#05070A] shadow-[0_0_0_1px_rgba(255,255,255,0.08),0_10px_30px_rgba(101,184,255,0.18)] hover:-translate-y-0.5 hover:bg-[#7CC3FF] hover:shadow-[0_0_0_1px_rgba(255,255,255,0.12),0_14px_38px_rgba(101,184,255,0.28)] active:translate-y-0",
+    "border border-brand-secondary/30 bg-brand-primary text-brand-contrast shadow-[0_0_0_1px_rgba(255,255,255,0.08),0_10px_30px_rgba(101,184,255,0.18)] hover:-translate-y-0.5 hover:brightness-105 hover:shadow-[0_0_0_1px_rgba(255,255,255,0.12),0_14px_38px_rgba(101,184,255,0.28)] active:translate-y-0",
   secondary:
-    "border border-white/10 bg-[#121C28] text-[#F4F8FC] shadow-[0_10px_30px_rgba(0,0,0,0.18)] hover:-translate-y-0.5 hover:border-white/16 hover:bg-[#172434] active:translate-y-0",
+    "border border-border-default bg-surface-secondary text-foreground shadow-[0_10px_30px_rgba(0,0,0,0.18)] hover:-translate-y-0.5 hover:border-border-strong hover:bg-surface-elevated active:translate-y-0",
   outline:
-    "border border-white/14 bg-transparent text-[#F4F8FC] hover:-translate-y-0.5 hover:border-[#73E7FF]/32 hover:bg-white/[0.04] active:translate-y-0",
+    "border border-border-default bg-transparent text-foreground hover:-translate-y-0.5 hover:border-brand-primary/40 hover:bg-brand-primary/[0.07] active:translate-y-0",
   ghost:
-    "border border-transparent bg-transparent text-[#AAB8C7] hover:bg-white/[0.05] hover:text-[#F4F8FC]",
+    "border border-transparent bg-transparent text-foreground-secondary hover:bg-brand-primary/[0.06] hover:text-foreground",
   glass:
-    "border border-white/12 bg-white/[0.05] text-[#F4F8FC] shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_14px_40px_rgba(0,0,0,0.22)] backdrop-blur-xl hover:-translate-y-0.5 hover:border-[#73E7FF]/24 hover:bg-white/[0.08] active:translate-y-0",
+    "border border-border-default bg-surface-glass text-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_14px_40px_rgba(0,0,0,0.22)] backdrop-blur-xl hover:-translate-y-0.5 hover:border-brand-primary/30 hover:bg-surface-elevated active:translate-y-0",
   link:
-    "rounded-none border-0 bg-transparent p-0 text-[#65B8FF] hover:text-[#73E7FF]",
+    "rounded-none border-0 bg-transparent p-0 text-brand-primary hover:text-brand-secondary",
 };
 
 const sizeClasses: Record<ButtonSize, string> = {

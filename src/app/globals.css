@@ -2206,3 +2206,469 @@ body {
   }
 }
 
+/* ZephiPay creators page polish --------------------------------- */
+
+.zephipay-creator-support-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  transition:
+    transform 240ms ease,
+    border-color 240ms ease,
+    box-shadow 240ms ease,
+    background-color 240ms ease;
+}
+
+.zephipay-creator-support-card::before {
+  position: absolute;
+  inset: -35% -15% auto;
+  z-index: 0;
+  height: 72%;
+  content: "";
+  opacity: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      circle at 30% 50%,
+      color-mix(in srgb, var(--brand-primary) 17%, transparent),
+      transparent 65%
+    );
+  filter: blur(24px);
+  transform: translate3d(-4%, 8%, 0);
+  transition:
+    opacity 260ms ease,
+    transform 600ms ease;
+}
+
+.zephipay-creator-support-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.zephipay-creator-support-card:hover {
+  transform: translateY(-4px);
+  border-color:
+    color-mix(
+      in srgb,
+      var(--brand-primary) 38%,
+      var(--border-default)
+    );
+  box-shadow:
+    var(--shadow-medium),
+    0 18px 48px
+      color-mix(in srgb, var(--brand-primary) 10%, transparent);
+}
+
+.zephipay-creator-support-card:hover::before {
+  opacity: 1;
+  transform: translate3d(5%, 2%, 0);
+}
+
+.zephipay-creator-support-amount {
+  transition:
+    transform 240ms ease,
+    color 240ms ease;
+}
+
+.zephipay-creator-support-card:hover
+  .zephipay-creator-support-amount {
+  color: var(--brand-primary);
+  transform: translateY(-2px);
+}
+
+.zephipay-creator-support-card span[class*="rounded-full"] {
+  transition:
+    border-color 220ms ease,
+    background-color 220ms ease,
+    box-shadow 220ms ease;
+}
+
+.zephipay-creator-support-card:hover
+  span[class*="rounded-full"] {
+  border-color:
+    color-mix(
+      in srgb,
+      var(--brand-secondary) 44%,
+      var(--border-subtle)
+    );
+  background:
+    color-mix(
+      in srgb,
+      var(--brand-primary) 8%,
+      var(--surface-glass)
+    );
+  box-shadow:
+    0 0 20px
+      color-mix(in srgb, var(--brand-secondary) 13%, transparent);
+}
+
+.zephipay-creator-intelligence-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  transition:
+    transform 220ms ease,
+    border-color 220ms ease,
+    box-shadow 220ms ease;
+}
+
+.zephipay-creator-intelligence-card::before {
+  position: absolute;
+  inset: 1.5rem auto 1.5rem 0;
+  width: 3px;
+  border-radius: 9999px;
+  content: "";
+  background: var(--brand-primary);
+  opacity: 0.75;
+  box-shadow:
+    0 0 18px
+      color-mix(in srgb, var(--brand-primary) 24%, transparent);
+}
+
+.zephipay-creator-intelligence-card[data-accent="1"]::before {
+  background: #4fd1c5;
+  box-shadow: 0 0 18px rgba(79, 209, 197, 0.2);
+}
+
+.zephipay-creator-intelligence-card[data-accent="2"]::before {
+  background: #a78bfa;
+  box-shadow: 0 0 18px rgba(167, 139, 250, 0.2);
+}
+
+.zephipay-creator-intelligence-card[data-accent="3"]::before {
+  background: #818cf8;
+  box-shadow: 0 0 18px rgba(129, 140, 248, 0.2);
+}
+
+.zephipay-creator-intelligence-card:hover {
+  transform: translateY(-3px);
+  border-color:
+    color-mix(
+      in srgb,
+      var(--brand-primary) 30%,
+      var(--border-default)
+    );
+  box-shadow: var(--shadow-medium);
+}
+
+.zephipay-creator-final-cta {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.zephipay-creator-final-cta::before {
+  position: absolute;
+  inset: -55% -10% auto;
+  z-index: 0;
+  height: 95%;
+  content: "";
+  pointer-events: none;
+  opacity: 0.65;
+  background:
+    radial-gradient(
+      circle at 22% 50%,
+      color-mix(in srgb, #ff8a70 10%, transparent),
+      transparent 48%
+    ),
+    radial-gradient(
+      circle at 72% 42%,
+      color-mix(in srgb, #a78bfa 10%, transparent),
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 52% 62%,
+      color-mix(in srgb, var(--brand-primary) 12%, transparent),
+      transparent 55%
+    );
+  filter: blur(34px);
+  animation: zephipay-creator-cta-drift 20s ease-in-out infinite alternate;
+}
+
+.zephipay-creator-final-cta > * {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes zephipay-creator-cta-drift {
+  from {
+    transform: translate3d(-2%, 1%, 0) scale(1);
+  }
+
+  to {
+    transform: translate3d(3%, -2%, 0) scale(1.06);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zephipay-creator-support-card,
+  .zephipay-creator-support-card::before,
+  .zephipay-creator-support-amount,
+  .zephipay-creator-intelligence-card,
+  .zephipay-creator-final-cta::before {
+    animation: none;
+    transition: none;
+  }
+
+  .zephipay-creator-support-card:hover,
+  .zephipay-creator-intelligence-card:hover,
+  .zephipay-creator-support-card:hover
+    .zephipay-creator-support-amount {
+    transform: none;
+  }
+}
+
+
+
+/* Disable retired cloud experiments ------------------------------ */
+
+/*
+  The earlier procedural cloud experiments remain represented in the
+  environment component, but they are intentionally disabled.
+
+  Their large blurred and transformed layers caused intermittent
+  Chromium raster rectangles during scrolling and theme changes.
+  Core morning, day, evening, and night gradients remain unaffected.
+*/
+
+.zephipay-cloud-field,
+.zephipay-environment-clouds-morning {
+  display: none !important;
+}
+
+/* ZephiPay atmosphere v2 ---------------------------------------- */
+
+/*
+  Isolated replacement for the earlier multi-generation environment.
+
+  Deliberately avoids:
+  - viewport-sized transform animations
+  - blur filters
+  - backdrop filters
+  - blend modes
+  - cloud layers
+  - negative stacking
+  - will-change promotion
+*/
+
+.zephipay-atmosphere-v2 {
+  background: var(--background);
+  contain: strict;
+}
+
+.zephipay-atmosphere-v2-scene,
+.zephipay-atmosphere-v2-grid,
+.zephipay-atmosphere-v2-vignette {
+  position: absolute;
+  inset: 0;
+}
+
+.zephipay-atmosphere-v2-scene {
+  opacity: 0;
+  transition: opacity 520ms ease;
+}
+
+/* Morning: visibly warm coral and gold with cool reflected air. */
+
+.zephipay-atmosphere-v2-morning {
+  background:
+    radial-gradient(
+      ellipse 48rem 34rem at 3% -3%,
+      rgba(255, 112, 76, 0.3) 0%,
+      rgba(255, 146, 104, 0.17) 37%,
+      transparent 72%
+    ),
+    radial-gradient(
+      ellipse 42rem 29rem at 30% -8%,
+      rgba(255, 193, 112, 0.22) 0%,
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 48rem 36rem at 96% 0%,
+      rgba(65, 153, 229, 0.15) 0%,
+      transparent 74%
+    ),
+    linear-gradient(
+      180deg,
+      #fffaf6 0%,
+      #f9f7f6 42%,
+      #f4f6f8 100%
+    );
+}
+
+/* Day: neutral, brighter, and deliberately cooler than morning. */
+
+.zephipay-atmosphere-v2-day {
+  background:
+    radial-gradient(
+      ellipse 54rem 40rem at 100% -4%,
+      rgba(52, 148, 229, 0.12) 0%,
+      transparent 72%
+    ),
+    radial-gradient(
+      ellipse 42rem 30rem at 4% 8%,
+      rgba(116, 185, 235, 0.055) 0%,
+      transparent 75%
+    ),
+    linear-gradient(
+      180deg,
+      #fcfdff 0%,
+      #f7f8fa 50%,
+      #f3f5f7 100%
+    );
+}
+
+/* Evening: warmer horizon fading into the established steel-blue base. */
+
+.zephipay-atmosphere-v2-evening {
+  background:
+    radial-gradient(
+      ellipse 56rem 31rem at 92% -3%,
+      rgba(255, 111, 67, 0.2) 0%,
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 56rem 34rem at 65% 0%,
+      rgba(227, 79, 151, 0.15) 0%,
+      transparent 72%
+    ),
+    radial-gradient(
+      ellipse 60rem 39rem at 34% 4%,
+      rgba(120, 82, 205, 0.14) 0%,
+      transparent 74%
+    ),
+    linear-gradient(
+      180deg,
+      #12101c 0%,
+      #090d16 46%,
+      #05070a 100%
+    );
+}
+
+/* Night: deep navy with restrained blue and cyan reflection. */
+
+.zephipay-atmosphere-v2-night {
+  background:
+    radial-gradient(
+      ellipse 54rem 43rem at 94% 1%,
+      rgba(48, 118, 190, 0.14) 0%,
+      transparent 74%
+    ),
+    radial-gradient(
+      ellipse 43rem 35rem at 4% 34%,
+      rgba(39, 168, 188, 0.045) 0%,
+      transparent 75%
+    ),
+    linear-gradient(
+      180deg,
+      #07111c 0%,
+      #050a10 48%,
+      #05070a 100%
+    );
+}
+
+/* Explicit selections. */
+
+:root[data-theme-preference="light"]
+  .zephipay-atmosphere-v2-day {
+  opacity: 1;
+}
+
+:root[data-theme-preference="dark"]
+  .zephipay-atmosphere-v2-night {
+  opacity: 1;
+}
+
+/* System preference. */
+
+:root[data-theme-preference="system"][data-theme="light"]
+  .zephipay-atmosphere-v2-day {
+  opacity: 1;
+}
+
+:root[data-theme-preference="system"][data-theme="dark"]
+  .zephipay-atmosphere-v2-night {
+  opacity: 1;
+}
+
+/* Adaptive local-time environments. */
+
+:root[data-theme-preference="adaptive"][data-period="morning"]
+  .zephipay-atmosphere-v2-morning {
+  opacity: 1;
+}
+
+:root[data-theme-preference="adaptive"][data-period="day"]
+  .zephipay-atmosphere-v2-day {
+  opacity: 1;
+}
+
+:root[data-theme-preference="adaptive"][data-period="evening"]
+  .zephipay-atmosphere-v2-evening {
+  opacity: 1;
+}
+
+:root[data-theme-preference="adaptive"][data-period="night"]
+  .zephipay-atmosphere-v2-night {
+  opacity: 1;
+}
+
+/* Initial fallback while the client preference is restored. */
+
+:root:not([data-theme-preference])[data-theme="light"]
+  .zephipay-atmosphere-v2-day {
+  opacity: 1;
+}
+
+:root:not([data-theme-preference])[data-theme="dark"]
+  .zephipay-atmosphere-v2-night {
+  opacity: 1;
+}
+
+/* Quiet structural depth. */
+
+.zephipay-atmosphere-v2-grid {
+  opacity: 0.09;
+  background-image:
+    linear-gradient(
+      color-mix(in srgb, var(--foreground) 2%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--foreground) 2%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 72px 72px;
+  mask-image:
+    linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.42),
+      transparent 68%
+    );
+}
+
+:root[data-theme="light"] .zephipay-atmosphere-v2-grid {
+  opacity: 0.055;
+}
+
+.zephipay-atmosphere-v2-vignette {
+  background:
+    radial-gradient(
+      ellipse at center,
+      transparent 30%,
+      color-mix(in srgb, var(--background) 32%, transparent) 100%
+    );
+  opacity: 0.35;
+}
+
+:root[data-theme="light"] .zephipay-atmosphere-v2-vignette {
+  opacity: 0.16;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zephipay-atmosphere-v2-scene {
+    transition: none;
+  }
+}
+
