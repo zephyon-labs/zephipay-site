@@ -2472,27 +2472,42 @@ body {
 
 .zephipay-atmosphere-v2-morning {
   background:
-    radial-gradient(
-      ellipse 48rem 34rem at 3% -3%,
-      rgba(255, 112, 76, 0.3) 0%,
-      rgba(255, 146, 104, 0.17) 37%,
-      transparent 72%
+    /* restrained warm-edge veil */
+    linear-gradient(
+      90deg,
+      transparent 0%,
+      transparent 58%,
+      rgba(7, 10, 18, 0.03) 72%,
+      rgba(7, 10, 18, 0.08) 88%,
+      rgba(7, 10, 18, 0.12) 100%
     ),
+
+    /* soft sunrise horizon */
     radial-gradient(
-      ellipse 42rem 29rem at 30% -8%,
-      rgba(255, 193, 112, 0.22) 0%,
-      transparent 70%
-    ),
-    radial-gradient(
-      ellipse 48rem 36rem at 96% 0%,
-      rgba(65, 153, 229, 0.15) 0%,
+      ellipse 90rem 42rem at 94% 30%,
+      rgba(255, 183, 113, 0.13) 0%,
+      rgba(244, 126, 124, 0.08) 38%,
       transparent 74%
     ),
+
+    /* cool morning counter-light */
+    radial-gradient(
+      ellipse 66rem 40rem at -8% 18%,
+      rgba(112, 183, 233, 0.08) 0%,
+      transparent 76%
+    ),
+
+    /* morning environmental fade */
     linear-gradient(
-      180deg,
-      #fffaf6 0%,
-      #f9f7f6 42%,
-      #f4f6f8 100%
+      112deg,
+      #07101a 0%,
+      #0b1723 20%,
+      #18283a 38%,
+      #3c3a50 54%,
+      #765060 70%,
+      #a8665e 84%,
+      #bc805f 94%,
+      #a97963 100%
     );
 }
 
@@ -2522,26 +2537,48 @@ body {
 
 .zephipay-atmosphere-v2-evening {
   background:
-    radial-gradient(
-      ellipse 56rem 31rem at 92% -3%,
-      rgba(255, 111, 67, 0.2) 0%,
-      transparent 70%
+    /* localized right-edge dimming */
+    linear-gradient(
+      90deg,
+      transparent 0%,
+      transparent 56%,
+      rgba(3, 7, 13, 0.04) 70%,
+      rgba(3, 7, 13, 0.10) 84%,
+      rgba(3, 7, 13, 0.15) 100%
     ),
+
+    /* evening exposure veil */
+    linear-gradient(
+      rgba(3, 7, 13, 0.18),
+      rgba(3, 7, 13, 0.18)
+    ),
+
+    /* distant city horizon */
     radial-gradient(
-      ellipse 56rem 34rem at 65% 0%,
-      rgba(227, 79, 151, 0.15) 0%,
+      ellipse 92rem 40rem at 92% 30%,
+      rgba(255, 132, 74, 0.13) 0%,
+      rgba(235, 74, 118, 0.08) 38%,
       transparent 72%
     ),
+
+    /* subtle cool counter-light */
     radial-gradient(
-      ellipse 60rem 39rem at 34% 4%,
-      rgba(120, 82, 205, 0.14) 0%,
+      ellipse 68rem 42rem at -8% 20%,
+      rgba(54, 151, 231, 0.07) 0%,
       transparent 74%
     ),
+
+    /* sunset-to-night atmospheric fade */
     linear-gradient(
-      180deg,
-      #12101c 0%,
-      #090d16 46%,
-      #05070a 100%
+      112deg,
+      #05080d 0%,
+      #07101a 20%,
+      #10182a 38%,
+      #27203a 54%,
+      #54263f 69%,
+      #8b323b 82%,
+      #b64c37 92%,
+      #d06a42 100%
     );
 }
 
@@ -2549,21 +2586,42 @@ body {
 
 .zephipay-atmosphere-v2-night {
   background:
+    /* restrained right-side depth */
+    linear-gradient(
+      90deg,
+      transparent 0%,
+      transparent 60%,
+      rgba(2, 5, 12, 0.04) 74%,
+      rgba(2, 5, 12, 0.10) 88%,
+      rgba(2, 5, 12, 0.15) 100%
+    ),
+
+    /* distant blue city atmosphere */
     radial-gradient(
-      ellipse 54rem 43rem at 94% 1%,
-      rgba(48, 118, 190, 0.14) 0%,
+      ellipse 92rem 42rem at 94% 30%,
+      rgba(48, 101, 170, 0.11) 0%,
+      rgba(63, 73, 143, 0.07) 40%,
       transparent 74%
     ),
+
+    /* cyan counter-light */
     radial-gradient(
-      ellipse 43rem 35rem at 4% 34%,
-      rgba(39, 168, 188, 0.045) 0%,
-      transparent 75%
+      ellipse 68rem 42rem at -8% 20%,
+      rgba(34, 142, 210, 0.07) 0%,
+      transparent 76%
     ),
+
+    /* nighttime environmental fade */
     linear-gradient(
-      180deg,
-      #07111c 0%,
-      #050a10 48%,
-      #05070a 100%
+      112deg,
+      #02050a 0%,
+      #040914 20%,
+      #091225 38%,
+      #111a33 54%,
+      #1b2344 70%,
+      #243054 84%,
+      #2b3b61 94%,
+      #263650 100%
     );
 }
 
