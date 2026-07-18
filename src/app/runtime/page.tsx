@@ -4,6 +4,7 @@ import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { AmbientBackground } from "@/components/marketing/AmbientBackground";
 import { RuntimeFlow } from "@/components/marketing/RuntimeFlow";
+import { RuntimeExplorer } from "@/components/runtime";
 import { Button } from "@/components/ui/Button";
 
 const runtimeEngines = [
@@ -238,6 +239,14 @@ export default function RuntimePage() {
       <Section id="execution-flow" className="scroll-mt-28">
         <Container>
           <RuntimeFlow />
+        </Container>
+      </Section>
+
+      <Section id="runtime-explorer" className="scroll-mt-28">
+        <Container>
+          <div className="border-t border-border-subtle pt-20">
+            <RuntimeExplorer />
+          </div>
         </Container>
       </Section>
 
