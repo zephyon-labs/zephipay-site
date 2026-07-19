@@ -456,7 +456,7 @@ export default function RuntimePage() {
 
               <div className="mt-8">
                 <Button
-                  href="/telemetry"
+                  href="/runtime#telemetry"
                   variant="outline"
                   rightIcon={<ArrowIcon />}
                 >

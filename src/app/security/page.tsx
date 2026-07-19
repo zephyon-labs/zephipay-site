@@ -72,8 +72,8 @@ export default function SecurityPage() {
               Explore Runtime
             </Button>
 
-            <Button href="/developers" variant="secondary">
-              Developer Docs
+            <Button href="/transparency" variant="secondary">
+              Transaction Transparency
             </Button>
           </div>
         </Container>
