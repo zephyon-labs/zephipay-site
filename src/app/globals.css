@@ -2468,48 +2468,73 @@ body {
   transition: opacity 520ms ease;
 }
 
-/* Morning: visibly warm coral and gold with cool reflected air. */
+/*
+  Atmosphere V2 owns all time-of-day scenery.
+
+  Neutralize the legacy body-level period gradients so explicit Day and
+  Night selections are not blended with the current local-time atmosphere.
+*/
+
+:root[data-theme="light"][data-period] body,
+:root[data-theme="dark"][data-period] body {
+  background: var(--background);
+}
+
+/* Morning: clean blue daylight with warm sunrise entering from the right. */
 
 .zephipay-atmosphere-v2-morning {
   background:
-    /* restrained warm-edge veil */
-    linear-gradient(
-      90deg,
-      transparent 0%,
-      transparent 58%,
-      rgba(7, 10, 18, 0.03) 72%,
-      rgba(7, 10, 18, 0.08) 88%,
-      rgba(7, 10, 18, 0.12) 100%
+    /* fresh white morning bloom */
+    radial-gradient(
+      ellipse 50rem 28rem at 48% 10%,
+      rgba(255, 255, 255, 0.22) 0%,
+      transparent 72%
     ),
 
-    /* soft sunrise horizon */
+    /* cool blue daylight across the upper canvas */
     radial-gradient(
-      ellipse 90rem 42rem at 94% 30%,
-      rgba(255, 183, 113, 0.13) 0%,
-      rgba(244, 126, 124, 0.08) 38%,
+      ellipse 72rem 44rem at 78% 0%,
+      rgba(164, 207, 255, 0.29) 0%,
+      rgba(199, 224, 255, 0.16) 38%,
+      transparent 70%
+    ),
+
+    /* peach sunrise entering from the right edge */
+    radial-gradient(
+      ellipse 62rem 58rem at 108% 48%,
+      rgba(255, 198, 151, 0.53) 0%,
+      rgba(255, 214, 181, 0.345) 34%,
+      rgba(255, 231, 211, 0.156) 58%,
+      transparent 78%
+    ),
+
+    /* subtle coral transition between blue and peach */
+    radial-gradient(
+      ellipse 48rem 44rem at 88% 52%,
+      rgba(245, 190, 194, 0.203) 0%,
+      transparent 72%
+    ),
+
+    /* cool morning lift from the left */
+    radial-gradient(
+      ellipse 58rem 38rem at 2% 14%,
+      rgba(203, 224, 255, 0.2) 0%,
       transparent 74%
     ),
 
-    /* cool morning counter-light */
-    radial-gradient(
-      ellipse 66rem 40rem at -8% 18%,
-      rgba(112, 183, 233, 0.08) 0%,
-      transparent 76%
-    ),
-
-    /* morning environmental fade */
+    /* bright neutral morning base */
     linear-gradient(
-      112deg,
-      #07101a 0%,
-      #0b1723 20%,
-      #18283a 38%,
-      #3c3a50 54%,
-      #765060 70%,
-      #a8665e 84%,
-      #bc805f 94%,
-      #a97963 100%
+      105deg,
+      #eef5ff 0%,
+      #f4f8fd 38%,
+      #faf7f6 68%,
+      #fff3eb 100%
     );
 }
+
+
+
+
 
 /* Day: neutral, brighter, and deliberately cooler than morning. */
 
