@@ -5,27 +5,57 @@ import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { Button } from "@/components/ui/Button";
 
-const metrics = [
-  { label: "Runtime Status", value: "Healthy" },
-  { label: "Average Decision", value: "0.42 ms" },
-  { label: "Verified Receipts", value: "12,847" },
-  { label: "Settlement Success", value: "99.99%" },
-  { label: "Runtime Availability", value: "99.99%" },
-  { label: "RPC Health", value: "Excellent" },
+const journey = [
+  "You Send",
+  "Protected",
+  "Verified",
+  "Delivered",
+  "Receipt Ready",
 ];
 
-const events = [
-  "Identity Verified",
-  "Compliance Passed",
-  "Risk Approved",
-  "Policy Applied",
-  "Treasury Recorded",
-  "Settlement Confirmed",
-  "Receipt Generated",
-  "Verification Complete",
+const transparency = [
+  {
+    title: "Payment Status",
+    body: "Know exactly where every transaction is from start to finish.",
+  },
+  {
+    title: "Delivery Confirmation",
+    body: "Receive confirmation when your transaction reaches its destination.",
+  },
+  {
+    title: "Verified Receipts",
+    body: "Access trusted receipts whenever you need them.",
+  },
+  {
+    title: "Transaction History",
+    body: "Review completed activity with clear context and timestamps.",
+  },
+  {
+    title: "Payment Details",
+    body: "See amounts, recipients, memos, and supporting information in one place.",
+  },
+  {
+    title: "Transparency",
+    body: "Understand what happened during every transaction—not just the outcome.",
+  },
 ];
 
-export default function TelemetryPage() {
+const audiences = [
+  {
+    title: "Personal",
+    body: "Confident everyday payments with complete visibility.",
+  },
+  {
+    title: "Business",
+    body: "Clear records that help teams stay informed and organized.",
+  },
+  {
+    title: "Intelligent Commerce",
+    body: "Reliable transaction visibility for people, software, and AI.",
+  },
+];
+
+export default function TransactionTransparencyPage() {
   return (
     <>
       <AmbientBackground />
@@ -33,17 +63,17 @@ export default function TelemetryPage() {
       <Section className="pt-28">
         <Container className="max-w-5xl text-center">
           <p className="text-sm uppercase tracking-[0.22em] text-brand-secondary">
-            Zephyon Telemetry
+            Transaction Transparency
           </p>
 
           <h1 className="mt-6 text-5xl font-semibold tracking-[-0.05em]">
-            Observe every payment with confidence.
+            Every transaction tells a complete story.
           </h1>
 
           <p className="mx-auto mt-6 max-w-3xl text-lg text-foreground-secondary">
-            Telemetry provides visibility into the Zephyon Runtime, helping
-            people, businesses, and developers understand how intelligent
-            payments move through the platform.
+            ZephiPay keeps every transaction transparent—from authorization
+            and verification to settlement and permanent receipts—so you always
+            understand what happened, not just that it happened.
           </p>
 
           <div className="mt-10 flex justify-center gap-4">
@@ -59,19 +89,44 @@ export default function TelemetryPage() {
       </Section>
 
       <Section>
+        <Container className="max-w-5xl">
+          <h2 className="text-center text-3xl font-semibold">
+            Every transaction follows a trusted path.
+          </h2>
+
+          <div className="mt-12 flex flex-col items-center gap-4">
+            {journey.map((step, index) => (
+              <div
+                key={step}
+                className="flex flex-col items-center"
+              >
+                <div className="w-64 rounded-2xl border border-border-default bg-surface-secondary/40 px-6 py-5 text-center">
+                  {step}
+                </div>
+
+                {index < journey.length - 1 && (
+                  <div className="h-8 w-px bg-border-default" />
+                )}
+              </div>
+            ))}
+          </div>
+        </Container>
+      </Section>
+
+      <Section>
         <Container>
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-            {metrics.map((metric) => (
+            {transparency.map((item) => (
               <div
-                key={metric.label}
+                key={item.title}
                 className="rounded-3xl border border-border-default bg-surface-secondary/40 p-8"
               >
-                <p className="text-sm uppercase tracking-[0.16em] text-foreground-muted">
-                  {metric.label}
-                </p>
+                <h3 className="text-xl font-semibold">
+                  {item.title}
+                </h3>
 
-                <p className="mt-4 text-3xl font-semibold">
-                  {metric.value}
+                <p className="mt-4 leading-7 text-foreground-secondary">
+                  {item.body}
                 </p>
               </div>
             ))}
@@ -80,18 +135,20 @@ export default function TelemetryPage() {
       </Section>
 
       <Section>
-        <Container className="max-w-5xl">
-          <h2 className="text-3xl font-semibold">
-            Runtime Event Timeline
-          </h2>
-
-          <div className="mt-10 grid gap-4 md:grid-cols-4">
-            {events.map((event) => (
+        <Container>
+          <div className="grid gap-6 md:grid-cols-3">
+            {audiences.map((item) => (
               <div
-                key={event}
-                className="rounded-2xl border border-border-default bg-surface-secondary/40 p-5 text-center"
+                key={item.title}
+                className="rounded-3xl border border-border-default bg-surface-secondary/40 p-8"
               >
-                {event}
+                <h3 className="text-2xl font-semibold">
+                  {item.title}
+                </h3>
+
+                <p className="mt-4 leading-7 text-foreground-secondary">
+                  {item.body}
+                </p>
               </div>
             ))}
           </div>
@@ -102,19 +159,27 @@ export default function TelemetryPage() {
         <Container className="max-w-5xl">
           <div className="rounded-[2rem] border border-border-default bg-surface-secondary/40 p-10">
             <p className="text-sm uppercase tracking-[0.18em] text-brand-secondary">
-              Why Telemetry Matters
+              Powered by the Zephyon Runtime
             </p>
 
             <h2 className="mt-4 text-3xl font-semibold">
-              Payments should be understandable.
+              Confidence built into every transaction.
             </h2>
 
             <p className="mt-6 max-w-3xl text-lg leading-8 text-foreground-secondary">
-              Traditional payment systems often hide what happens after you click
-              send. Zephyon Telemetry makes the Runtime observable, providing
-              insight into verification, settlement, and the health of the
-              payment lifecycle.
+              Behind every ZephiPay transaction is the Zephyon Runtime,
+              coordinating verification, protection, settlement, and trusted
+              receipts before value reaches its destination.
             </p>
+
+            <div className="mt-8">
+              <Link
+                href="/runtime"
+                className="text-brand-secondary transition hover:text-brand-primary"
+              >
+                Learn about the Zephyon Runtime →
+              </Link>
+            </div>
           </div>
         </Container>
       </Section>
@@ -122,22 +187,13 @@ export default function TelemetryPage() {
       <Section>
         <Container className="max-w-4xl text-center">
           <h2 className="text-4xl font-semibold tracking-[-0.04em]">
-            Transparency builds trust.
+            Transparency builds confidence.
           </h2>
 
           <p className="mx-auto mt-6 max-w-2xl text-lg text-foreground-secondary">
-            Zephyon doesn't simply process payments. It preserves the context
-            that makes every transaction understandable and verifiable.
+            When every transaction is understandable and every receipt can be
+            trusted, moving money becomes a more confident experience.
           </p>
-
-          <div className="mt-10">
-            <Link
-              href="/runtime"
-              className="text-brand-secondary transition hover:text-brand-primary"
-            >
-              Continue exploring the Runtime →
-            </Link>
-          </div>
         </Container>
       </Section>
     </>
