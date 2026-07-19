@@ -9,7 +9,7 @@ const metrics: MetricItem[] = [
     value: "—",
   },
   {
-    label: "Verified payments",
+    label: "Completed transactions",
     value: "—",
   },
   {
@@ -17,16 +17,16 @@ const metrics: MetricItem[] = [
     value: "—",
   },
   {
-    label: "Runtime success",
+    label: "Successful settlements",
     value: "—",
   },
 ];
 
 const futureTelemetry = [
-  "Live network volume",
-  "Verified settlements",
-  "Deterministic receipts",
-  "Runtime performance",
+  "Verified transaction volume",
+  "Completed settlements",
+  "Verified receipts",
+  "Settlement reliability",
 ];
 
 export function NetworkMetrics() {
@@ -44,7 +44,7 @@ export function NetworkMetrics() {
             />
 
             <p className="text-sm font-medium uppercase tracking-[0.16em] text-brand-secondary">
-              Zephyon telemetry
+              Verified network activity
             </p>
           </div>
 
@@ -52,12 +52,12 @@ export function NetworkMetrics() {
             id="network-metrics-heading"
             className="mt-2 text-xl font-semibold tracking-[-0.03em] sm:text-2xl"
           >
-            Awaiting First Verified Settlement
+            Live activity will appear here
           </h2>
 
           <p className="mt-3 max-w-2xl text-sm leading-6 text-foreground-secondary">
-            Public runtime telemetry activates automatically after the first
-            verified settlement through the Zephyon Runtime.
+            Every number shown here will come from verified transactions
+            processed through the Zephyon Runtime.
           </p>
         </div>
 
@@ -86,22 +86,22 @@ export function NetworkMetrics() {
       <div className="grid gap-6 px-5 py-6 sm:px-7 lg:grid-cols-[0.72fr_1.28fr]">
         <div>
           <p className="text-sm uppercase tracking-[0.14em] text-foreground-muted">
-            Current status
+            Activity status
           </p>
 
           <p className="mt-2 text-lg font-semibold">
-            Awaiting First Verified Settlement
+            No verified public activity yet
           </p>
 
           <p className="mt-3 max-w-sm text-sm leading-6 text-foreground-secondary">
-            No simulated transactions. No inflated activity. Every future
-            number shown here will come from verified runtime telemetry.
+            Test and development transactions are never presented as
+            production usage.
           </p>
         </div>
 
         <div>
           <p className="text-sm uppercase tracking-[0.14em] text-foreground-muted">
-            Telemetry will display
+            Live activity will display
           </p>
 
           <div className="mt-3 grid gap-2 sm:grid-cols-2">
@@ -120,8 +120,8 @@ export function NetworkMetrics() {
 
       <div className="border-t border-border-subtle px-5 py-4 sm:px-7">
         <p className="text-xs leading-5 text-foreground-muted">
-          Devnet and beta values represent test activity only and do not
-          indicate production funds or mainnet transaction volume.
+          Powered by verified Zephyon Runtime telemetry. Development and beta
+          activity is never presented as production usage.
         </p>
       </div>
     </section>
