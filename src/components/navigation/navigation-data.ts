@@ -361,4 +361,84 @@ export const navigationSections: NavigationSection[] = [
       },
     ],
   },
+
+  {
+    label: "ZERA",
+    eyebrow: "The ZERA ecosystem",
+    tagline: "Utility designed around real participation.",
+    supportingText:
+      "Explore how ZERA reduces eligible costs, rewards activity, unlocks premium capabilities, and supports intelligent commerce.",
+    href: "/zera",
+    groups: [
+      {
+        heading: "Discover",
+        links: [
+          {
+            label: "ZERA overview",
+            href: "/zera",
+            description:
+              "Understand why ZERA exists and how it supports the ecosystem.",
+          },
+          {
+            label: "Utility",
+            href: "/zera#utility",
+            description:
+              "Explore saving, rewards, staking, creator tools, and AI utility.",
+          },
+          {
+            label: "Tokenomics",
+            href: "/zera#tokenomics",
+            description:
+              "Review the fixed supply and ecosystem allocation.",
+          },
+        ],
+      },
+      {
+        heading: "Participation",
+        links: [
+          {
+            label: "Personal",
+            href: "/personal",
+            description:
+              "Benefits designed for everyday participation.",
+          },
+          {
+            label: "Creators",
+            href: "/creators",
+            description:
+              "Creator rewards, premium access, and financial organization.",
+          },
+          {
+            label: "Businesses",
+            href: "/business",
+            description:
+              "Commerce benefits and Subscription-or-Stake access.",
+          },
+        ],
+      },
+      {
+        heading: "Intelligent economy",
+        links: [
+          {
+            label: "Intelligent commerce",
+            href: "/intelligent-commerce",
+            description:
+              "Explore payments designed for people, software, and AI.",
+          },
+          {
+            label: "Zephyon Runtime",
+            href: "/runtime",
+            description:
+              "See the coordination layer beneath intelligent transactions.",
+          },
+          {
+            label: "Developers",
+            href: "/developers",
+            description:
+              "Build applications and agentic services on Zephyon.",
+          },
+        ],
+      },
+    ],
+  },
 ];
