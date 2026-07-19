@@ -33,17 +33,17 @@ export const navigationSections: NavigationSection[] = [
         links: [
           {
             label: "Send",
-            href: "/personal/send",
+            href: "/personal",
             description: "Pay people securely.",
           },
           {
             label: "Receive",
-            href: "/personal/receive",
+            href: "/personal",
             description: "Accept payments with ease.",
           },
           {
             label: "Request",
-            href: "/personal/request",
+            href: "/personal",
             description: "Create a clear payment request.",
           },
         ],
@@ -53,17 +53,17 @@ export const navigationSections: NavigationSection[] = [
         links: [
           {
             label: "Wallet",
-            href: "/personal/wallet",
+            href: "/personal",
             description: "See balances and payment methods.",
           },
           {
             label: "Activity",
-            href: "/personal/activity",
+            href: "/personal",
             description: "Review your payment history.",
           },
           {
             label: "Verified receipts",
-            href: "/personal/receipts",
+            href: "/personal",
             description: "Access trusted payment records.",
           },
         ],
@@ -73,7 +73,7 @@ export const navigationSections: NavigationSection[] = [
         links: [
           {
             label: "Settings",
-            href: "/personal/settings",
+            href: "/personal",
             description: "Manage your account preferences.",
           },
           {
@@ -98,17 +98,17 @@ export const navigationSections: NavigationSection[] = [
         links: [
           {
             label: "Tips",
-            href: "/creators/tips",
+            href: "/creators",
             description: "Accept direct audience support.",
           },
           {
             label: "Memberships",
-            href: "/creators/memberships",
+            href: "/creators",
             description: "Build recurring communities.",
           },
           {
             label: "Subscriptions",
-            href: "/creators/subscriptions",
+            href: "/creators",
             description: "Create dependable recurring revenue.",
           },
         ],
@@ -118,17 +118,17 @@ export const navigationSections: NavigationSection[] = [
         links: [
           {
             label: "Send",
-            href: "/creators/send",
+            href: "/creators",
             description: "Pay collaborators and partners.",
           },
           {
             label: "Receive",
-            href: "/creators/receive",
+            href: "/creators",
             description: "Accept payments from anywhere.",
           },
           {
             label: "Withdraw",
-            href: "/creators/withdraw",
+            href: "/creators",
             description: "Move earnings when you need them.",
           },
         ],
@@ -138,17 +138,17 @@ export const navigationSections: NavigationSection[] = [
         links: [
           {
             label: "Analytics",
-            href: "/creators/analytics",
+            href: "/creators",
             description: "Understand your payment activity.",
           },
           {
             label: "Audience",
-            href: "/creators/audience",
+            href: "/creators",
             description: "See who supports your work.",
           },
           {
             label: "Payout history",
-            href: "/creators/payouts",
+            href: "/creators",
             description: "Track every completed payout.",
           },
         ],
@@ -168,17 +168,17 @@ export const navigationSections: NavigationSection[] = [
         links: [
           {
             label: "Point of sale",
-            href: "/business/pos",
+            href: "/business",
             description: "Accept payments in person.",
           },
           {
             label: "Payment links",
-            href: "/business/payment-links",
+            href: "/business",
             description: "Get paid through a simple link.",
           },
           {
             label: "Invoices",
-            href: "/business/invoices",
+            href: "/business",
             description: "Send and track professional invoices.",
           },
         ],
@@ -188,17 +188,17 @@ export const navigationSections: NavigationSection[] = [
         links: [
           {
             label: "Send",
-            href: "/business/send",
+            href: "/business",
             description: "Pay vendors, teams, and partners.",
           },
           {
             label: "Receive",
-            href: "/business/receive",
+            href: "/business",
             description: "Accept customer and partner payments.",
           },
           {
             label: "Request",
-            href: "/business/request",
+            href: "/business",
             description: "Request payment with clear terms.",
           },
         ],
@@ -208,17 +208,17 @@ export const navigationSections: NavigationSection[] = [
         links: [
           {
             label: "Settlement",
-            href: "/business/settlement",
+            href: "/business",
             description: "Follow funds through settlement.",
           },
           {
             label: "Reporting",
-            href: "/business/reporting",
+            href: "/business",
             description: "Review business payment performance.",
           },
           {
             label: "Team access",
-            href: "/business/team",
+            href: "/business",
             description: "Manage roles and permissions.",
           },
         ],
@@ -238,17 +238,17 @@ export const navigationSections: NavigationSection[] = [
         links: [
           {
             label: "Agent wallets",
-            href: "/intelligent-commerce/agent-wallets",
+            href: "/intelligent-commerce",
             description: "Purpose-built wallets for software agents.",
           },
           {
             label: "AI-to-AI payments",
-            href: "/intelligent-commerce/ai-payments",
+            href: "/intelligent-commerce",
             description: "Enable autonomous economic exchange.",
           },
           {
             label: "x402 payments",
-            href: "/intelligent-commerce/x402",
+            href: "/intelligent-commerce",
             description: "Pay for digital resources through HTTP.",
             badge: "Live",
           },

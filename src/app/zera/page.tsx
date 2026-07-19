@@ -3,6 +3,7 @@ import { Section } from "@/components/layout/Section";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { AmbientBackground } from "@/components/marketing/AmbientBackground";
+import { EconomicFlywheel } from "@/components/marketing/EconomicFlywheel";
 import { Button } from "@/components/ui/Button";
 import { siteConfig } from "@/config/site";
 
@@ -1317,6 +1318,8 @@ export default function ZeraPage() {
             </div>
           </Container>
         </Section>
+
+        <EconomicFlywheel />
 
         <Section>
           <Container>
