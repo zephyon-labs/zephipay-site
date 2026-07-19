@@ -90,7 +90,7 @@ function MobileSection({
                   <div className="mt-2 grid gap-1">
                     {group.links.map((link) => (
                       <Link
-                        key={link.href}
+                        key={`${group.heading}-${link.label}`}
                         href={link.href}
                         onClick={onNavigate}
                         className="rounded-xl py-2 text-sm text-foreground-secondary transition-colors hover:text-foreground"

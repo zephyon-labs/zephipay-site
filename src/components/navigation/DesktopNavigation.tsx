@@ -76,7 +76,7 @@ function MegaMenu({
               <div className="mt-3 grid gap-1">
                 {group.links.map((link) => (
                   <Link
-                    key={link.href}
+                    key={`${group.heading}-${link.label}`}
                     href={link.href}
                     onClick={onNavigate}
                     className={cn(
