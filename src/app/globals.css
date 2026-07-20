@@ -2611,7 +2611,7 @@ body {
 
 .zephipay-atmosphere-v2-night {
   background:
-    /* restrained right-side depth */
+    /* restrained shadow depth keeps most of the canvas near-black */
     linear-gradient(
       90deg,
       transparent 0%,
@@ -2621,32 +2621,30 @@ body {
       rgba(2, 5, 12, 0.15) 100%
     ),
 
-    /* distant blue city atmosphere */
+    /* distant midnight-blue city atmosphere */
     radial-gradient(
-      ellipse 92rem 42rem at 94% 30%,
-      rgba(48, 101, 170, 0.11) 0%,
-      rgba(63, 73, 143, 0.07) 40%,
-      transparent 74%
+      ellipse 140rem 72rem at 118% 22%,
+      rgba(58, 110, 190, 0.052) 0%,
+      rgba(72, 92, 170, 0.032) 38%,
+      transparent 70%
     ),
 
-    /* cyan counter-light */
+    /* subtle cyan counter-light from the left edge */
     radial-gradient(
-      ellipse 68rem 42rem at -8% 20%,
-      rgba(34, 142, 210, 0.07) 0%,
-      transparent 76%
+      ellipse 72rem 44rem at -10% 18%,
+      rgba(48, 168, 240, 0.07) 0%,
+      transparent 78%
     ),
 
-    /* nighttime environmental fade */
+    /* deep-black foundation opening gradually into a darker midnight blue */
     linear-gradient(
-      112deg,
-      #02050a 0%,
-      #040914 20%,
-      #091225 38%,
-      #111a33 54%,
-      #1b2344 70%,
-      #243054 84%,
-      #2b3b61 94%,
-      #263650 100%
+      108deg,
+      #010308 0%,
+      #02060d 18%,
+      #050d19 38%,
+      #091120 60%,
+      #101a30 82%,
+      #15223d 100%
     );
 }
 

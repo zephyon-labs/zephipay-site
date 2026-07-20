@@ -1142,11 +1142,9 @@ function ZeraUtilityVisual() {
 
 export default function ZeraPage() {
   return (
-    <>
-      <AmbientBackground />
+    <main className="relative isolate min-h-screen overflow-hidden bg-transparent text-foreground">
       <SiteHeader />
-
-      <main className="relative overflow-hidden">
+      <AmbientBackground />
         <Section
           spacing="none"
           className="flex min-h-[90vh] items-center pt-32 sm:pt-36"
@@ -1622,9 +1620,7 @@ export default function ZeraPage() {
             </div>
           </Container>
         </Section>
-      </main>
-
       <SiteFooter />
-    </>
+    </main>
   );
 }

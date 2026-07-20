@@ -1,6 +1,8 @@
 import Link from "next/link";
 
 import { AmbientBackground } from "@/components/marketing/AmbientBackground";
+import { SiteHeader } from "@/components/layout/SiteHeader";
+import { SiteFooter } from "@/components/layout/SiteFooter";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { Button } from "@/components/ui/Button";
@@ -49,7 +51,8 @@ const audiences = [
 
 export default function SecurityPage() {
   return (
-    <>
+    <main className="relative isolate min-h-screen overflow-hidden bg-transparent text-foreground">
+      <SiteHeader />
       <AmbientBackground />
 
       <Section className="pt-28">
@@ -201,6 +204,8 @@ export default function SecurityPage() {
           </div>
         </Container>
       </Section>
-    </>
+
+      <SiteFooter />
+    </main>
   );
 }
