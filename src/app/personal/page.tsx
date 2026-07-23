@@ -4,6 +4,10 @@ import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { AmbientBackground } from "@/components/marketing/AmbientBackground";
 import { PaymentExperience } from "@/components/marketing/payment-experience";
+import {
+  PersonalWorkspace,
+  personalWorkspaceDemo,
+} from "@/components/marketing/personal-workspace";
 import { Button } from "@/components/ui/Button";
 import { siteConfig } from "@/config/site";
 
@@ -166,7 +170,7 @@ export default function PersonalPage() {
                 </Button>
 
                 <Button
-                  href="#everyday-payments"
+                  href="#personal-workspace"
                   variant="outline"
                   size="lg"
                 >
@@ -212,6 +216,14 @@ export default function PersonalPage() {
                 ))}
               </div>
             </div>
+          </div>
+        </Container>
+      </Section>
+
+      <Section id="personal-workspace" className="scroll-mt-28">
+        <Container>
+          <div className="border-t border-border-subtle pt-20">
+            <PersonalWorkspace {...personalWorkspaceDemo} />
           </div>
         </Container>
       </Section>

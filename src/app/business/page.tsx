@@ -3,6 +3,10 @@ import { Section } from "@/components/layout/Section";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { AmbientBackground } from "@/components/marketing/AmbientBackground";
+import {
+  BusinessWorkspace,
+  businessWorkspaceDemo,
+} from "@/components/marketing/business-workspace";
 import { Button } from "@/components/ui/Button";
 import { siteConfig } from "@/config/site";
 
@@ -132,7 +136,7 @@ function CheckIcon() {
 export const metadata = {
   title: "Business | ZephiPay",
   description:
-    "Accept payments, preserve verifiable records, coordinate settlement, and prepare your business for intelligent commerce.",
+    "Accept payments, coordinate settlement, preserve verified records, and prepare your business for customers and AI agents.",
 };
 
 export default function BusinessPage() {
@@ -158,8 +162,8 @@ export default function BusinessPage() {
 
               <p className="mt-8 max-w-4xl text-xl leading-9 text-foreground-secondary sm:text-2xl">
                 Accept payments, coordinate settlement, preserve dependable
-                records, and prepare for intelligent commerce through one
-                trusted business platform.
+                records, and prepare for customers, software, and AI agents
+                through one trusted business platform.
               </p>
 
               <div className="mt-10 flex flex-wrap gap-4">
@@ -173,11 +177,11 @@ export default function BusinessPage() {
                 </Button>
 
                 <Button
-                  href="#business-platform"
+                  href="#business-workspace"
                   variant="outline"
                   size="lg"
                 >
-                  Explore capabilities
+                  See how it works
                 </Button>
               </div>
             </div>
@@ -202,7 +206,7 @@ export default function BusinessPage() {
                   "Accept and move money",
                   "Track settlement",
                   "Preserve verified receipts",
-                  "Prepare for intelligent commerce",
+                  "Prepare for AI-powered commerce",
                 ].map((item) => (
                   <div
                     key={item}
@@ -218,6 +222,34 @@ export default function BusinessPage() {
                   </div>
                 ))}
               </div>
+            </div>
+          </div>
+        </Container>
+      </Section>
+
+      <Section
+        id="business-workspace"
+        className="scroll-mt-28"
+      >
+        <Container>
+          <div className="border-t border-border-subtle pt-20">
+            <div className="mx-auto max-w-3xl text-center">
+              <p className="text-xs font-medium uppercase tracking-[0.22em] text-foreground-muted">
+                Your business workspace
+              </p>
+
+              <h2 className="mt-4 text-3xl font-medium tracking-tight text-foreground sm:text-4xl lg:text-5xl">
+                See what is moving. Know what comes next.
+              </h2>
+
+              <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-foreground-muted sm:text-lg">
+                Track revenue, settlements, verified orders, invoices, payment
+                links, vendors, and operational records from one clear workspace.
+              </p>
+            </div>
+
+            <div className="mt-12">
+              <BusinessWorkspace data={businessWorkspaceDemo} />
             </div>
           </div>
         </Container>
@@ -393,23 +425,23 @@ export default function BusinessPage() {
         </Container>
       </Section>
 
-      <Section id="intelligent-commerce" className="scroll-mt-28">
+      <Section id="ai-agents" className="scroll-mt-28">
         <Container>
           <div className="grid gap-12 rounded-[2rem] border border-border-default bg-surface-glass p-8 shadow-[var(--shadow-medium)] backdrop-blur-2xl lg:grid-cols-[0.78fr_1.22fr] sm:p-12">
             <div>
               <p className="text-sm uppercase tracking-[0.18em] text-brand-secondary">
-                Intelligent commerce
+                AI agents
               </p>
 
               <h2 className="mt-5 text-4xl font-semibold tracking-[-0.045em] sm:text-5xl">
-                Ready for customers, software, and intelligent agents.
+                Welcome payments from people and autonomous software.
               </h2>
 
               <p className="mt-6 text-lg leading-8 text-foreground-secondary">
-                Commerce is expanding beyond human checkout. ZephiPay is
-                being built so businesses can accept economic activity from
-                applications and intelligent systems without giving up
-                policy, verification, or visibility.
+                ZephiPay is being built so businesses can serve customers,
+                applications, and AI agents through the same trusted payment
+                infrastructure—without sacrificing policy, verification, or
+                operational visibility.
               </p>
 
               <div className="mt-8">
@@ -418,7 +450,7 @@ export default function BusinessPage() {
                   variant="outline"
                   rightIcon={<ArrowIcon />}
                 >
-                  Explore Intelligent Commerce
+                  Explore AI Agents
                 </Button>
               </div>
             </div>
@@ -445,19 +477,19 @@ export default function BusinessPage() {
 
       <Section spacing="lg">
         <Container>
-          <div className="grid items-center gap-8 border-t border-border-subtle pt-20 lg:grid-cols-[1fr_auto]">
+          <div className="grid items-center gap-10 border-t border-border-subtle pt-20 lg:grid-cols-[1fr_auto]">
             <div>
               <p className="text-sm uppercase tracking-[0.18em] text-brand-secondary">
-                Build with confidence
+                Move forward with confidence
               </p>
 
               <h2 className="mt-5 max-w-4xl text-4xl font-semibold tracking-[-0.045em] sm:text-5xl">
-                Give every payment a useful business record.
+                Built for businesses that expect more from payments.
               </h2>
 
               <p className="mt-6 max-w-3xl text-lg leading-8 text-foreground-secondary">
-                Join the business beta or explore the developer and
-                intelligent-commerce infrastructure behind ZephiPay.
+                Accept payments, coordinate settlement, preserve verified
+                records, and prepare your business for AI-powered commerce.
               </p>
             </div>
 
@@ -468,15 +500,15 @@ export default function BusinessPage() {
                 size="lg"
                 rightIcon={<ArrowIcon />}
               >
-                Join beta
+                Join business beta
               </Button>
 
               <Button
-                href="/developers"
+                href="#business-workspace"
                 variant="outline"
                 size="lg"
               >
-                Explore Developers
+                Explore the workspace
               </Button>
             </div>
           </div>

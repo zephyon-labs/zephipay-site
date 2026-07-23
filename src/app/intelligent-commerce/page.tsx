@@ -3,6 +3,10 @@ import { Section } from "@/components/layout/Section";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { AmbientBackground } from "@/components/marketing/AmbientBackground";
+import {
+  AgentExperience,
+  AgentWorkflow,
+} from "@/components/marketing/agent-experience";
 import { Button } from "@/components/ui/Button";
 
 const economicEventStages = [
@@ -137,27 +141,6 @@ function ArrowIcon() {
   );
 }
 
-function CheckIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      className="h-5 w-5"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-    >
-      <path d="m5 12 4 4L19 6" />
-    </svg>
-  );
-}
-
-export const metadata = {
-  title: "Intelligent Commerce | ZephiPay",
-  description:
-    "Economic infrastructure for people, businesses, applications, and intelligent systems—powered by the Zephyon Runtime.",
-};
-
 export default function IntelligentCommercePage() {
   return (
     <main className="relative isolate min-h-screen overflow-hidden bg-transparent text-foreground">
@@ -169,79 +152,47 @@ export default function IntelligentCommercePage() {
         className="relative overflow-hidden pt-40 sm:pt-44"
       >
         <Container>
-          <div className="grid items-end gap-12 lg:grid-cols-[1.15fr_0.85fr]">
+          <div className="grid items-center gap-14 lg:grid-cols-[0.92fr_1.08fr] xl:gap-20">
             <div className="max-w-4xl">
               <p className="text-sm font-medium uppercase tracking-[0.18em] text-brand-secondary">
-                Intelligent commerce
+                AI Agents
               </p>
 
-              <h1 className="mt-6 text-5xl font-semibold tracking-[-0.05em] sm:text-7xl lg:text-[5.25rem] lg:leading-[0.98]">
-                Payments that understand what they&apos;re doing.
+              <h1 className="mt-6 text-5xl font-semibold tracking-[-0.055em] sm:text-7xl lg:text-[5.25rem] lg:leading-[0.98]">
+                Give your AI the ability to transact.
               </h1>
 
-              <p className="mt-8 max-w-3xl text-xl leading-9 text-foreground-secondary sm:text-2xl">
-                ZephiPay gives people, businesses, applications, and
-                intelligent systems one coordinated way to move value—while
-                the Zephyon Runtime handles identity, policy, compliance,
-                risk, settlement, verification, and receipts underneath.
+              <p className="mt-8 max-w-3xl text-xl font-medium leading-9 text-foreground sm:text-2xl">
+                Agents that can discover, decide, pay, and verify.
+              </p>
+
+              <p className="mt-5 max-w-3xl text-lg leading-8 text-foreground-secondary">
+                Give software the ability to purchase services, access
+                premium resources, pay approved obligations, verify outcomes,
+                and preserve deterministic receipts through one trusted
+                economic platform.
               </p>
 
               <div className="mt-10 flex flex-wrap gap-4">
                 <Button
-                  href="/runtime"
+                  href="#agent-workflows"
                   size="lg"
                   rightIcon={<ArrowIcon />}
                 >
-                  Explore the Runtime
+                  Explore AI Workflows
                 </Button>
 
                 <Button
-                  href="/developers"
+                  href="/runtime"
                   variant="outline"
                   size="lg"
                 >
-                  Build with ZephiPay
+                  Explore the Runtime
                 </Button>
               </div>
             </div>
 
-            <div className="rounded-[2rem] border border-border-default bg-surface-glass p-7 shadow-[var(--shadow-medium)] backdrop-blur-2xl sm:p-9">
-              <p className="text-xs font-medium uppercase tracking-[0.18em] text-foreground-muted">
-                One economic layer
-              </p>
-
-              <p className="mt-5 text-2xl font-semibold tracking-[-0.035em]">
-                Humans and software should not need separate payment worlds.
-              </p>
-
-              <p className="mt-5 leading-7 text-foreground-secondary">
-                ZephiPay is being designed so a person, merchant, developer,
-                or autonomous agent can participate through the same trusted
-                economic infrastructure.
-              </p>
-
-              <div className="mt-7 grid gap-3">
-                {[
-                  "Policy before settlement",
-                  "Verification after execution",
-                  "Receipts for every participant",
-                  "Observability across the full runtime",
-                ].map((item) => (
-                  <div
-                    key={item}
-                    className="flex items-center gap-3 rounded-2xl border border-border-subtle bg-surface-secondary/50 px-4 py-3"
-                  >
-                    <span className="text-brand-secondary">
-                      <CheckIcon />
-                    </span>
-
-                    <span className="text-sm text-foreground-secondary">
-                      {item}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <AgentWorkflow />
           </div>
         </Container>
       </Section>
@@ -289,79 +240,7 @@ export default function IntelligentCommercePage() {
         </Container>
       </Section>
 
-      <Section id="participants" className="scroll-mt-28">
-        <Container>
-          <div className="grid gap-6 lg:grid-cols-2">
-            <article className="rounded-[2rem] border border-border-default bg-surface-glass p-8 shadow-[var(--shadow-soft)] sm:p-10">
-              <p className="text-sm uppercase tracking-[0.16em] text-brand-secondary">
-                Human commerce
-              </p>
-
-              <h2 className="mt-5 text-3xl font-semibold tracking-[-0.04em]">
-                Built for people and the businesses they create.
-              </h2>
-
-              <p className="mt-6 text-lg leading-8 text-foreground-secondary">
-                Individuals, creators, merchants, and teams can interact
-                through a familiar payment experience without needing to
-                understand the infrastructure underneath.
-              </p>
-
-              <div className="mt-8 flex flex-wrap gap-2">
-                {[
-                  "Individuals",
-                  "Creators",
-                  "Businesses",
-                  "Merchants",
-                  "Teams",
-                  "Developers",
-                ].map((item) => (
-                  <span
-                    key={item}
-                    className="rounded-full border border-border-default bg-surface-secondary px-4 py-2 text-sm text-foreground-secondary"
-                  >
-                    {item}
-                  </span>
-                ))}
-              </div>
-            </article>
-
-            <article className="rounded-[2rem] border border-border-default bg-surface-glass p-8 shadow-[var(--shadow-soft)] sm:p-10">
-              <p className="text-sm uppercase tracking-[0.16em] text-brand-secondary">
-                Machine commerce
-              </p>
-
-              <h2 className="mt-5 text-3xl font-semibold tracking-[-0.04em]">
-                Ready for software that can participate economically.
-              </h2>
-
-              <p className="mt-6 text-lg leading-8 text-foreground-secondary">
-                Intelligent systems need wallets, policies, limits,
-                settlement, verification, and receipts—not merely access to a
-                payment endpoint.
-              </p>
-
-              <div className="mt-8 flex flex-wrap gap-2">
-                {[
-                  "AI agents",
-                  "Applications",
-                  "MCP servers",
-                  "Automation",
-                  "APIs",
-                  "Autonomous services",
-                ].map((item) => (
-                  <span
-                    key={item}
-                    className="rounded-full border border-border-default bg-surface-secondary px-4 py-2 text-sm text-foreground-secondary"
-                  >
-                    {item}
-                  </span>
-                ))}
-              </div>
-            </article>
-          </div>
-        </Container>
-      </Section>
+      <AgentExperience />
 
       <Section id="runtime-engines" className="scroll-mt-28">
         <Container>

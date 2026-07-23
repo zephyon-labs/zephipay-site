@@ -193,15 +193,6 @@ const allocations = [
   },
 ];
 
-const flywheel = [
-  "People participate",
-  "Creators build",
-  "Businesses transact",
-  "AI agents assist",
-  "Ecosystem activity grows",
-  "ZERA becomes more useful",
-];
-
 function CheckIcon() {
   return (
     <svg
@@ -1195,6 +1186,88 @@ export default function ZeraPage() {
           </Container>
         </Section>
 
+        <Section>
+          <Container>
+            <div className="border-t border-border-subtle pt-20">
+              <div className="grid gap-12 lg:grid-cols-[0.92fr_1.08fr] lg:items-end">
+                <div className="max-w-3xl">
+                  <p className="text-sm font-medium uppercase tracking-[0.18em] text-brand-secondary">
+                    Designed for participation
+                  </p>
+
+                  <h2 className="mt-5 text-4xl font-semibold tracking-[-0.045em] sm:text-5xl">
+                    ZephiPay doesn&apos;t require ZERA.
+                    <span className="block text-foreground-secondary">
+                      That&apos;s exactly the point.
+                    </span>
+                  </h2>
+                </div>
+
+                <div className="max-w-2xl lg:justify-self-end">
+                  <p className="text-lg leading-8 text-foreground-secondary">
+                    ZephiPay is designed to be useful from the very first
+                    payment. ZERA exists to reward participation, reduce
+                    eligible costs, unlock premium capabilities, and connect
+                    long-term participants to the growth of the ecosystem.
+                  </p>
+
+                  <p className="mt-5 leading-7 text-foreground-muted">
+                    The platform comes first. ZERA makes participation more
+                    rewarding.
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-14 grid gap-5 md:grid-cols-3">
+                <article className="rounded-[2rem] border border-border-default bg-surface-glass p-7 shadow-[var(--shadow-soft)] backdrop-blur-xl">
+                  <p className="text-xs font-medium uppercase tracking-[0.18em] text-brand-secondary">
+                    Optional
+                  </p>
+
+                  <h3 className="mt-6 text-2xl font-semibold tracking-[-0.035em]">
+                    Use ZephiPay without it.
+                  </h3>
+
+                  <p className="mt-4 leading-7 text-foreground-secondary">
+                    Sending, receiving, and participating in ZephiPay does not
+                    require owning ZERA.
+                  </p>
+                </article>
+
+                <article className="rounded-[2rem] border border-border-default bg-surface-glass p-7 shadow-[var(--shadow-soft)] backdrop-blur-xl">
+                  <p className="text-xs font-medium uppercase tracking-[0.18em] text-brand-secondary">
+                    Useful
+                  </p>
+
+                  <h3 className="mt-6 text-2xl font-semibold tracking-[-0.035em]">
+                    Unlock practical benefits.
+                  </h3>
+
+                  <p className="mt-4 leading-7 text-foreground-secondary">
+                    Access eligible fee savings, ecosystem rewards, premium
+                    tools, and deeper platform capabilities.
+                  </p>
+                </article>
+
+                <article className="rounded-[2rem] border border-border-default bg-surface-glass p-7 shadow-[var(--shadow-soft)] backdrop-blur-xl">
+                  <p className="text-xs font-medium uppercase tracking-[0.18em] text-brand-secondary">
+                    Long-term
+                  </p>
+
+                  <h3 className="mt-6 text-2xl font-semibold tracking-[-0.035em]">
+                    Utility follows participation.
+                  </h3>
+
+                  <p className="mt-4 leading-7 text-foreground-secondary">
+                    As real activity expands across the ecosystem, ZERA can
+                    support more services, benefits, and forms of participation.
+                  </p>
+                </article>
+              </div>
+            </div>
+          </Container>
+        </Section>
+
         <Section
           id="utility"
           className="scroll-mt-28"
@@ -1316,8 +1389,6 @@ export default function ZeraPage() {
             </div>
           </Container>
         </Section>
-
-        <EconomicFlywheel />
 
         <Section>
           <Container>
@@ -1452,55 +1523,7 @@ export default function ZeraPage() {
           </Container>
         </Section>
 
-        <Section>
-          <Container>
-            <div className="border-t border-border-subtle pt-20">
-              <div className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr]">
-                <div className="max-w-xl">
-                  <p className="text-sm uppercase tracking-[0.18em] text-brand-secondary">
-                    Ecosystem growth
-                  </p>
-
-                  <h2 className="mt-5 text-4xl font-semibold tracking-[-0.045em] sm:text-5xl">
-                    Utility grows through participation.
-                  </h2>
-
-                  <p className="mt-6 text-lg leading-8 text-foreground-secondary">
-                    ZERA is not designed to create an ecosystem by itself. It
-                    is designed to reward and strengthen the activity already
-                    happening within one.
-                  </p>
-                </div>
-
-                <div className="grid gap-3">
-                  {flywheel.map((step, index) => (
-                    <div
-                      key={step}
-                      className="flex items-center gap-5 rounded-2xl border border-border-subtle bg-surface-glass px-5 py-4"
-                    >
-                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-brand-primary/25 bg-brand-primary/10 text-xs font-semibold text-brand-secondary">
-                        {index + 1}
-                      </span>
-
-                      <span className="text-base font-medium">
-                        {step}
-                      </span>
-
-                      {index < flywheel.length - 1 ? (
-                        <span
-                          aria-hidden="true"
-                          className="ml-auto text-foreground-muted"
-                        >
-                          ↓
-                        </span>
-                      ) : null}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </Container>
-        </Section>
+        <EconomicFlywheel />
 
         <Section
           id="tokenomics"
@@ -1582,13 +1605,14 @@ export default function ZeraPage() {
                 </p>
 
                 <h2 className="mt-5 text-4xl font-semibold tracking-[-0.045em] sm:text-5xl">
-                  Real utility. Connected to real participation.
+                  Utility grows when people participate.
                 </h2>
 
                 <p className="mt-6 text-lg leading-8 text-foreground-secondary">
-                  Every person rewarded, every creator supported, every
-                  business served, and every intelligent transaction expands
-                  what ZERA can make possible.
+                  Every payment, every creator supported, every business
+                  served, and every intelligent workflow strengthens the
+                  Zephyon ecosystem. ZERA is designed around participation,
+                  not speculation.
                 </p>
 
                 <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
@@ -1601,11 +1625,11 @@ export default function ZeraPage() {
                   </Button>
 
                   <Button
-                    href="/creators"
+                    href="#utility"
                     variant="outline"
                     size="lg"
                   >
-                    Explore ZephiPay
+                    Explore ZERA utility
                   </Button>
 
                   <Button

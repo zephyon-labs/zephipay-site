@@ -3,6 +3,10 @@ import { Section } from "@/components/layout/Section";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { AmbientBackground } from "@/components/marketing/AmbientBackground";
+import {
+  CreatorWorkspace,
+  creatorWorkspaceDemo,
+} from "@/components/marketing/creator-workspace";
 import { Button } from "@/components/ui/Button";
 import { siteConfig } from "@/config/site";
 
@@ -92,9 +96,9 @@ const recordDetails = [
       "Status, timestamps, settlement evidence, and receipt history remain available for review.",
   },
   {
-    label: "What can be understood later",
+    label: "Tax-ready organization",
     value:
-      "Useful context helps creators answer questions, manage earnings, and understand audience activity.",
+      "Categorized earnings, timestamps, payment purpose, and receipt history make records easier to review, export, and prepare for tax time.",
   },
 ];
 
@@ -213,11 +217,11 @@ export default function CreatorsPage() {
                 </Button>
 
                 <Button
-                  href="#creator-earnings"
+                  href="#creator-workspace"
                   variant="outline"
                   size="lg"
                 >
-                  Explore creator tools
+                  See how it works
                 </Button>
               </div>
             </div>
@@ -258,6 +262,34 @@ export default function CreatorsPage() {
                   </div>
                 ))}
               </div>
+            </div>
+          </div>
+        </Container>
+      </Section>
+
+      <Section
+        id="creator-workspace"
+        className="scroll-mt-28"
+      >
+        <Container>
+          <div className="border-t border-border-subtle pt-20">
+            <div className="mx-auto max-w-3xl text-center">
+              <p className="text-xs font-medium uppercase tracking-[0.22em] text-foreground-muted">
+                Your creator workspace
+              </p>
+
+              <h2 className="mt-4 text-3xl font-medium tracking-tight text-foreground sm:text-4xl lg:text-5xl">
+                See what your support means. Manage what comes next.
+              </h2>
+
+              <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-foreground-muted sm:text-lg">
+                Track earnings, memberships, supporter activity, payouts, and
+                verified records from one workspace built around your work.
+              </p>
+            </div>
+
+            <div className="mt-12">
+              <CreatorWorkspace {...creatorWorkspaceDemo} />
             </div>
           </div>
         </Container>
@@ -379,9 +411,9 @@ export default function CreatorsPage() {
               </h2>
 
               <p className="mt-6 text-lg leading-8 text-foreground-secondary">
-                ZephiPay is designed to preserve the useful context behind
-                creator earnings so payments remain understandable after they
-                complete.
+                ZephiPay preserves the useful context behind creator earnings, making
+                payments easier to understand, reconcile, export, and organize
+                when tax time arrives.
               </p>
             </div>
 
