@@ -26,25 +26,16 @@ export const navigationSections: NavigationSection[] = [
     eyebrow: "Personal",
     tagline: "Modern payments made simple.",
     supportingText:
-      "Send, receive, request, and manage money through one calm experience.",
+      "Send, request, transfer, and manage money through one calm experience.",
     groups: [
       {
         heading: "Move money",
         links: [
           {
-            label: "Send",
-            href: "/personal",
-            description: "Pay people securely.",
-          },
-          {
-            label: "Receive",
-            href: "/personal",
-            description: "Accept payments with ease.",
-          },
-          {
-            label: "Request",
-            href: "/personal",
-            description: "Create a clear payment request.",
+            label: "Move money",
+            href: "/personal#personal-workspace",
+            description:
+              "Send, request, or transfer through one experience.",
           },
         ],
       },
@@ -52,18 +43,13 @@ export const navigationSections: NavigationSection[] = [
         heading: "Manage",
         links: [
           {
-            label: "Wallet",
-            href: "/personal",
-            description: "See balances and payment methods.",
-          },
-          {
             label: "Activity",
-            href: "/personal",
-            description: "Review your payment history.",
+            href: "/personal/activity",
+            description: "Review your real payment history.",
           },
           {
             label: "Verified receipts",
-            href: "/personal",
+            href: "/personal/receipts",
             description: "Access trusted payment records.",
           },
         ],
@@ -72,9 +58,16 @@ export const navigationSections: NavigationSection[] = [
         heading: "Account",
         links: [
           {
-            label: "Settings",
-            href: "/personal",
-            description: "Manage your account preferences.",
+            label: "Wallet",
+            href: "/personal/wallet",
+            description:
+              "Connect balances, assets, and payment methods.",
+          },
+          {
+            label: "Account",
+            href: "/personal#account",
+            description:
+              "Connect and manage your ZephiPay account.",
           },
           {
             label: "Security",

@@ -6,7 +6,6 @@ import { AmbientBackground } from "@/components/marketing/AmbientBackground";
 import { PaymentExperience } from "@/components/marketing/payment-experience";
 import {
   PersonalWorkspace,
-  personalWorkspaceDemo,
 } from "@/components/marketing/personal-workspace";
 import { Button } from "@/components/ui/Button";
 import { siteConfig } from "@/config/site";
@@ -16,19 +15,19 @@ const everydayActions = [
     number: "01",
     title: "Send money",
     description:
-      "Pay a friend, family member, creator, or business through one calm and familiar experience.",
+      "Pay a friend, family member, business, creator, or intelligent agent through one calm and familiar experience.",
   },
   {
     number: "02",
-    title: "Receive",
+    title: "Request payment",
     description:
-      "Accept payments without making the sender understand wallets, rails, or settlement networks.",
+      "Request a specific amount or share a QR code, payment link, or ZephiPay identity when someone needs to pay you.",
   },
   {
     number: "03",
-    title: "Request",
+    title: "Transfer funds",
     description:
-      "Create a clear payment request with the amount, purpose, recipient, and transaction context attached.",
+      "Move money between your own balances, accounts, and payment methods without unnecessary friction.",
   },
   {
     number: "04",
@@ -42,7 +41,7 @@ const everydayMoments = [
   "Paying a friend back",
   "Sharing rent or household costs",
   "Sending a gift",
-  "Supporting a creator",
+  "Tipping a creator",
   "Paying a local business",
   "Keeping records for later",
 ];
@@ -89,10 +88,10 @@ const privacyPrinciples = [
 ];
 
 const accountSignals = [
-  ["Available balance", "$2,480.00"],
-  ["Recent activity", "3 verified payments"],
-  ["Verified receipts", "Ready when needed"],
-  ["Zephyon Points", "Earned through activity"],
+  ["Available balance", "Shown after account connection"],
+  ["Recent activity", "Built from real payment events"],
+  ["Verified receipts", "Created after completed payments"],
+  ["Zephyon Points", "Earned through qualifying activity"],
   ["Trust signals", "Built through reliable history"],
 ];
 
@@ -129,7 +128,7 @@ function CheckIcon() {
 export const metadata = {
   title: "Personal | ZephiPay",
   description:
-    "Send, receive, request, and understand every payment through one trusted personal payment experience.",
+    "Send money, request payment, transfer funds, and understand every transaction through one trusted personal payment experience.",
 };
 
 export default function PersonalPage() {
@@ -154,9 +153,9 @@ export default function PersonalPage() {
               </h1>
 
               <p className="mt-8 max-w-4xl text-xl leading-9 text-foreground-secondary sm:text-2xl">
-                Send money, receive payments, request what you are owed, and
-                keep every transaction understandable through one trusted
-                experience designed to stay out of your way.
+                Send money, request payment, transfer funds, and keep every
+                transaction understandable through one trusted experience
+                designed to stay out of your way.
               </p>
 
               <div className="mt-10 flex flex-wrap gap-4">
@@ -223,7 +222,7 @@ export default function PersonalPage() {
       <Section id="personal-workspace" className="scroll-mt-28">
         <Container>
           <div className="border-t border-border-subtle pt-20">
-            <PersonalWorkspace {...personalWorkspaceDemo} />
+            <PersonalWorkspace />
           </div>
         </Container>
       </Section>
