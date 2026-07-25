@@ -6,12 +6,12 @@ import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { AmbientBackground } from "@/components/marketing/AmbientBackground";
 
-import { CreatorStudioNav } from "./CreatorStudioNav";
 
 type CreatorStudioPageShellProps = {
   eyebrow: string;
   title: string;
   description: string;
+  actions?: ReactNode;
   children: ReactNode;
 };
 
@@ -19,6 +19,7 @@ export function CreatorStudioPageShell({
   eyebrow,
   title,
   description,
+  actions,
   children,
 }: CreatorStudioPageShellProps) {
   return (
@@ -43,13 +44,17 @@ export function CreatorStudioPageShell({
             <p className="mt-6 max-w-3xl text-lg leading-8 text-foreground-secondary sm:text-xl">
               {description}
             </p>
+
+            {actions ? (
+              <div className="mt-9 flex flex-wrap gap-3">
+                {actions}
+              </div>
+            ) : null}
           </div>
 
-          <div className="mt-10">
-            <CreatorStudioNav />
+          <div className="mt-12">
+            {children}
           </div>
-
-          <div className="mt-10">{children}</div>
         </Container>
       </Section>
 
