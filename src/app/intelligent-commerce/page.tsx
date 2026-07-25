@@ -424,7 +424,7 @@ export default function IntelligentCommercePage() {
               </Button>
 
               <Button
-                href="/telemetry"
+                href="/security/runtime-telemetry"
                 variant="outline"
               >
                 View runtime telemetry

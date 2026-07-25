@@ -266,7 +266,7 @@ export const navigationSections: NavigationSection[] = [
           },
           {
             label: "Runtime telemetry",
-            href: "/telemetry",
+            href: "/security/runtime-telemetry",
             description: "Observe verified runtime activity.",
           },
           {
@@ -278,72 +278,6 @@ export const navigationSections: NavigationSection[] = [
       },
     ],
   },
-  {
-    label: "Security",
-    href: "/security",
-    eyebrow: "Security",
-    tagline: "Security built into every payment.",
-    supportingText:
-      "Identity, policy, risk, compliance, and verification work quietly beneath the experience.",
-    groups: [
-      {
-        heading: "Trust",
-        links: [
-          {
-            label: "Identity",
-            href: "/security/identity",
-            description: "Protect people and account access.",
-          },
-          {
-            label: "Compliance",
-            href: "/security/compliance",
-            description: "Coordinate responsible payment activity.",
-          },
-          {
-            label: "Policy engine",
-            href: "/security/policy",
-            description: "Apply rules before value moves.",
-          },
-        ],
-      },
-      {
-        heading: "Transparency",
-        links: [
-          {
-            label: "Verified receipts",
-            href: "/security/verified-receipts",
-            description: "Preserve trustworthy payment evidence.",
-          },
-          {
-            label: "Runtime telemetry",
-            href: "/telemetry",
-            description: "Observe system activity and health.",
-          },
-        ],
-      },
-      {
-        heading: "Resources",
-        links: [
-          {
-            label: "Security center",
-            href: "/security",
-            description: "Review ZephiPay security practices.",
-          },
-          {
-            label: "Privacy",
-            href: "/privacy",
-            description: "Understand how information is handled.",
-          },
-          {
-            label: "Terms",
-            href: "/terms",
-            description: "Review platform terms and conditions.",
-          },
-        ],
-      },
-    ],
-  },
-
   {
     label: "ZERA",
     eyebrow: "The ZERA ecosystem",
@@ -418,6 +352,71 @@ export const navigationSections: NavigationSection[] = [
             href: "/developers",
             description:
               "Build applications and agentic services on Zephyon.",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    label: "Security",
+    href: "/security",
+    eyebrow: "Security",
+    tagline: "Security built into every payment.",
+    supportingText:
+      "Identity, policy, risk, compliance, and verification work quietly beneath the experience.",
+    groups: [
+      {
+        heading: "Trust",
+        links: [
+          {
+            label: "Identity Protection",
+            href: "/security/identity-protection",
+            description: "Protect accounts, access, devices, and recovery.",
+          },
+          {
+            label: "Compliance",
+            href: "/security/compliance",
+            description: "Coordinate responsible payment activity.",
+          },
+          {
+            label: "Policy engine",
+            href: "/security/policy",
+            description: "Apply rules before value moves.",
+          },
+        ],
+      },
+      {
+        heading: "Transparency",
+        links: [
+          {
+            label: "Verified receipts",
+            href: "/security/verified-receipts",
+            description: "Preserve trustworthy payment evidence.",
+          },
+          {
+            label: "Runtime telemetry",
+            href: "/security/runtime-telemetry",
+            description: "Observe Runtime activity, health, and resilience.",
+          },
+        ],
+      },
+      {
+        heading: "Resources",
+        links: [
+          {
+            label: "Security center",
+            href: "/security/security-center",
+            description: "Review ZephiPay security practices.",
+          },
+          {
+            label: "Privacy",
+            href: "/privacy",
+            description: "Understand how information is handled.",
+          },
+          {
+            label: "Terms",
+            href: "/terms",
+            description: "Review platform terms and conditions.",
           },
         ],
       },
