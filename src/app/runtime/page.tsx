@@ -225,11 +225,11 @@ export default function RuntimePage() {
               </Button>
 
               <Button
-                href="/intelligent-commerce"
+                href="/ai-agents"
                 variant="outline"
                 size="lg"
               >
-                Intelligent Commerce
+                AI Agents
               </Button>
             </div>
           </div>
@@ -557,7 +557,7 @@ export default function RuntimePage() {
 
                 <div className="mt-8">
                   <Button
-                    href="/intelligent-commerce/x402"
+                    href="/ai-agents/x402"
                     rightIcon={<ArrowIcon />}
                   >
                     Explore x402
@@ -601,7 +601,7 @@ export default function RuntimePage() {
 
               <p className="mt-6 max-w-3xl text-lg leading-8 text-foreground-secondary">
                 Start with runtime APIs, settlement orchestration, receipts,
-                telemetry, and intelligent-commerce infrastructure.
+                telemetry, and AI agent infrastructure.
               </p>
             </div>
 
@@ -615,11 +615,11 @@ export default function RuntimePage() {
               </Button>
 
               <Button
-                href="/intelligent-commerce"
+                href="/ai-agents"
                 variant="outline"
                 size="lg"
               >
-                Intelligent Commerce
+                AI Agents
               </Button>
             </div>
           </div>

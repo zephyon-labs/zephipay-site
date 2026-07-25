@@ -12,8 +12,8 @@ const footerGroups = [
       { label: "Creators", href: "/#creators" },
       { label: "Business", href: "/#business" },
       {
-        label: "Intelligent commerce",
-        href: "/#intelligent-commerce",
+        label: "AI Agents",
+        href: "/#ai-agents",
       },
     ],
   },

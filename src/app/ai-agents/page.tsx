@@ -357,7 +357,7 @@ export default function IntelligentCommercePage() {
 
               <div className="mt-8 flex flex-wrap gap-4">
                 <Button
-                  href="/intelligent-commerce/x402"
+                  href="/ai-agents/x402"
                   rightIcon={<ArrowIcon />}
                 >
                   Explore x402

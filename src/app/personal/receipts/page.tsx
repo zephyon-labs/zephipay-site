@@ -350,7 +350,7 @@ export default function PersonalReceiptsPage() {
 
             <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-foreground-secondary">
               Join the ZephiPay beta and help shape payment records designed
-              for trust, clarity, and intelligent commerce.
+              for trust, clarity, and the AI economy.
             </p>
 
             <div className="mt-9 flex flex-wrap justify-center gap-4">

@@ -40,7 +40,7 @@ const coreUtility = [
     number: "05",
     title: "Power intelligent agents",
     description:
-      "Give trusted AI agents access to advanced financial assistance, automation, insights, and intelligent commerce.",
+      "Give trusted AI agents access to advanced financial assistance, automation, intelligent payments, and economic coordination.",
     benefit: "Automate",
   },
   {

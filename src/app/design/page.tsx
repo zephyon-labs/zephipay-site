@@ -50,7 +50,7 @@ export default function DesignPage() {
               <span>Individuals</span>
               <span>Creators</span>
               <span>Businesses</span>
-              <span>Intelligent commerce</span>
+              <span>AI Agents</span>
             </div>
           </div>
         </Container>
@@ -121,7 +121,7 @@ export default function DesignPage() {
                 <div className="text-3xl">🤖</div>
 
                 <h3 className="mt-6 text-xl font-semibold">
-                  Intelligent Commerce
+                  AI Agents
                 </h3>
 
                 <p className="mt-4 text-sm leading-7 text-foreground-secondary">
@@ -239,7 +239,7 @@ export default function DesignPage() {
                 <p className="text-sm text-foreground-muted">Heading</p>
 
                 <p className="mt-2 text-4xl font-semibold tracking-[-0.03em]">
-                  Built for people, businesses, and intelligent commerce.
+                  Built for people, businesses, and AI agents.
                 </p>
               </div>
 

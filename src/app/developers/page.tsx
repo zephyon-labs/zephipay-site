@@ -146,7 +146,7 @@ function ArrowIcon() {
 export const metadata = {
   title: "Developers | ZephiPay",
   description:
-    "Build payment experiences with the Zephyon Runtime, APIs, deterministic receipts, telemetry, x402, and intelligent-commerce infrastructure.",
+    "Build payment experiences with the Zephyon Runtime, APIs, deterministic receipts, telemetry, x402, and AI agent infrastructure.",
 };
 
 export default function DevelopersPage() {

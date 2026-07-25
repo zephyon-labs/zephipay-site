@@ -8,7 +8,7 @@ type AudienceId =
   | "personal"
   | "creators"
   | "business"
-  | "intelligent-commerce";
+  | "ai-agents";
 
 type Audience = {
   id: AudienceId;
@@ -96,8 +96,8 @@ const audiences: Audience[] = [
     ),
   },
   {
-    id: "intelligent-commerce",
-    title: "Intelligent Commerce",
+    id: "ai-agents",
+    title: "AI Agents",
     description:
       "Policy-aware payments for software agents and autonomous digital services.",
     details: [

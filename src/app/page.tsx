@@ -84,10 +84,10 @@ export default function HomePage() {
                 Businesses
               </a>
               <a
-                href="#intelligent-commerce"
+                href="#ai-agents"
                 className="transition-colors hover:text-foreground"
               >
-                Intelligent commerce
+                AI Agents
               </a>
             </div>
           </div>
@@ -190,7 +190,7 @@ export default function HomePage() {
                 {
                   title: "Future Ready",
                   body:
-                    "Designed for people today. Ready for intelligent commerce tomorrow."
+                    "Designed for people today. Ready for AI agents tomorrow."
                 }
               ].map((item)=>(
                 <div

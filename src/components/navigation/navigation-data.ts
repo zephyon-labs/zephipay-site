@@ -208,9 +208,9 @@ export const navigationSections: NavigationSection[] = [
     ],
   },
   {
-    label: "Intelligent Commerce",
-    href: "/intelligent-commerce",
-    eyebrow: "Intelligent commerce",
+    label: "AI Agents",
+    href: "/ai-agents",
+    eyebrow: "AI Agents",
     tagline: "Economic infrastructure for software.",
     supportingText:
       "Give intelligent systems the ability to transact, verify, and coordinate value.",
@@ -220,17 +220,17 @@ export const navigationSections: NavigationSection[] = [
         links: [
           {
             label: "Agent wallets",
-            href: "/intelligent-commerce",
+            href: "/ai-agents",
             description: "Purpose-built wallets for software agents.",
           },
           {
             label: "AI-to-AI payments",
-            href: "/intelligent-commerce",
+            href: "/ai-agents",
             description: "Enable autonomous economic exchange.",
           },
           {
             label: "x402 payments",
-            href: "/intelligent-commerce",
+            href: "/ai-agents",
             description: "Pay for digital resources through HTTP.",
             badge: "Live",
           },
@@ -283,7 +283,7 @@ export const navigationSections: NavigationSection[] = [
     eyebrow: "The ZERA ecosystem",
     tagline: "Utility designed around real participation.",
     supportingText:
-      "Explore how ZERA reduces eligible costs, rewards activity, unlocks premium capabilities, and supports intelligent commerce.",
+      "Explore how ZERA reduces eligible costs, rewards activity, unlocks premium capabilities, and supports AI agents.",
     href: "/zera",
     groups: [
       {
@@ -336,8 +336,8 @@ export const navigationSections: NavigationSection[] = [
         heading: "Intelligent economy",
         links: [
           {
-            label: "Intelligent commerce",
-            href: "/intelligent-commerce",
+            label: "AI Agents",
+            href: "/ai-agents",
             description:
               "Explore payments designed for people, software, and AI.",
           },

@@ -445,7 +445,7 @@ export default function BusinessPage() {
 
               <div className="mt-8">
                 <Button
-                  href="/intelligent-commerce"
+                  href="/ai-agents"
                   variant="outline"
                   rightIcon={<ArrowIcon />}
                 >

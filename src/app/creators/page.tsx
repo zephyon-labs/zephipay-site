@@ -159,7 +159,7 @@ export default function CreatorsPage() {
             <p className="mt-5 max-w-3xl leading-8 text-foreground-secondary">
               ZephiPay connects creator earnings with verified receipts,
               supporter relationships, settlement evidence, analytics, and
-              future intelligent-commerce capabilities.
+              future AI agent capabilities.
             </p>
           </div>
 
