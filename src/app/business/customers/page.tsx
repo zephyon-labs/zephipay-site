@@ -1,70 +1,70 @@
 import {
-  CreatorCommunityWorkspace,
-  CreatorStudioPageShell,
-} from "@/components/marketing/creator-studio";
+  BusinessCustomersWorkspace,
+  BusinessStudioPageShell,
+} from "@/components/marketing/business-studio";
 
 export const metadata = {
-  title: "Creator Community | ZephiPay",
+  title: "Customers | ZephiPay Business",
   description:
-    "Understand supporters, members, customers, and creator relationships.",
+    "Understand customer relationships, payment history, receipts, notes, and communication permissions.",
 };
 
-export default function CreatorCommunityPage() {
+export default function BusinessCustomersPage() {
   return (
-    <CreatorStudioPageShell
-      eyebrow="Creator Studio"
-      title="Community"
-      description="Understand the people behind your support without turning meaningful relationships into a noisy follower count."
+    <BusinessStudioPageShell
+      title="Customers"
+      description="Understand customer relationships, payment history, receipts, notes, and communication permissions."
     >
-      <CreatorCommunityWorkspace />
+      <BusinessCustomersWorkspace />
 
       <section className="mt-14 grid gap-5 lg:grid-cols-3">
         <article className="rounded-[1.7rem] border border-border-default bg-surface-glass p-6 shadow-[var(--shadow-soft)] backdrop-blur-xl">
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-brand-secondary">
-            Relationship context
+            Relationship history
           </p>
 
           <h2 className="mt-4 text-xl font-semibold tracking-[-0.03em]">
-            See more than a transaction.
+            Keep customer context connected.
           </h2>
 
           <p className="mt-3 leading-7 text-foreground-secondary">
-            Each relationship can remain connected to support,
-            memberships, purchases, receipts, and settlement history.
+            Payments, invoices, refunds, receipts, and support history
+            can remain attached to the same verified relationship.
           </p>
         </article>
 
         <article className="rounded-[1.7rem] border border-border-default bg-surface-glass p-6 shadow-[var(--shadow-soft)] backdrop-blur-xl">
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-brand-secondary">
-            Privacy-aware
+            Operational clarity
           </p>
 
           <h2 className="mt-4 text-xl font-semibold tracking-[-0.03em]">
-            Communication requires permission.
+            See what needs attention.
           </h2>
 
           <p className="mt-3 leading-7 text-foreground-secondary">
-            Creator relationships should respect consent, preferences,
-            privacy controls, and the purpose for which data was shared.
+            Outstanding invoices, open requests, refunds, and
+            relationship notes can surface without reconstructing
+            context across disconnected tools.
           </p>
         </article>
 
         <article className="rounded-[1.7rem] border border-border-default bg-surface-glass p-6 shadow-[var(--shadow-soft)] backdrop-blur-xl">
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-brand-secondary">
-            Honest state
+            Permission-aware
           </p>
 
           <h2 className="mt-4 text-xl font-semibold tracking-[-0.03em]">
-            No fictional community data.
+            Respect how customer data is used.
           </h2>
 
           <p className="mt-3 leading-7 text-foreground-secondary">
-            The workspace demonstrates intended relationship tools
-            without inventing supporters, revenue, identities, or
-            communication permissions.
+            Communication preferences, permissions, and business
+            purpose should remain visible before teams act on customer
+            information.
           </p>
         </article>
       </section>
-    </CreatorStudioPageShell>
+    </BusinessStudioPageShell>
   );
 }

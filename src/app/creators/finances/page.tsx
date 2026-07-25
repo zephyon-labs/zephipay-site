@@ -1,31 +1,7 @@
 import {
-  CreatorEmptyState,
-  CreatorMetricGrid,
+  CreatorFinancesWorkspace,
   CreatorStudioPageShell,
 } from "@/components/marketing/creator-studio";
-
-const metrics = [
-  {
-    label: "Available",
-    value: "$0.00",
-    detail: "Funds currently available for withdrawal.",
-  },
-  {
-    label: "Pending",
-    value: "$0.00",
-    detail: "Payments still completing settlement.",
-  },
-  {
-    label: "Next payout",
-    value: "Not scheduled",
-    detail: "Payout timing will appear after setup.",
-  },
-  {
-    label: "Fees",
-    value: "$0.00",
-    detail: "Clear platform and settlement costs.",
-  },
-];
 
 export const metadata = {
   title: "Creator Finances | ZephiPay",
@@ -38,19 +14,58 @@ export default function CreatorFinancesPage() {
     <CreatorStudioPageShell
       eyebrow="Creator Studio"
       title="Finances"
-      description="Review balances, settlement activity, payouts, fees, and records through one financial workspace."
+      description="Review balances, settlement activity, payouts, fees, and records through one connected financial workspace."
     >
-      <CreatorMetricGrid metrics={metrics} />
+      <CreatorFinancesWorkspace />
 
-      <div className="mt-6">
-        <CreatorEmptyState
-          eyebrow="Payout setup"
-          title="No payout method connected"
-          description="Creators will connect an eligible bank account or supported settlement destination before withdrawing funds."
-          actionLabel="View creator dashboard"
-          actionHref="/creators"
-        />
-      </div>
+      <section className="mt-14 grid gap-5 lg:grid-cols-3">
+        <article className="rounded-[1.7rem] border border-border-default bg-surface-glass p-6 shadow-[var(--shadow-soft)] backdrop-blur-xl">
+          <p className="text-xs font-medium uppercase tracking-[0.18em] text-brand-secondary">
+            Traceable settlement
+          </p>
+
+          <h2 className="mt-4 text-xl font-semibold tracking-[-0.03em]">
+            Follow money from payment to payout.
+          </h2>
+
+          <p className="mt-3 leading-7 text-foreground-secondary">
+            Creator earnings remain connected to verification,
+            settlement status, available balance, fees, and final payout.
+          </p>
+        </article>
+
+        <article className="rounded-[1.7rem] border border-border-default bg-surface-glass p-6 shadow-[var(--shadow-soft)] backdrop-blur-xl">
+          <p className="text-xs font-medium uppercase tracking-[0.18em] text-brand-secondary">
+            Clear costs
+          </p>
+
+          <h2 className="mt-4 text-xl font-semibold tracking-[-0.03em]">
+            Understand every deduction.
+          </h2>
+
+          <p className="mt-3 leading-7 text-foreground-secondary">
+            Platform, network, processing, refund, and settlement costs
+            should remain visible instead of disappearing into a single
+            unexplained total.
+          </p>
+        </article>
+
+        <article className="rounded-[1.7rem] border border-border-default bg-surface-glass p-6 shadow-[var(--shadow-soft)] backdrop-blur-xl">
+          <p className="text-xs font-medium uppercase tracking-[0.18em] text-brand-secondary">
+            Tax-ready organization
+          </p>
+
+          <h2 className="mt-4 text-xl font-semibold tracking-[-0.03em]">
+            Better records throughout the year.
+          </h2>
+
+          <p className="mt-3 leading-7 text-foreground-secondary">
+            Verified earnings, refunds, fees, and payouts can be
+            organized into exportable records for bookkeeping and
+            professional tax review.
+          </p>
+        </article>
+      </section>
     </CreatorStudioPageShell>
   );
 }

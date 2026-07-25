@@ -1,70 +1,71 @@
 import {
-  CreatorCommunityWorkspace,
-  CreatorStudioPageShell,
-} from "@/components/marketing/creator-studio";
+  BusinessFinancesWorkspace,
+  BusinessStudioPageShell,
+} from "@/components/marketing/business-studio";
 
 export const metadata = {
-  title: "Creator Community | ZephiPay",
+  title: "Finances | ZephiPay Business",
   description:
-    "Understand supporters, members, customers, and creator relationships.",
+    "Review balances, settlement, deposits, fees, bank destinations, exports, and accounting records.",
 };
 
-export default function CreatorCommunityPage() {
+export default function BusinessFinancesPage() {
   return (
-    <CreatorStudioPageShell
-      eyebrow="Creator Studio"
-      title="Community"
-      description="Understand the people behind your support without turning meaningful relationships into a noisy follower count."
+    <BusinessStudioPageShell
+      title="Finances"
+      description="Review balances, settlement, deposits, fees, bank destinations, exports, and accounting records."
     >
-      <CreatorCommunityWorkspace />
+      <BusinessFinancesWorkspace />
 
       <section className="mt-14 grid gap-5 lg:grid-cols-3">
         <article className="rounded-[1.7rem] border border-border-default bg-surface-glass p-6 shadow-[var(--shadow-soft)] backdrop-blur-xl">
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-brand-secondary">
-            Relationship context
+            Financial clarity
           </p>
 
           <h2 className="mt-4 text-xl font-semibold tracking-[-0.03em]">
-            See more than a transaction.
+            Know where every dollar stands.
           </h2>
 
           <p className="mt-3 leading-7 text-foreground-secondary">
-            Each relationship can remain connected to support,
-            memberships, purchases, receipts, and settlement history.
+            Available funds, pending settlement, deposits, refunds, and
+            fees remain visible without forcing businesses to reconcile
+            disconnected payment records.
           </p>
         </article>
 
         <article className="rounded-[1.7rem] border border-border-default bg-surface-glass p-6 shadow-[var(--shadow-soft)] backdrop-blur-xl">
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-brand-secondary">
-            Privacy-aware
+            Settlement continuity
           </p>
 
           <h2 className="mt-4 text-xl font-semibold tracking-[-0.03em]">
-            Communication requires permission.
+            Follow funds from payment to deposit.
           </h2>
 
           <p className="mt-3 leading-7 text-foreground-secondary">
-            Creator relationships should respect consent, preferences,
-            privacy controls, and the purpose for which data was shared.
+            Payment confirmation, settlement status, availability, and
+            destination transfers can remain connected as one auditable
+            financial flow.
           </p>
         </article>
 
         <article className="rounded-[1.7rem] border border-border-default bg-surface-glass p-6 shadow-[var(--shadow-soft)] backdrop-blur-xl">
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-brand-secondary">
-            Honest state
+            Accounting ready
           </p>
 
           <h2 className="mt-4 text-xl font-semibold tracking-[-0.03em]">
-            No fictional community data.
+            Preserve records before reporting begins.
           </h2>
 
           <p className="mt-3 leading-7 text-foreground-secondary">
-            The workspace demonstrates intended relationship tools
-            without inventing supporters, revenue, identities, or
-            communication permissions.
+            Verified receipts, fee summaries, settlement reports, and
+            activity exports can remain structured for bookkeeping,
+            reconciliation, and future tax workflows.
           </p>
         </article>
       </section>
-    </CreatorStudioPageShell>
+    </BusinessStudioPageShell>
   );
 }

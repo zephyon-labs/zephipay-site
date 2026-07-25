@@ -1,70 +1,71 @@
 import {
-  CreatorCommunityWorkspace,
-  CreatorStudioPageShell,
-} from "@/components/marketing/creator-studio";
+  BusinessAnalyticsWorkspace,
+  BusinessStudioPageShell,
+} from "@/components/marketing/business-studio";
 
 export const metadata = {
-  title: "Creator Community | ZephiPay",
+  title: "Analytics | ZephiPay Business",
   description:
-    "Understand supporters, members, customers, and creator relationships.",
+    "Turn verified payments, customers, checkout activity, and settlement records into useful business signals.",
 };
 
-export default function CreatorCommunityPage() {
+export default function BusinessAnalyticsPage() {
   return (
-    <CreatorStudioPageShell
-      eyebrow="Creator Studio"
-      title="Community"
-      description="Understand the people behind your support without turning meaningful relationships into a noisy follower count."
+    <BusinessStudioPageShell
+      title="Analytics"
+      description="Turn verified payments, customers, checkout activity, and settlement records into useful business signals."
     >
-      <CreatorCommunityWorkspace />
+      <BusinessAnalyticsWorkspace />
 
       <section className="mt-14 grid gap-5 lg:grid-cols-3">
         <article className="rounded-[1.7rem] border border-border-default bg-surface-glass p-6 shadow-[var(--shadow-soft)] backdrop-blur-xl">
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-brand-secondary">
-            Relationship context
+            Verified foundation
           </p>
 
           <h2 className="mt-4 text-xl font-semibold tracking-[-0.03em]">
-            See more than a transaction.
+            Build insight from real activity.
           </h2>
 
           <p className="mt-3 leading-7 text-foreground-secondary">
-            Each relationship can remain connected to support,
-            memberships, purchases, receipts, and settlement history.
+            Revenue, orders, customers, checkout sessions, and
+            settlement records remain grounded in verified business
+            events rather than disconnected estimates.
           </p>
         </article>
 
         <article className="rounded-[1.7rem] border border-border-default bg-surface-glass p-6 shadow-[var(--shadow-soft)] backdrop-blur-xl">
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-brand-secondary">
-            Privacy-aware
+            Operational context
           </p>
 
           <h2 className="mt-4 text-xl font-semibold tracking-[-0.03em]">
-            Communication requires permission.
+            Understand why performance changed.
           </h2>
 
           <p className="mt-3 leading-7 text-foreground-secondary">
-            Creator relationships should respect consent, preferences,
-            privacy controls, and the purpose for which data was shared.
+            Payment channels, customers, checkout behavior, and
+            settlement outcomes can be evaluated together instead of
+            across isolated reporting systems.
           </p>
         </article>
 
         <article className="rounded-[1.7rem] border border-border-default bg-surface-glass p-6 shadow-[var(--shadow-soft)] backdrop-blur-xl">
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-brand-secondary">
-            Honest state
+            Honest signals
           </p>
 
           <h2 className="mt-4 text-xl font-semibold tracking-[-0.03em]">
-            No fictional community data.
+            Never manufacture the story.
           </h2>
 
           <p className="mt-3 leading-7 text-foreground-secondary">
-            The workspace demonstrates intended relationship tools
-            without inventing supporters, revenue, identities, or
-            communication permissions.
+            Trends and recommendations appear only when enough verified
+            history exists to support them, preserving clarity and trust
+            as the business grows.
           </p>
         </article>
       </section>
-    </CreatorStudioPageShell>
+    </BusinessStudioPageShell>
   );
 }

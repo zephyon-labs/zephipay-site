@@ -1,70 +1,71 @@
 import {
-  CreatorCommunityWorkspace,
-  CreatorStudioPageShell,
-} from "@/components/marketing/creator-studio";
+  BusinessPaymentsWorkspace,
+  BusinessStudioPageShell,
+} from "@/components/marketing/business-studio";
 
 export const metadata = {
-  title: "Creator Community | ZephiPay",
+  title: "Payments | ZephiPay Business",
   description:
-    "Understand supporters, members, customers, and creator relationships.",
+    "Accept, send, request, refund, and track business payments through one coordinated workspace.",
 };
 
-export default function CreatorCommunityPage() {
+export default function BusinessPaymentsPage() {
   return (
-    <CreatorStudioPageShell
-      eyebrow="Creator Studio"
-      title="Community"
-      description="Understand the people behind your support without turning meaningful relationships into a noisy follower count."
+    <BusinessStudioPageShell
+      title="Payments"
+      description="Accept, send, request, refund, and track business payments through one coordinated workspace."
     >
-      <CreatorCommunityWorkspace />
+      <BusinessPaymentsWorkspace />
 
       <section className="mt-14 grid gap-5 lg:grid-cols-3">
         <article className="rounded-[1.7rem] border border-border-default bg-surface-glass p-6 shadow-[var(--shadow-soft)] backdrop-blur-xl">
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-brand-secondary">
-            Relationship context
+            One payment workspace
           </p>
 
           <h2 className="mt-4 text-xl font-semibold tracking-[-0.03em]">
-            See more than a transaction.
+            Move money without losing context.
           </h2>
 
           <p className="mt-3 leading-7 text-foreground-secondary">
-            Each relationship can remain connected to support,
-            memberships, purchases, receipts, and settlement history.
+            Incoming payments, outgoing transfers, requests, refunds,
+            links, and in-person commerce can share the same dependable
+            operating model.
           </p>
         </article>
 
         <article className="rounded-[1.7rem] border border-border-default bg-surface-glass p-6 shadow-[var(--shadow-soft)] backdrop-blur-xl">
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-brand-secondary">
-            Privacy-aware
+            Policy before execution
           </p>
 
           <h2 className="mt-4 text-xl font-semibold tracking-[-0.03em]">
-            Communication requires permission.
+            Apply controls before value moves.
           </h2>
 
           <p className="mt-3 leading-7 text-foreground-secondary">
-            Creator relationships should respect consent, preferences,
-            privacy controls, and the purpose for which data was shared.
+            Identity, permissions, compliance, risk, limits, and
+            business policy can be evaluated before a payment becomes
+            irreversible.
           </p>
         </article>
 
         <article className="rounded-[1.7rem] border border-border-default bg-surface-glass p-6 shadow-[var(--shadow-soft)] backdrop-blur-xl">
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-brand-secondary">
-            Honest state
+            Verified records
           </p>
 
           <h2 className="mt-4 text-xl font-semibold tracking-[-0.03em]">
-            No fictional community data.
+            Preserve evidence of what happened.
           </h2>
 
           <p className="mt-3 leading-7 text-foreground-secondary">
-            The workspace demonstrates intended relationship tools
-            without inventing supporters, revenue, identities, or
-            communication permissions.
+            Purpose, participant, decision state, settlement status,
+            timestamps, and receipt history remain connected to the
+            payment.
           </p>
         </article>
       </section>
-    </CreatorStudioPageShell>
+    </BusinessStudioPageShell>
   );
 }

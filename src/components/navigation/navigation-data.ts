@@ -149,62 +149,59 @@ export const navigationSections: NavigationSection[] = [
       "Accept payments, manage operations, and move value without unnecessary complexity.",
     groups: [
       {
-        heading: "Accept payments",
+        heading: "Business workspace",
         links: [
           {
-            label: "Point of sale",
+            label: "Dashboard",
             href: "/business",
-            description: "Accept payments in person.",
+            description:
+              "See revenue, payments, settlement, and operational priorities.",
           },
           {
-            label: "Payment links",
-            href: "/business",
-            description: "Get paid through a simple link.",
+            label: "Payments",
+            href: "/business/payments",
+            description:
+              "Accept, send, request, refund, and track payments.",
           },
+          {
+            label: "Customers",
+            href: "/business/customers",
+            description:
+              "Manage customer relationships and payment history.",
+          },
+        ],
+      },
+      {
+        heading: "Sell",
+        links: [
           {
             label: "Invoices",
-            href: "/business",
-            description: "Send and track professional invoices.",
+            href: "/business/invoices",
+            description:
+              "Create, send, track, and reconcile invoices.",
+          },
+          {
+            label: "Checkout",
+            href: "/business/checkout",
+            description:
+              "Configure links, QR, hosted, and embedded checkout.",
           },
         ],
       },
       {
-        heading: "Move money",
+        heading: "Operate",
         links: [
           {
-            label: "Send",
-            href: "/business",
-            description: "Pay vendors, teams, and partners.",
+            label: "Analytics",
+            href: "/business/analytics",
+            description:
+              "Understand revenue, conversion, and customer behavior.",
           },
           {
-            label: "Receive",
-            href: "/business",
-            description: "Accept customer and partner payments.",
-          },
-          {
-            label: "Request",
-            href: "/business",
-            description: "Request payment with clear terms.",
-          },
-        ],
-      },
-      {
-        heading: "Operations",
-        links: [
-          {
-            label: "Settlement",
-            href: "/business",
-            description: "Follow funds through settlement.",
-          },
-          {
-            label: "Reporting",
-            href: "/business",
-            description: "Review business payment performance.",
-          },
-          {
-            label: "Team access",
-            href: "/business",
-            description: "Manage roles and permissions.",
+            label: "Finances",
+            href: "/business/finances",
+            description:
+              "Review settlement, balances, fees, and financial records.",
           },
         ],
       },

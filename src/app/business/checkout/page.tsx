@@ -1,70 +1,68 @@
 import {
-  CreatorCommunityWorkspace,
-  CreatorStudioPageShell,
-} from "@/components/marketing/creator-studio";
+  BusinessCheckoutWorkspace,
+  BusinessStudioPageShell,
+} from "@/components/marketing/business-studio";
 
 export const metadata = {
-  title: "Creator Community | ZephiPay",
+  title: "Checkout | ZephiPay Business",
   description:
-    "Understand supporters, members, customers, and creator relationships.",
+    "Configure hosted checkout, payment links, QR experiences, point of sale, and embedded payment flows.",
 };
 
-export default function CreatorCommunityPage() {
+export default function BusinessCheckoutPage() {
   return (
-    <CreatorStudioPageShell
-      eyebrow="Creator Studio"
-      title="Community"
-      description="Understand the people behind your support without turning meaningful relationships into a noisy follower count."
+    <BusinessStudioPageShell
+      title="Checkout"
+      description="Configure hosted checkout, payment links, QR experiences, point of sale, and embedded payment flows."
     >
-      <CreatorCommunityWorkspace />
+      <BusinessCheckoutWorkspace />
 
       <section className="mt-14 grid gap-5 lg:grid-cols-3">
         <article className="rounded-[1.7rem] border border-border-default bg-surface-glass p-6 shadow-[var(--shadow-soft)] backdrop-blur-xl">
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-brand-secondary">
-            Relationship context
+            Every channel
           </p>
 
           <h2 className="mt-4 text-xl font-semibold tracking-[-0.03em]">
-            See more than a transaction.
+            Accept payment wherever business happens.
           </h2>
 
           <p className="mt-3 leading-7 text-foreground-secondary">
-            Each relationship can remain connected to support,
-            memberships, purchases, receipts, and settlement history.
+            Hosted pages, links, QR codes, point of sale, and embedded
+            checkout can share one consistent payment foundation.
           </p>
         </article>
 
         <article className="rounded-[1.7rem] border border-border-default bg-surface-glass p-6 shadow-[var(--shadow-soft)] backdrop-blur-xl">
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-brand-secondary">
-            Privacy-aware
+            Customer experience
           </p>
 
           <h2 className="mt-4 text-xl font-semibold tracking-[-0.03em]">
-            Communication requires permission.
+            Keep checkout calm and recognizable.
           </h2>
 
           <p className="mt-3 leading-7 text-foreground-secondary">
-            Creator relationships should respect consent, preferences,
-            privacy controls, and the purpose for which data was shared.
+            Business details, payment methods, confirmation behavior,
+            and receipts can remain consistent across every checkout surface.
           </p>
         </article>
 
         <article className="rounded-[1.7rem] border border-border-default bg-surface-glass p-6 shadow-[var(--shadow-soft)] backdrop-blur-xl">
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-brand-secondary">
-            Honest state
+            Verified completion
           </p>
 
           <h2 className="mt-4 text-xl font-semibold tracking-[-0.03em]">
-            No fictional community data.
+            Connect checkout to real settlement.
           </h2>
 
           <p className="mt-3 leading-7 text-foreground-secondary">
-            The workspace demonstrates intended relationship tools
-            without inventing supporters, revenue, identities, or
-            communication permissions.
+            Customer confirmation, payment status, receipts, and
+            settlement records can remain linked from start to finish.
           </p>
         </article>
       </section>
-    </CreatorStudioPageShell>
+    </BusinessStudioPageShell>
   );
 }

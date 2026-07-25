@@ -4,9 +4,8 @@ import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { AmbientBackground } from "@/components/marketing/AmbientBackground";
 import {
-  BusinessWorkspace,
-  businessWorkspaceDemo,
-} from "@/components/marketing/business-workspace";
+  BusinessCommandCenter,
+} from "@/components/marketing/business-studio";
 import { Button } from "@/components/ui/Button";
 import { siteConfig } from "@/config/site";
 
@@ -249,7 +248,7 @@ export default function BusinessPage() {
             </div>
 
             <div className="mt-12">
-              <BusinessWorkspace data={businessWorkspaceDemo} />
+              <BusinessCommandCenter />
             </div>
           </div>
         </Container>
