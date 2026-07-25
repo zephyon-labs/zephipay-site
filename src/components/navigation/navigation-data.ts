@@ -64,16 +64,18 @@ export const navigationSections: NavigationSection[] = [
               "Connect balances, assets, and payment methods.",
           },
           {
-            label: "Account",
-            href: "/personal#account",
+            label: "Identity",
+            href: "/personal/identity",
             description:
-              "Connect and manage your ZephiPay account.",
+              "Manage verification, trust, points, and security.",
           },
           {
-            label: "Security",
-            href: "/security",
-            description: "Protect your identity and payments.",
+            label: "Settings",
+            href: "/personal/settings",
+            description:
+              "Customize preferences, notifications, and accessibility.",
           },
+
         ],
       },
     ],
@@ -82,67 +84,57 @@ export const navigationSections: NavigationSection[] = [
     label: "Creators",
     href: "/creators",
     eyebrow: "Creators",
-    tagline: "Build around the work people value.",
+    tagline: "Run your creator business with confidence.",
     supportingText:
-      "Accept support, manage earnings, and grow direct relationships with your audience.",
+      "Manage supporters, memberships, products, payouts, analytics, and your public storefront through one connected creator workspace.",
     groups: [
       {
-        heading: "Earn",
+        heading: "Creator Studio",
         links: [
           {
-            label: "Tips",
+            label: "Dashboard",
             href: "/creators",
-            description: "Accept direct audience support.",
+            description: "Your creator command center.",
           },
           {
-            label: "Memberships",
-            href: "/creators",
-            description: "Build recurring communities.",
-          },
-          {
-            label: "Subscriptions",
-            href: "/creators",
-            description: "Create dependable recurring revenue.",
+            label: "Monetization",
+            href: "/creators/monetization",
+            description:
+              "Tips, memberships, subscriptions, and products.",
           },
         ],
       },
       {
-        heading: "Move money",
+        heading: "Growth",
         links: [
           {
-            label: "Send",
-            href: "/creators",
-            description: "Pay collaborators and partners.",
+            label: "Community",
+            href: "/creators/community",
+            description:
+              "Understand the people supporting your work.",
           },
-          {
-            label: "Receive",
-            href: "/creators",
-            description: "Accept payments from anywhere.",
-          },
-          {
-            label: "Withdraw",
-            href: "/creators",
-            description: "Move earnings when you need them.",
-          },
-        ],
-      },
-      {
-        heading: "Creator tools",
-        links: [
           {
             label: "Analytics",
-            href: "/creators",
-            description: "Understand your payment activity.",
+            href: "/creators/analytics",
+            description:
+              "Revenue, growth, and performance insights.",
+          },
+        ],
+      },
+      {
+        heading: "Business",
+        links: [
+          {
+            label: "Finances",
+            href: "/creators/finances",
+            description:
+              "Balances, payouts, fees, and tax-ready records.",
           },
           {
-            label: "Audience",
-            href: "/creators",
-            description: "See who supports your work.",
-          },
-          {
-            label: "Payout history",
-            href: "/creators",
-            description: "Track every completed payout.",
+            label: "Storefront",
+            href: "/creators/storefront",
+            description:
+              "Preview the public experience for supporters.",
           },
         ],
       },
