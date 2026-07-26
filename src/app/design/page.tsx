@@ -49,7 +49,7 @@ export default function DesignPage() {
             <div className="mt-12 flex flex-wrap gap-x-8 gap-y-3 text-sm uppercase tracking-[0.14em] text-foreground-muted">
               <span>Individuals</span>
               <span>Creators</span>
-              <span>Businesses</span>
+              <span>Business</span>
               <span>AI Agents</span>
             </div>
           </div>
@@ -108,7 +108,7 @@ export default function DesignPage() {
                 <div className="text-3xl">🏪</div>
 
                 <h3 className="mt-6 text-xl font-semibold">
-                  Businesses
+                  Business
                 </h3>
 
                 <p className="mt-4 text-sm leading-7 text-foreground-secondary">

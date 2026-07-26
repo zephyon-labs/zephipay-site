@@ -71,7 +71,7 @@ const audiences: Audience[] = [
   },
   {
     id: "business",
-    title: "Businesses",
+    title: "Business",
     description:
       "Modern payment acceptance, deterministic receipts, and flexible settlement.",
     details: [

@@ -542,7 +542,7 @@ export default function RuntimePage() {
             <div className="grid gap-12 lg:grid-cols-[0.78fr_1.22fr]">
               <div>
                 <p className="text-sm uppercase tracking-[0.18em] text-brand-secondary">
-                  x402 execution
+                  AI payment execution
                 </p>
 
                 <h2 className="mt-5 text-4xl font-semibold tracking-[-0.045em] sm:text-5xl">
@@ -557,10 +557,10 @@ export default function RuntimePage() {
 
                 <div className="mt-8">
                   <Button
-                    href="/ai-agents/x402"
+                    href="/ai-agents/how-it-works#pay-for-ai-services"
                     rightIcon={<ArrowIcon />}
                   >
-                    Explore x402
+                    Learn about AI payments
                   </Button>
                 </div>
               </div>

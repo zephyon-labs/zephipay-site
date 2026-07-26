@@ -41,7 +41,7 @@ const participantTypes = [
       "Connect personal verification, accounts, transaction history, trust, and participation.",
   },
   {
-    title: "Businesses",
+    title: "Business",
     description:
       "Establish a verified operating identity for commerce, settlement, reporting, and policy.",
   },

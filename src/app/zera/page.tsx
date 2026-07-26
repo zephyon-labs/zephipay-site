@@ -94,11 +94,11 @@ const participantUtility = [
     ],
   },
   {
-    audience: "Businesses",
+    audience: "Business",
     eyebrow: "For modern commerce",
     headline: "Reduce friction across operations.",
     description:
-      "Businesses can use ZERA to access eligible fee benefits, premium commerce capabilities, and intelligent tools for managing payment activity.",
+      "Business can use ZERA to access eligible fee benefits, premium commerce capabilities, and intelligent tools for managing payment activity.",
     features: [
       "Eligible processing fee reductions",
       "Subscription-or-Stake premium access",
@@ -115,7 +115,7 @@ const subscriptionOrStake = [
       "Unlock premium creator tools by paying a recurring subscription or staking ZERA while remaining aligned with the ecosystem.",
   },
   {
-    title: "Businesses",
+    title: "Business",
     description:
       "Reduce recurring operating costs by choosing Subscription-or-Stake for eligible premium commerce capabilities.",
   },
@@ -1168,8 +1168,8 @@ export default function ZeraPage() {
                     size="lg"
                     rightIcon={<ArrowIcon />}
                   >
-                    Explore utility
-                  </Button>
+                  Explore Utility Model
+                </Button>
 
                   <Button
                     href="#tokenomics"

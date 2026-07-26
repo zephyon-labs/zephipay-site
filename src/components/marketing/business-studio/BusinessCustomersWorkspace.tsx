@@ -42,7 +42,7 @@ const filters: CustomerFilter[] = [
   },
   {
     id: "businesses",
-    label: "Businesses",
+    label: "Business",
     description:
       "Verified organizations, vendors, and business customers.",
   },

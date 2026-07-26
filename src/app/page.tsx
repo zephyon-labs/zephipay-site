@@ -81,7 +81,7 @@ export default function HomePage() {
                 Creators
               </a>
               <a href="#business" className="transition-colors hover:text-foreground">
-                Businesses
+                Business
               </a>
               <a
                 href="#ai-agents"

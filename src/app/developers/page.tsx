@@ -211,7 +211,7 @@ export default function DevelopersPage() {
               <div className="mt-6 grid gap-4">
                 {[
                   ["People", "Familiar payment experiences"],
-                  ["Businesses", "Policy and operational control"],
+                  ["Business", "Policy and operational control"],
                   ["Applications", "Runtime APIs and receipts"],
                   ["Agents", "Autonomous, governed commerce"],
                 ].map(([title, description]) => (

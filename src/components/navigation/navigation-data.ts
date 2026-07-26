@@ -219,19 +219,21 @@ export const navigationSections: NavigationSection[] = [
         heading: "Autonomous payments",
         links: [
           {
-            label: "Agent wallets",
-            href: "/ai-agents",
-            description: "Purpose-built wallets for software agents.",
+            label: "How AI Agents Work",
+            href: "/ai-agents/how-it-works",
+            description:
+              "Follow an intelligent payment from intent to verified receipt.",
           },
           {
-            label: "AI-to-AI payments",
-            href: "/ai-agents",
-            description: "Enable autonomous economic exchange.",
+            label: "Agent Control Center",
+            href: "/ai-agents#agent-setup",
+            description:
+              "Configure identity, permissions, limits, and runtime protection.",
           },
           {
-            label: "x402 payments",
-            href: "/ai-agents",
-            description: "Pay for digital resources through HTTP.",
+            label: "Pay for AI Services",
+            href: "/ai-agents/how-it-works#pay-for-ai-services",
+            description: "Learn how AI agents purchase APIs, data, and compute through x402.",
             badge: "Live",
           },
         ],
@@ -287,7 +289,7 @@ export const navigationSections: NavigationSection[] = [
     href: "/zera",
     groups: [
       {
-        heading: "Discover",
+        heading: "Foundation",
         links: [
           {
             label: "ZERA overview",
@@ -297,13 +299,13 @@ export const navigationSections: NavigationSection[] = [
           },
           {
             label: "Utility",
-            href: "/zera#utility",
+            href: "/zera/utility",
             description:
               "Explore saving, rewards, staking, creator tools, and AI utility.",
           },
           {
             label: "Tokenomics",
-            href: "/zera#tokenomics",
+            href: "/zera/tokenomics",
             description:
               "Review the fixed supply and ecosystem allocation.",
           },
@@ -325,10 +327,10 @@ export const navigationSections: NavigationSection[] = [
               "Creator rewards, premium access, and financial organization.",
           },
           {
-            label: "Businesses",
+            label: "Business",
             href: "/business",
             description:
-              "Commerce benefits and Subscription-or-Stake access.",
+              "Reduce eligible costs, automate operations, and strengthen modern commerce.",
           },
         ],
       },
@@ -339,7 +341,7 @@ export const navigationSections: NavigationSection[] = [
             label: "AI Agents",
             href: "/ai-agents",
             description:
-              "Explore payments designed for people, software, and AI.",
+              "Coordinate trusted payments between people, businesses, software, and AI.",
           },
           {
             label: "Zephyon Runtime",
@@ -351,7 +353,7 @@ export const navigationSections: NavigationSection[] = [
             label: "Developers",
             href: "/developers",
             description:
-              "Build applications and agentic services on Zephyon.",
+              "Build payment apps, intelligent services, and economic software.",
           },
         ],
       },
