@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/Button";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { siteConfig } from "@/config/site";
 import { cn } from "@/utils/cn";
+import { AccountSession } from "@/components/auth/AccountSession";
 
 function MenuIcon({
   open,
@@ -75,6 +76,8 @@ export function SiteHeader() {
 
           <div className="hidden items-center gap-2 lg:flex">
             <ThemeToggle showAdaptiveLabel={false} />
+
+            <AccountSession />
 
             <Button
               href={siteConfig.betaUrl}
