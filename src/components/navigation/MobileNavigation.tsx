@@ -7,9 +7,8 @@ import {
   navigationSections,
   type NavigationSection,
 } from "@/components/navigation/navigation-data";
-import { Button } from "@/components/ui/Button";
+import { AccountSession } from "@/components/auth/AccountSession";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
-import { siteConfig } from "@/config/site";
 import { cn } from "@/utils/cn";
 
 function MobileSection({
@@ -164,13 +163,7 @@ export function MobileNavigation({
             <ThemeToggle />
           </div>
 
-          <Button
-            href={siteConfig.betaUrl}
-            external
-            className="mt-4 w-full"
-          >
-            Join the ZephiPay beta
-          </Button>
+          <div className="mt-4"><AccountSession mobile /></div>
         </div>
       </div>
     </div>

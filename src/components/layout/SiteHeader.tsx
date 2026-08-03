@@ -5,9 +5,7 @@ import { useEffect, useState } from "react";
 import { DesktopNavigation } from "@/components/navigation/DesktopNavigation";
 import { MobileNavigation } from "@/components/navigation/MobileNavigation";
 import { BrandMark } from "@/components/ui/BrandMark";
-import { Button } from "@/components/ui/Button";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
-import { siteConfig } from "@/config/site";
 import { cn } from "@/utils/cn";
 import { AccountSession } from "@/components/auth/AccountSession";
 
@@ -79,13 +77,6 @@ export function SiteHeader() {
 
             <AccountSession />
 
-            <Button
-              href={siteConfig.betaUrl}
-              external
-              size="sm"
-            >
-              Join beta
-            </Button>
           </div>
 
           <button

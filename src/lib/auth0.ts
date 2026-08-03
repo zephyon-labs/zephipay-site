@@ -4,6 +4,12 @@ import { Auth0Client } from "@auth0/nextjs-auth0/server";
 
 const required = ["AUTH0_DOMAIN", "AUTH0_CLIENT_ID", "AUTH0_CLIENT_SECRET", "AUTH0_SECRET", "APP_BASE_URL", "AUTH0_AUDIENCE"] as const;
 
+export const paymentScopes = "read:payments write:payments";
+
+function authorizationScope(): string {
+  return `${process.env.AUTH0_SCOPE?.trim() || "openid profile email read:account"} ${paymentScopes}`;
+}
+
 export function authConfigured(): boolean {
   return required.every((name) => Boolean(process.env[name]?.trim()));
 }
@@ -15,7 +21,7 @@ export function getAuth0(): Auth0Client {
   client ??= new Auth0Client({
     authorizationParameters: {
       audience: process.env.AUTH0_AUDIENCE,
-      scope: process.env.AUTH0_SCOPE?.trim() || "openid profile email read:account",
+      scope: authorizationScope(),
     },
     appBaseUrl: process.env.APP_BASE_URL,
     signInReturnToPath: "/personal/identity",
