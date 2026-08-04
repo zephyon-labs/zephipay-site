@@ -8,15 +8,14 @@ import { betaCtaState, type BetaCtaState } from "@/lib/betaCtaState";
 
 type LinkButtonProps = Extract<ButtonProps, { href: string }>;
 type Props = Omit<LinkButtonProps, "children" | "external" | "href"> & Readonly<{
-  signedOutHref: string;
-  signedOutExternal?: boolean;
-  appearance?: "button" | "footer-link";
+  appearance?: "button" | "footer-link" | "custom-link";
   rightIcon?: ReactNode;
 }>;
 
+const SIGN_UP_HREF = "/auth/login?screen_hint=signup";
+const BETA_HREF = "/personal/send";
+
 export function AccountAwareBetaCta({
-  signedOutHref,
-  signedOutExternal = false,
   appearance = "button",
   ...buttonProps
 }: Props) {
@@ -26,24 +25,24 @@ export function AccountAwareBetaCta({
     const controller = new AbortController();
     fetch("/api/account", { cache: "no-store", credentials: "same-origin", signal: controller.signal })
       .then(async (response) => {
-        const body: unknown = await response.json().catch(() => undefined);
-        if (!controller.signal.aborted) setState(betaCtaState(response.status, body));
+        if (!controller.signal.aborted) setState(betaCtaState(response.status));
       })
-      .catch(() => { if (!controller.signal.aborted) setState("request-access"); });
+      .catch(() => { if (!controller.signal.aborted) setState("signed-in"); });
     return () => controller.abort();
   }, []);
 
-  const enabled = state === "enabled";
-  const label = enabled ? "Open ZephiPay" : state === "request-access" ? "Request beta access" : "Join beta";
-  const href = enabled ? "/personal/send" : signedOutHref;
-  const external = !enabled && signedOutExternal;
+  const signedIn = state === "signed-in";
+  const label = signedIn ? "Open ZephiPay Beta" : "Join beta";
+  const href = signedIn ? BETA_HREF : SIGN_UP_HREF;
 
   if (appearance === "footer-link") {
     const className = "text-sm text-foreground-secondary transition-colors duration-200 hover:text-foreground";
-    return external
-      ? <a className={className} href={href} target="_blank" rel="noreferrer">{label}</a>
-      : <Link className={className} href={href}>{label}</Link>;
+    return <Link className={className} href={href}>{label}</Link>;
   }
 
-  return <Button {...buttonProps} href={href} external={external}>{label}</Button>;
+  if (appearance === "custom-link") {
+    return <Link className={buttonProps.className} href={href}>{label}{buttonProps.rightIcon}</Link>;
+  }
+
+  return <Button {...buttonProps} href={href}>{label}</Button>;
 }

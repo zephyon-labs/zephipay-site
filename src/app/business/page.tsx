@@ -2,12 +2,12 @@ import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
+import { AccountAwareBetaCta } from "@/components/auth/AccountAwareBetaCta";
 import { AmbientBackground } from "@/components/marketing/AmbientBackground";
 import {
   BusinessCommandCenter,
 } from "@/components/marketing/business-studio";
 import { Button } from "@/components/ui/Button";
-import { siteConfig } from "@/config/site";
 
 const businessCapabilities = [
   {
@@ -166,14 +166,10 @@ export default function BusinessPage() {
               </p>
 
               <div className="mt-10 flex flex-wrap gap-4">
-                <Button
-                  href={siteConfig.betaUrl}
-                  external
+                <AccountAwareBetaCta
                   size="lg"
                   rightIcon={<ArrowIcon />}
-                >
-                  Join business beta
-                </Button>
+                />
 
                 <Button
                   href="#business-workspace"
@@ -493,14 +489,10 @@ export default function BusinessPage() {
             </div>
 
             <div className="flex flex-wrap gap-4 lg:justify-end">
-              <Button
-                href={siteConfig.betaUrl}
-                external
+              <AccountAwareBetaCta
                 size="lg"
                 rightIcon={<ArrowIcon />}
-              >
-                Join business beta
-              </Button>
+              />
 
               <Button
                 href="#business-workspace"

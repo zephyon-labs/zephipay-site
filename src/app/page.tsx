@@ -8,7 +8,6 @@ import { AccountAwareBetaCta } from "@/components/auth/AccountAwareBetaCta";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { Button } from "@/components/ui/Button";
-import { siteConfig } from "@/config/site";
 
 export default function HomePage() {
   return (
@@ -57,8 +56,6 @@ export default function HomePage() {
 
             <div className="mt-10 flex flex-wrap items-center gap-4">
               <AccountAwareBetaCta
-                signedOutHref={siteConfig.betaUrl}
-                signedOutExternal
                 size="lg"
                 rightIcon={<span aria-hidden="true">→</span>}
               />

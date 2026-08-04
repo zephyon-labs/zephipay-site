@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 
+import { AccountAwareBetaCta } from "@/components/auth/AccountAwareBetaCta";
+
 const walletActions = [
   {
     label: "Send",
@@ -121,15 +123,11 @@ export function WalletInterfacePreview() {
             supported funding sources.
           </p>
 
-          <a
-            href="https://beta.zephipay.com"
-            target="_blank"
-            rel="noreferrer"
+          <AccountAwareBetaCta
+            appearance="custom-link"
             className="mt-7 inline-flex items-center gap-2 rounded-full border border-brand-primary/30 bg-brand-primary px-6 py-3 text-sm font-medium text-brand-contrast transition hover:brightness-105"
-          >
-            Open ZephiPay
-            <ArrowIcon />
-          </a>
+            rightIcon={<ArrowIcon />}
+          />
 
           <div className="mt-8 rounded-2xl border border-border-subtle bg-background/55 p-5">
             <p className="text-sm font-medium">Account not connected</p>

@@ -6,7 +6,6 @@ import { SiteHeader } from "@/components/layout/SiteHeader";
 import { AmbientBackground } from "@/components/marketing/AmbientBackground";
 import { WalletInterfacePreview } from "@/components/product/personal";
 import { Button } from "@/components/ui/Button";
-import { siteConfig } from "@/config/site";
 
 const walletCapabilities = [
   {
@@ -171,8 +170,6 @@ export default function PersonalWalletPage() {
 
               <div className="mt-10 flex flex-wrap gap-4">
                 <AccountAwareBetaCta
-                  signedOutHref={siteConfig.betaUrl}
-                  signedOutExternal
                   size="lg"
                   rightIcon={<ArrowIcon />}
                 />
@@ -422,8 +419,6 @@ export default function PersonalWalletPage() {
 
             <div className="mt-9 flex flex-wrap justify-center gap-4">
               <AccountAwareBetaCta
-                signedOutHref={siteConfig.betaUrl}
-                signedOutExternal
                 size="lg"
                 rightIcon={<ArrowIcon />}
               />

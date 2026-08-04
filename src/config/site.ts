@@ -3,7 +3,6 @@ export const siteConfig = {
   description:
     "Modern payments for people, creators, merchants, businesses, and AI agents.",
   url: "https://zephipay.com",
-  betaUrl: "https://beta.zephipay.com",
   social: {
     x: "https://x.com/zephipay",
     github: "https://github.com/zephyon-labs",

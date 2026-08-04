@@ -38,7 +38,7 @@ export default function DesignPage() {
             </p>
 
             <div className="mt-10 flex flex-wrap items-center gap-4">
-              <AccountAwareBetaCta signedOutHref="/beta" size="lg" />
+              <AccountAwareBetaCta size="lg" />
 
               <Button href="#platform" variant="outline" size="lg">
                 Explore platform

@@ -151,8 +151,6 @@ export function SiteFooter() {
                     <li>
                       <AccountAwareBetaCta
                         appearance="footer-link"
-                        signedOutHref={siteConfig.betaUrl}
-                        signedOutExternal
                       />
                     </li>
                   ) : null}

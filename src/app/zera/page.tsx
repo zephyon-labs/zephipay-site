@@ -2,10 +2,10 @@ import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
+import { AccountAwareBetaCta } from "@/components/auth/AccountAwareBetaCta";
 import { AmbientBackground } from "@/components/marketing/AmbientBackground";
 import { EconomicFlywheel } from "@/components/marketing/EconomicFlywheel";
 import { Button } from "@/components/ui/Button";
-import { siteConfig } from "@/config/site";
 
 const coreUtility = [
   {
@@ -1616,13 +1616,7 @@ export default function ZeraPage() {
                 </p>
 
                 <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
-                  <Button
-                    href={siteConfig.betaUrl}
-                    external
-                    size="lg"
-                  >
-                    Join the beta
-                  </Button>
+                  <AccountAwareBetaCta size="lg" />
 
                   <Button
                     href="#utility"

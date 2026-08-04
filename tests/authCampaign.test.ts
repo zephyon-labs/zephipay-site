@@ -22,20 +22,23 @@ describe("account BFF contract", () => {
     const response = (enabled: boolean) => ({ ok: true, account: {
       id, actorSubject: `zp:account:${id}`, status: "active", createdAt: new Date().toISOString(), identities: [], paymentAccess: { enabled },
     } });
-    assert.equal(betaCtaState(401, undefined), "signed-out");
-    assert.equal(betaCtaState(200, response(false)), "request-access");
-    assert.equal(betaCtaState(200, response(true)), "enabled");
-    assert.equal(betaCtaState(200, { ...response(true), account: { ...response(true).account, paymentAccess: { enabled: "true" } } }), "request-access");
-    assert.equal(betaCtaState(503, response(true)), "request-access");
+    assert.equal(betaCtaState(401), "signed-out");
+    assert.equal(betaCtaState(200), "signed-in");
+    assert.equal(betaCtaState(403), "signed-in");
+    assert.equal(betaCtaState(502), "signed-in");
+    assert.equal(betaCtaState(503), "signed-in");
+    assert.equal(response(false).account.paymentAccess.enabled, false);
+    assert.equal(response(true).account.paymentAccess.enabled, true);
   });
 
   it("uses one account-aware CTA with the approved labels and destination", async () => {
     const component = await readFile(new URL("../src/components/auth/AccountAwareBetaCta.tsx", import.meta.url), "utf8");
     assert.match(component, /Join beta/);
-    assert.match(component, /Request beta access/);
-    assert.match(component, /Open ZephiPay/);
+    assert.match(component, /Open ZephiPay Beta/);
     assert.match(component, /"\/personal\/send"/);
-    assert.match(component, /betaCtaState\(response\.status, body\)/);
+    assert.match(component, /"\/auth\/login\?screen_hint=signup"/);
+    assert.match(component, /betaCtaState\(response\.status\)/);
+    assert.doesNotMatch(component, /Request beta access|beta\.zephipay\.com|paymentAccess/);
   });
 
   it("keeps access tokens server-only and authenticated responses uncached", async () => {

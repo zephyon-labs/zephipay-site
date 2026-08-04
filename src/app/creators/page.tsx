@@ -3,7 +3,7 @@ import {
   CreatorStudioPageShell,
 } from "@/components/marketing/creator-studio";
 import { Button } from "@/components/ui/Button";
-import { siteConfig } from "@/config/site";
+import { AccountAwareBetaCta } from "@/components/auth/AccountAwareBetaCta";
 
 const connectedWorkspaces = [
   {
@@ -72,14 +72,10 @@ export default function CreatorsPage() {
       description="Manage monetization, supporter relationships, performance, finances, and your public storefront through one connected operating environment."
       actions={
         <>
-          <Button
-            href={siteConfig.betaUrl}
-            external
+          <AccountAwareBetaCta
             size="lg"
             rightIcon={<ArrowIcon />}
-          >
-            Join creator beta
-          </Button>
+          />
 
           <Button
             href="/creators/storefront"
@@ -163,14 +159,10 @@ export default function CreatorsPage() {
             </p>
           </div>
 
-          <Button
-            href={siteConfig.betaUrl}
-            external
+          <AccountAwareBetaCta
             size="lg"
             rightIcon={<ArrowIcon />}
-          >
-            Join creator beta
-          </Button>
+          />
         </div>
       </section>
     </CreatorStudioPageShell>

@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useState } from "react";
 
+import { AccountAwareBetaCta } from "@/components/auth/AccountAwareBetaCta";
+
 const filters = ["All", "Payments", "Requests", "Transfers"];
 
 function ActivityIcon() {
@@ -153,15 +155,11 @@ export function ActivityInterfacePreview() {
             View verified record
           </button>
 
-          <a
-            href="https://beta.zephipay.com"
-            target="_blank"
-            rel="noreferrer"
+          <AccountAwareBetaCta
+            appearance="custom-link"
             className="mt-4 flex items-center justify-center gap-2 text-sm font-medium text-brand-secondary hover:text-brand-primary"
-          >
-            Open ZephiPay
-            <ArrowIcon />
-          </a>
+            rightIcon={<ArrowIcon />}
+          />
         </aside>
       </div>
     </div>

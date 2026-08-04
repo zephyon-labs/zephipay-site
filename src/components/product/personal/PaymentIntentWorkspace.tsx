@@ -181,7 +181,7 @@ function Detail({ label, value, mono, muted, prominent }: { label: string; value
   return <div className="min-w-0 bg-background/75 p-5"><dt className="text-xs uppercase tracking-[0.14em] text-foreground-muted">{label}</dt><dd className={`mt-2 break-words ${mono ? "font-mono text-xs" : "text-sm"} ${muted ? "text-foreground-muted" : "text-foreground"} ${prominent ? "text-xl font-semibold" : ""}`}>{value}</dd></div>;
 }
 
-function ErrorNotice({ message }: { message: string }) { return <div role="alert" className="mb-6 rounded-xl border border-red-400/25 bg-red-400/10 p-4 text-sm text-foreground"><p>{message}</p>{message === "Payment access is not enabled for this account yet." ? <a className="mt-3 inline-block font-medium text-brand-secondary hover:underline" href="/personal">Back to personal</a> : null}</div>; }
+function ErrorNotice({ message }: { message: string }) { return <div role="alert" className="mb-6 rounded-xl border border-red-400/25 bg-red-400/10 p-4 text-sm text-foreground"><p>{message}</p>{message === "Test payment access has not been activated for this account." ? <a className="mt-3 inline-block font-medium text-brand-secondary hover:underline" href="/personal">Back to personal</a> : null}</div>; }
 function formatTime(value: string) { return new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeStyle: "short" }).format(new Date(value)); }
 function messageFrom(value: unknown) { return value instanceof Error ? value.message : "Payment service is temporarily unavailable."; }
 function safeMessage(value: unknown, fallback: string) { return typeof value === "object" && value !== null && typeof (value as ErrorBody).error === "string" ? (value as ErrorBody).error! : fallback; }

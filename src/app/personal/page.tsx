@@ -9,7 +9,6 @@ import {
   PersonalWorkspace,
 } from "@/components/marketing/personal-workspace";
 import { Button } from "@/components/ui/Button";
-import { siteConfig } from "@/config/site";
 
 const everydayActions = [
   {
@@ -161,8 +160,6 @@ export default function PersonalPage() {
 
               <div className="mt-10 flex flex-wrap gap-4">
                 <AccountAwareBetaCta
-                  signedOutHref={siteConfig.betaUrl}
-                  signedOutExternal
                   size="lg"
                   rightIcon={<ArrowIcon />}
                 />
@@ -472,8 +469,6 @@ export default function PersonalPage() {
 
             <div className="flex flex-wrap gap-4 lg:justify-end">
               <AccountAwareBetaCta
-                signedOutHref={siteConfig.betaUrl}
-                signedOutExternal
                 size="lg"
                 rightIcon={<ArrowIcon />}
               />

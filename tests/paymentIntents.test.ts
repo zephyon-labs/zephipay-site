@@ -85,7 +85,7 @@ describe("BFF and UI security invariants", () => {
   it("preserves safe meaningful upstream statuses and normalizes unknown failures", () => {
     for (const status of [400, 401, 403, 404, 409, 503]) assert.equal(normalizePaymentError(status).status, status);
     assert.deepEqual(normalizePaymentError(500), { status: 502, body: { ok: false, error: "Payment service is temporarily unavailable." } });
-    assert.equal(normalizePaymentError(403).body.error, "Payment access is not enabled for this account yet.");
+    assert.equal(normalizePaymentError(403).body.error, "Test payment access has not been activated for this account.");
   });
 
   it("forwards idempotency/request IDs and supports create/read/confirm outcomes without execution", async () => {
@@ -111,6 +111,8 @@ describe("BFF and UI security invariants", () => {
     assert.match(ui, /Recipient lookup is not connected yet/);
     assert.match(ui, /Advanced: Solana wallet address/);
     assert.match(ui, /JSON\.stringify\(requestBody\)/);
+    assert.match(ui, /Test payment access has not been activated for this account\./);
+    assert.doesNotMatch(ui, /beta\.zephipay\.com|location\.(?:assign|replace)|router\.(?:push|replace)\([^\n]*beta/);
     assert.doesNotMatch(ui, /placeholder wallet|default wallet/i);
     assert.doesNotMatch(ui, /localStorage|sessionStorage|>Sent<|>Paid<|>Settled<|>Completed<|>Delivered</);
   });
@@ -119,7 +121,7 @@ describe("BFF and UI security invariants", () => {
     const errors = await source("src/lib/paymentIntents/errors.ts");
     const contract = parsePaymentIntentResponse({ ...payload("processing"), applied: false });
     assert.equal(contract?.applied, false);
-    assert.match(errors, /Payment access is not enabled for this account yet\./);
+    assert.match(errors, /Test payment access has not been activated for this account\./);
   });
 });
 
