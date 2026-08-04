@@ -1,6 +1,7 @@
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { SiteFooter } from "@/components/layout/SiteFooter";
+import { AccountAwareBetaCta } from "@/components/auth/AccountAwareBetaCta";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { AmbientBackground } from "@/components/marketing/AmbientBackground";
 import { ActivityInterfacePreview } from "@/components/product/personal";
@@ -107,14 +108,12 @@ export default function PersonalActivityPage() {
               </p>
 
               <div className="mt-10 flex flex-wrap gap-4">
-                <Button
-                  href={siteConfig.betaUrl}
-                  external
+                <AccountAwareBetaCta
+                  signedOutHref={siteConfig.betaUrl}
+                  signedOutExternal
                   size="lg"
                   rightIcon={<ArrowIcon />}
-                >
-                  Join beta
-                </Button>
+                />
 
                 <Button
                   href="#activity-interface"
@@ -273,14 +272,12 @@ export default function PersonalActivityPage() {
             </h2>
 
             <div className="mt-9 flex flex-wrap justify-center gap-4">
-              <Button
-                href={siteConfig.betaUrl}
-                external
+              <AccountAwareBetaCta
+                signedOutHref={siteConfig.betaUrl}
+                signedOutExternal
                 size="lg"
                 rightIcon={<ArrowIcon />}
-              >
-                Join beta
-              </Button>
+              />
 
               <Button href="/personal/wallet" variant="outline" size="lg">
                 Explore wallet

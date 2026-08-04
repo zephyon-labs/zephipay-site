@@ -2,6 +2,7 @@ import { SiteHeader } from "@/components/layout/SiteHeader";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { Button } from "@/components/ui/Button";
+import { AccountAwareBetaCta } from "@/components/auth/AccountAwareBetaCta";
 
 const colorSwatches = [
   { name: "Background", value: "#05070A" },
@@ -37,9 +38,7 @@ export default function DesignPage() {
             </p>
 
             <div className="mt-10 flex flex-wrap items-center gap-4">
-              <Button href="/beta" size="lg">
-                Join beta
-              </Button>
+              <AccountAwareBetaCta signedOutHref="/beta" size="lg" />
 
               <Button href="#platform" variant="outline" size="lg">
                 Explore platform

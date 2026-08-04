@@ -3,13 +3,39 @@ import { readFile } from "node:fs/promises";
 import { describe, it } from "node:test";
 
 import { isAccountResponse } from "../src/lib/accountResponse";
+import { betaCtaState } from "../src/lib/betaCtaState";
 
 describe("account BFF contract", () => {
   it("accepts only canonical actor/account responses", () => {
     const id = "00000000-0000-4000-8000-000000000001";
-    assert.equal(isAccountResponse({ ok: true, account: { id, actorSubject: `zp:account:${id}`, status: "active", createdAt: new Date().toISOString(), identities: [] } }), true);
+    const account = { id, actorSubject: `zp:account:${id}`, status: "active", createdAt: new Date().toISOString(), identities: [], paymentAccess: { enabled: false } };
+    assert.equal(isAccountResponse({ ok: true, account }), true);
+    assert.equal(isAccountResponse({ ok: true, account: { ...account, paymentAccess: undefined } }), false);
+    assert.equal(isAccountResponse({ ok: true, account: { ...account, paymentAccess: { enabled: "yes" } } }), false);
+    assert.equal(isAccountResponse({ ok: true, account: { ...account, paymentAccess: { enabled: true, note: "private" } } }), false);
     assert.equal(isAccountResponse({ ok: true, account: { id, actorSubject: "forged", status: "active", createdAt: "now", identities: [] } }), false);
     assert.equal(isAccountResponse({ ok: true, token: "must-not-pass" }), false);
+  });
+
+  it("derives every beta CTA state from the authoritative account response and fails closed", () => {
+    const id = "00000000-0000-4000-8000-000000000001";
+    const response = (enabled: boolean) => ({ ok: true, account: {
+      id, actorSubject: `zp:account:${id}`, status: "active", createdAt: new Date().toISOString(), identities: [], paymentAccess: { enabled },
+    } });
+    assert.equal(betaCtaState(401, undefined), "signed-out");
+    assert.equal(betaCtaState(200, response(false)), "request-access");
+    assert.equal(betaCtaState(200, response(true)), "enabled");
+    assert.equal(betaCtaState(200, { ...response(true), account: { ...response(true).account, paymentAccess: { enabled: "true" } } }), "request-access");
+    assert.equal(betaCtaState(503, response(true)), "request-access");
+  });
+
+  it("uses one account-aware CTA with the approved labels and destination", async () => {
+    const component = await readFile(new URL("../src/components/auth/AccountAwareBetaCta.tsx", import.meta.url), "utf8");
+    assert.match(component, /Join beta/);
+    assert.match(component, /Request beta access/);
+    assert.match(component, /Open ZephiPay/);
+    assert.match(component, /"\/personal\/send"/);
+    assert.match(component, /betaCtaState\(response\.status, body\)/);
   });
 
   it("keeps access tokens server-only and authenticated responses uncached", async () => {

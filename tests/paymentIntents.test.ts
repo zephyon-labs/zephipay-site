@@ -4,7 +4,7 @@ import { describe, it } from "node:test";
 
 import { parsePaymentIntentResponse } from "../src/lib/paymentIntents/contract";
 import { hasTrustedOrigin } from "../src/lib/paymentIntents/origin";
-import { parseConfirmInput, parseCreateInput, validIdempotencyKey } from "../src/lib/paymentIntents/requests";
+import { parseConfirmInput, parseCreateInput, paymentIntentRequestFromRecipient, validIdempotencyKey } from "../src/lib/paymentIntents/requests";
 import { normalizePaymentError } from "../src/lib/paymentIntents/errors";
 
 const id = "00000000-0000-4000-8000-000000000001";
@@ -47,6 +47,17 @@ describe("browser request validation and CSRF", () => {
     assert.equal(parseConfirmInput({ requestHash: hash, expectedVersion: "0", amount: "2" }), undefined);
     assert.equal(validIdempotencyKey("intent_1234567890abcdef"), true);
     assert.equal(validIdempotencyKey("short"), false);
+  });
+
+  it("keeps human-readable recipients out of the unchanged backend request contract", () => {
+    assert.deepEqual(paymentIntentRequestFromRecipient({ recipientInput: recipient, walletFallback: "", amount: "1", purpose: "Dinner" }), {
+      recipient, amount: "1", purpose: "Dinner",
+    });
+    assert.equal(paymentIntentRequestFromRecipient({ recipientInput: "Alex @zephipay", walletFallback: "", amount: "1", purpose: "Dinner" }), undefined);
+    assert.deepEqual(paymentIntentRequestFromRecipient({ recipientInput: "alex@example.com", walletFallback: recipient, amount: "1", purpose: "Dinner" }), {
+      recipient, amount: "1", purpose: "Dinner",
+    });
+    assert.deepEqual(Object.keys(paymentIntentRequestFromRecipient({ recipientInput: "Alex", walletFallback: recipient, amount: "1", purpose: "Dinner" }) ?? {}).sort(), ["amount", "purpose", "recipient"]);
   });
 
   it("accepts trusted origins and rejects mismatches", () => {
@@ -97,6 +108,10 @@ describe("BFF and UI security invariants", () => {
     assert.match(ui, /creationKey\.current \?\?= crypto\.randomUUID\(\)/);
     assert.match(ui, /\/personal\/send\?intent=/);
     assert.match(ui, /router\.replace\("\/personal\/send"\)/);
+    assert.match(ui, /Recipient lookup is not connected yet/);
+    assert.match(ui, /Advanced: Solana wallet address/);
+    assert.match(ui, /JSON\.stringify\(requestBody\)/);
+    assert.doesNotMatch(ui, /placeholder wallet|default wallet/i);
     assert.doesNotMatch(ui, /localStorage|sessionStorage|>Sent<|>Paid<|>Settled<|>Completed<|>Delivered</);
   });
 

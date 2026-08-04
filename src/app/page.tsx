@@ -4,6 +4,7 @@ import { NetworkMetrics } from "@/components/marketing/NetworkMetrics";
 import { RuntimeFlow } from "@/components/marketing/RuntimeFlow";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
+import { AccountAwareBetaCta } from "@/components/auth/AccountAwareBetaCta";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { Button } from "@/components/ui/Button";
@@ -55,14 +56,12 @@ export default function HomePage() {
             </p>
 
             <div className="mt-10 flex flex-wrap items-center gap-4">
-              <Button
-                href={siteConfig.betaUrl}
-                external
+              <AccountAwareBetaCta
+                signedOutHref={siteConfig.betaUrl}
+                signedOutExternal
                 size="lg"
                 rightIcon={<span aria-hidden="true">→</span>}
-              >
-                Join beta
-              </Button>
+              />
 
               <Button
                 href="#platform"

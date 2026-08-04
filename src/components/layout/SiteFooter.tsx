@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { Container } from "@/components/layout/Container";
+import { AccountAwareBetaCta } from "@/components/auth/AccountAwareBetaCta";
 import { siteConfig } from "@/config/site";
 
 const footerGroups = [
@@ -30,11 +31,6 @@ const footerGroups = [
   {
     title: "Company",
     links: [
-      {
-        label: "Join beta",
-        href: siteConfig.betaUrl,
-        external: true,
-      },
       {
         label: "Contact",
         href: "mailto:hello@zephipay.com",
@@ -151,6 +147,15 @@ export function SiteFooter() {
                 </p>
 
                 <ul className="mt-5 space-y-3">
+                  {group.title === "Company" ? (
+                    <li>
+                      <AccountAwareBetaCta
+                        appearance="footer-link"
+                        signedOutHref={siteConfig.betaUrl}
+                        signedOutExternal
+                      />
+                    </li>
+                  ) : null}
                   {group.links.map((link) => (
                     <li key={link.label}>
                       <Link

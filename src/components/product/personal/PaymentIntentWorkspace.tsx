@@ -5,11 +5,12 @@ import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/Button";
 import { parsePaymentIntentResponse, type PaymentIntent } from "@/lib/paymentIntents/contract";
+import { isCanonicalSolanaAddressInput, paymentIntentRequestFromRecipient } from "@/lib/paymentIntents/requests";
 
-type FormState = { recipient: string; amount: string; purpose: string };
+type FormState = { recipientInput: string; walletFallback: string; amount: string; purpose: string };
 type ErrorBody = { ok?: false; error?: string };
 
-const emptyForm: FormState = { recipient: "", amount: "", purpose: "" };
+const emptyForm: FormState = { recipientInput: "", walletFallback: "", amount: "", purpose: "" };
 
 export function PaymentIntentWorkspace({ recoveryId }: { recoveryId?: string }) {
   const router = useRouter();
@@ -59,7 +60,8 @@ export function PaymentIntentWorkspace({ recoveryId }: { recoveryId?: string }) 
   async function createIntent(event: React.FormEvent) {
     event.preventDefault();
     if (busy) return;
-    const validation = validateForm(form);
+    const requestBody = paymentIntentRequestFromRecipient(form);
+    const validation = validateForm(form, requestBody);
     if (validation) { setError(validation); return; }
     creationKey.current ??= crypto.randomUUID();
     setBusy(true); setError(undefined);
@@ -67,7 +69,7 @@ export function PaymentIntentWorkspace({ recoveryId }: { recoveryId?: string }) 
       const response = await fetch("/api/payment-intents", {
         method: "POST", credentials: "same-origin",
         headers: { "Content-Type": "application/json", "Idempotency-Key": creationKey.current },
-        body: JSON.stringify(form),
+        body: JSON.stringify(requestBody),
       });
       const raw: unknown = await response.json().catch(() => undefined);
       const parsed = parsePaymentIntentResponse(raw);
@@ -106,7 +108,20 @@ export function PaymentIntentWorkspace({ recoveryId }: { recoveryId?: string }) 
       {error ? <ErrorNotice message={error} /> : null}
       {busy && recoveryId ? <p className="text-sm text-foreground-secondary">Recovering the authoritative payment intent…</p> : (
         <form onSubmit={createIntent} className="grid gap-6" noValidate>
-          <Field label="Recipient Solana address" value={form.recipient} onChange={(value) => update("recipient", value)} placeholder="Canonical devnet wallet address" />
+          <div className="grid gap-3">
+            <Field label="Recipient" value={form.recipientInput} onChange={(value) => update("recipientInput", value)} placeholder="Name, @handle, email, or wallet address" />
+            {form.recipientInput.trim() && !isCanonicalSolanaAddressInput(form.recipientInput) ? (
+              <p className="text-sm leading-6 text-foreground-secondary">Recipient lookup is not connected yet. Enter the recipient&apos;s canonical address below to continue.</p>
+            ) : null}
+          </div>
+          {!isCanonicalSolanaAddressInput(form.recipientInput) ? (
+            <details className="rounded-xl border border-border-default bg-background/40 p-4" open={Boolean(form.recipientInput.trim())}>
+              <summary className="cursor-pointer text-sm font-medium">Advanced: Solana wallet address</summary>
+              <div className="mt-4">
+                <Field label="Canonical devnet wallet address" value={form.walletFallback} onChange={(value) => update("walletFallback", value)} placeholder="Required when recipient lookup is unavailable" />
+              </div>
+            </details>
+          ) : null}
           <Field label="USDC amount" value={form.amount} onChange={(value) => update("amount", value)} placeholder="0.00" inputMode="decimal" />
           <Field label="Purpose" value={form.purpose} onChange={(value) => update("purpose", value)} placeholder="What is this payment for?" maxLength={120} />
           <div className="flex items-center justify-between gap-4 border-t border-border-subtle pt-6">
@@ -170,9 +185,10 @@ function ErrorNotice({ message }: { message: string }) { return <div role="alert
 function formatTime(value: string) { return new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeStyle: "short" }).format(new Date(value)); }
 function messageFrom(value: unknown) { return value instanceof Error ? value.message : "Payment service is temporarily unavailable."; }
 function safeMessage(value: unknown, fallback: string) { return typeof value === "object" && value !== null && typeof (value as ErrorBody).error === "string" ? (value as ErrorBody).error! : fallback; }
-function validateForm(form: FormState) {
-  if (!/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(form.recipient.trim())) return "Enter a canonical Solana wallet address.";
+function validateForm(form: FormState, request: ReturnType<typeof paymentIntentRequestFromRecipient>) {
+  if (!isCanonicalSolanaAddressInput(form.recipientInput) && !isCanonicalSolanaAddressInput(form.walletFallback)) return "Enter a canonical Solana wallet address in the advanced field to continue.";
   if (!/^(?:0|[1-9]\d*)(?:\.\d{1,6})?$/.test(form.amount) || form.amount === "0") return "Enter a positive USDC amount with no more than 6 decimal places.";
   const bytes = new TextEncoder().encode(form.purpose.trim()).length;
   if (bytes < 1 || bytes > 120) return "Purpose must be between 1 and 120 UTF-8 bytes.";
+  if (!request) return "Review the payment details and try again.";
 }

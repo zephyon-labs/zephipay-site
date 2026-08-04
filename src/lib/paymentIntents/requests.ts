@@ -32,6 +32,22 @@ export function validIdempotencyKey(value: string | null): value is string {
 
 export function validPaymentIntentId(value: string): boolean { return isPaymentIntentId(value); }
 
+export function isCanonicalSolanaAddressInput(value: string): boolean {
+  return SOLANA_ADDRESS.test(value.trim());
+}
+
+export function paymentIntentRequestFromRecipient(input: Readonly<{
+  recipientInput: string;
+  walletFallback: string;
+  amount: string;
+  purpose: string;
+}>): CreatePaymentIntentInput | undefined {
+  const recipient = isCanonicalSolanaAddressInput(input.recipientInput)
+    ? input.recipientInput.trim()
+    : input.walletFallback.trim();
+  return parseCreateInput({ recipient, amount: input.amount, purpose: input.purpose });
+}
+
 function hasOnly(value: unknown, fields: readonly string[]): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value) &&
     Object.keys(value).every((key) => fields.includes(key)) && Object.keys(value).length === fields.length;

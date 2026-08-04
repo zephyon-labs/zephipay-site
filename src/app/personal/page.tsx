@@ -1,6 +1,7 @@
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { SiteFooter } from "@/components/layout/SiteFooter";
+import { AccountAwareBetaCta } from "@/components/auth/AccountAwareBetaCta";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { AmbientBackground } from "@/components/marketing/AmbientBackground";
 import { PaymentExperience } from "@/components/marketing/payment-experience";
@@ -159,14 +160,12 @@ export default function PersonalPage() {
               </p>
 
               <div className="mt-10 flex flex-wrap gap-4">
-                <Button
-                  href={siteConfig.betaUrl}
-                  external
+                <AccountAwareBetaCta
+                  signedOutHref={siteConfig.betaUrl}
+                  signedOutExternal
                   size="lg"
                   rightIcon={<ArrowIcon />}
-                >
-                  Join beta
-                </Button>
+                />
 
                 <Button
                   href="#personal-workspace"
@@ -472,14 +471,12 @@ export default function PersonalPage() {
             </div>
 
             <div className="flex flex-wrap gap-4 lg:justify-end">
-              <Button
-                href={siteConfig.betaUrl}
-                external
+              <AccountAwareBetaCta
+                signedOutHref={siteConfig.betaUrl}
+                signedOutExternal
                 size="lg"
                 rightIcon={<ArrowIcon />}
-              >
-                Join beta
-              </Button>
+              />
 
               <Button
                 href="/business"
