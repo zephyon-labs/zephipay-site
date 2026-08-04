@@ -20,7 +20,7 @@ export default async function PersonalSendPage({ searchParams }: { searchParams:
         <h2 className="mt-5 text-4xl font-semibold tracking-[-0.05em] sm:text-5xl">A deliberate payment flow.</h2>
         <p className="mt-6 max-w-md text-lg leading-8 text-foreground-secondary">Create the intent, review the persisted record, then explicitly approve it. Execution remains disabled.</p>
         <div className="mt-8 rounded-[1.4rem] border border-border-default bg-surface-glass p-5 text-sm leading-6 text-foreground-secondary">
-          <p className="font-medium text-foreground">Friends &amp; Family beta</p>
+          <p className="font-medium text-foreground">ZephiPay Beta</p>
           <p className="mt-2">USDC · Solana devnet · intent recording only</p>
         </div>
       </aside>

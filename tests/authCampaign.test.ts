@@ -4,6 +4,7 @@ import { describe, it } from "node:test";
 
 import { isAccountResponse } from "../src/lib/accountResponse";
 import { betaCtaState } from "../src/lib/betaCtaState";
+import { authenticatedAccountCta } from "../src/lib/accountSessionCta";
 
 describe("account BFF contract", () => {
   it("accepts only canonical actor/account responses", () => {
@@ -39,6 +40,16 @@ describe("account BFF contract", () => {
     assert.match(component, /"\/auth\/login\?screen_hint=signup"/);
     assert.match(component, /betaCtaState\(response\.status\)/);
     assert.doesNotMatch(component, /Request beta access|beta\.zephipay\.com|paymentAccess/);
+  });
+
+  it("makes the authenticated header CTA useful on the payment workspace", async () => {
+    assert.deepEqual(authenticatedAccountCta("/personal/send"), { label: "Personal Home", href: "/personal" });
+    assert.deepEqual(authenticatedAccountCta("/personal"), { label: "Open ZephiPay Beta", href: "/personal/send" });
+    assert.deepEqual(authenticatedAccountCta("/"), { label: "Open ZephiPay Beta", href: "/personal/send" });
+    const session = await readFile(new URL("../src/components/auth/AccountSession.tsx", import.meta.url), "utf8");
+    assert.match(session, /authenticatedAccountCta\(pathname\)/);
+    assert.match(session, /\/auth\/login\?screen_hint=signup/);
+    assert.doesNotMatch(session, /Live Beta|Request beta access|beta\.zephipay\.com/);
   });
 
   it("keeps access tokens server-only and authenticated responses uncached", async () => {

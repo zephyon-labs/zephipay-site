@@ -27,7 +27,7 @@ function MegaMenu({
         .replaceAll(" ", "-")}`}
       className={cn(
         "zephipay-mega-menu",
-        "absolute left-1/2 top-[calc(100%+1rem)] z-50",
+        "absolute left-1/2 top-[calc(100%+1rem)] z-50 -translate-x-1/2",
         "w-[min(72rem,calc(100vw-3rem))]",
         "isolate overflow-hidden rounded-[1.75rem]",
         "border border-border-default",
@@ -190,7 +190,7 @@ export function DesktopNavigation() {
   return (
     <div
       ref={navigationRef}
-      className="relative ml-auto hidden lg:block"
+      className="static ml-auto hidden lg:block"
       onMouseEnter={cancelScheduledClose}
       onMouseLeave={scheduleClose}
     >
