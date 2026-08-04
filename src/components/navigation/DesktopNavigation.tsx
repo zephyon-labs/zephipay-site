@@ -21,21 +21,21 @@ function MegaMenu({
   onNavigate: () => void;
 }) {
   return (
-    <div
-      id={`navigation-panel-${section.label
-        .toLowerCase()
-        .replaceAll(" ", "-")}`}
-      className={cn(
-        "zephipay-mega-menu",
-        "absolute left-1/2 top-[calc(100%+1rem)] z-50 -translate-x-1/2",
-        "w-[min(72rem,calc(100vw-3rem))]",
-        "isolate overflow-hidden rounded-[1.75rem]",
-        "border border-border-default",
-        "bg-background",
-        "shadow-[0_32px_90px_rgba(0,0,0,0.48)]",
-        "backdrop-blur-3xl",
-      )}
-    >
+    <div className="absolute inset-x-0 top-[calc(100%+1rem)] z-50 flex justify-center">
+      <div
+        id={`navigation-panel-${section.label
+          .toLowerCase()
+          .replaceAll(" ", "-")}`}
+        className={cn(
+          "zephipay-mega-menu",
+          "w-[min(72rem,calc(100vw-3rem))]",
+          "isolate overflow-hidden rounded-[1.75rem]",
+          "border border-border-default",
+          "bg-background",
+          "shadow-[0_32px_90px_rgba(0,0,0,0.48)]",
+          "backdrop-blur-3xl",
+        )}
+      >
       <div className="grid lg:grid-cols-[0.68fr_2fr]">
         <div className="border-b border-border-subtle bg-surface-secondary/35 p-7 lg:border-b-0 lg:border-r">
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-brand-secondary">
@@ -112,14 +112,15 @@ function MegaMenu({
         </div>
       </div>
 
-      <div className="flex items-center justify-between gap-6 border-t border-border-subtle px-7 py-4">
-        <p className="text-xs uppercase tracking-[0.14em] text-foreground-muted">
-          Powered by Zephyon
-        </p>
+        <div className="flex items-center justify-between gap-6 border-t border-border-subtle px-7 py-4">
+          <p className="text-xs uppercase tracking-[0.14em] text-foreground-muted">
+            Powered by Zephyon
+          </p>
 
-        <p className="text-xs uppercase tracking-[0.14em] text-foreground-muted">
-          Fast • Secure • Borderless
-        </p>
+          <p className="text-xs uppercase tracking-[0.14em] text-foreground-muted">
+            Fast • Secure • Borderless
+          </p>
+        </div>
       </div>
     </div>
   );
@@ -190,7 +191,7 @@ export function DesktopNavigation() {
   return (
     <div
       ref={navigationRef}
-      className="static ml-auto hidden lg:block"
+      className="ml-auto hidden lg:block"
       onMouseEnter={cancelScheduledClose}
       onMouseLeave={scheduleClose}
     >
