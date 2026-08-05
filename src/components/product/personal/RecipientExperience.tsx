@@ -3,20 +3,23 @@
 import { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/Button";
-import { parseRecipientResolveResponse, parseRecipientSearchResponse, type PublicRecipient } from "@/lib/recipients/contract";
+import { parseRecipientRecentResponse, parseRecipientResolveResponse, parseRecipientSearchResponse, type PublicRecipient, type RecentPaymentIdentity } from "@/lib/recipients/contract";
+import { parsePaymentIntentResponse, type PaymentIntent } from "@/lib/paymentIntents/contract";
 import { canReachDirectoryHandoff, trustModeFor } from "@/lib/recipients/recipientState";
 
 type SearchStatus = "idle" | "loading" | "found" | "empty" | "invalid" | "error" | "rate_limited" | "resolving" | "selection_error";
 
-export function RecipientExperience({ onDirectorySelected, onUseAdvancedWallet }: Readonly<{
+export function RecipientExperience({ onDirectorySelected, onUseAdvancedWallet, onIntentCreated }: Readonly<{
   onDirectorySelected: () => void;
   onUseAdvancedWallet: () => void;
+  onIntentCreated: (intent: PaymentIntent) => void;
 }>) {
   const [username, setUsername] = useState("");
   const [status, setStatus] = useState<SearchStatus>("idle");
   const [result, setResult] = useState<PublicRecipient>();
   const [selected, setSelected] = useState<PublicRecipient>();
   const [trustAcknowledged, setTrustAcknowledged] = useState(false);
+  const [recents, setRecents] = useState<RecentPaymentIdentity[]>([]);
   const requestSequence = useRef(0);
   const searchController = useRef<AbortController | undefined>(undefined);
   const resolveController = useRef<AbortController | undefined>(undefined);
@@ -24,6 +27,14 @@ export function RecipientExperience({ onDirectorySelected, onUseAdvancedWallet }
   const warningHeading = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => () => { searchController.current?.abort(); resolveController.current?.abort(); }, []);
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch("/api/recipients/recent", { cache: "no-store", credentials: "same-origin", signal: controller.signal })
+      .then(async (response) => ({ response, raw: await response.json().catch(() => undefined) }))
+      .then(({ response, raw }) => { const parsed = parseRecipientRecentResponse(raw); if (response.ok && parsed) setRecents(parsed.recipients); })
+      .catch(() => undefined);
+    return () => controller.abort();
+  }, []);
   useEffect(() => {
     if (selected && trustModeFor(selected.verificationState) !== "ready") warningHeading.current?.focus();
   }, [selected]);
@@ -57,8 +68,8 @@ export function RecipientExperience({ onDirectorySelected, onUseAdvancedWallet }
     }
   }
 
-  async function selectRecipient(recipient: PublicRecipient) {
-    if (status === "loading" || status === "resolving" || recipient.payabilityState !== "available") return;
+  async function selectRecipient(recipient: Pick<PublicRecipient,"accountId"> & Partial<PublicRecipient>) {
+    if (status === "loading" || status === "resolving" || recipient.payabilityState && recipient.payabilityState !== "available") return;
     onDirectorySelected();
     resolveController.current?.abort();
     const controller = new AbortController(); resolveController.current = controller;
@@ -94,6 +105,7 @@ export function RecipientExperience({ onDirectorySelected, onUseAdvancedWallet }
       <h2 className="mt-3 text-2xl font-semibold tracking-[-0.035em]">Search for a ZephiPay recipient</h2>
       <p id="recipient-search-help" className="mt-2 text-sm leading-6 text-foreground-secondary">Enter an exact ZephiPay username. Email, display-name, and partial search are not supported.</p>
     </div>
+    {recents.length ? <section aria-labelledby="recent-payment-identities"><h3 id="recent-payment-identities" className="text-sm font-semibold">Recent Payment Identities</h3><p className="mt-1 text-xs text-foreground-muted">Recently confirmed Payment Identities. Current eligibility is checked when selected.</p><div className="mt-3 grid gap-2">{recents.map((recent) => <button key={recent.accountId} type="button" disabled={status === "resolving"} onClick={() => selectRecipient(recent)} className="flex min-w-0 items-center justify-between rounded-xl border border-border-default p-3 text-left outline-none focus-visible:ring-2 focus-visible:ring-brand-primary/40"><span className="min-w-0"><span className="block truncate text-sm font-medium">{recent.displayName}</span><span className="block truncate text-xs text-foreground-secondary">@{recent.username}</span></span><span className="ml-3 shrink-0 text-xs text-brand-secondary">Select</span></button>)}</div></section> : null}
     <form onSubmit={search} className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]" noValidate>
       <label className="grid min-w-0 gap-2 text-sm font-medium">
         ZephiPay username
@@ -107,7 +119,7 @@ export function RecipientExperience({ onDirectorySelected, onUseAdvancedWallet }
 
     {selected && trustMode === "confirmation_required" && !trustAcknowledged ? <TrustConfirmationCard recipient={selected} headingRef={warningHeading} onCancel={cancelTrust} onContinue={() => setTrustAcknowledged(true)} /> : null}
     {selected && trustMode === "blocked" ? <TrustBlockedCard headingRef={warningHeading} onCancel={cancelTrust} /> : null}
-    {selected && handoffReady ? <DirectoryHandoff recipient={selected} onChange={changeRecipient} onAdvanced={onUseAdvancedWallet} /> : null}
+    {selected && handoffReady ? <DirectoryHandoff recipient={selected} trustAcknowledged={trustAcknowledged} onChange={changeRecipient} onAdvanced={onUseAdvancedWallet} onIntentCreated={onIntentCreated} /> : null}
   </div>;
 }
 
@@ -154,11 +166,29 @@ function TrustBlockedCard({ headingRef, onCancel }: Readonly<{ headingRef: React
   </section>;
 }
 
-function DirectoryHandoff({ recipient, onChange, onAdvanced }: Readonly<{ recipient: PublicRecipient; onChange: () => void; onAdvanced: () => void }>) {
+function DirectoryHandoff({ recipient, trustAcknowledged, onChange, onAdvanced, onIntentCreated }: Readonly<{ recipient: PublicRecipient; trustAcknowledged: boolean; onChange: () => void; onAdvanced: () => void; onIntentCreated: (intent: PaymentIntent) => void }>) {
+  const [amount,setAmount] = useState(""); const [purpose,setPurpose] = useState(""); const [busy,setBusy] = useState(false); const [error,setError] = useState<string>();
+  const key = useRef<string | undefined>(undefined);
+  function update(setter: (value:string) => void, value: string) { setter(value); key.current=undefined; setError(undefined); }
+  async function submit(event: React.FormEvent) {
+    event.preventDefault(); if (busy) return;
+    if (!/^(?:0|[1-9]\d*)(?:\.\d{1,6})?$/.test(amount) || amount === "0" || !purpose.trim()) { setError("Enter a positive amount and a purpose."); return; }
+    key.current ??= crypto.randomUUID(); setBusy(true); setError(undefined);
+    try {
+      const response = await fetch("/api/payment-intents", { method:"POST",credentials:"same-origin",
+        headers:{"Content-Type":"application/json","Idempotency-Key":key.current},
+        body:JSON.stringify({recipientType:"payment_identity",recipientAccountId:recipient.accountId,amount,purpose:purpose.trim(),...(trustAcknowledged?{trustAcknowledgment:{acknowledged:true}}:{})}) });
+      const raw: unknown = await response.json().catch(() => undefined); const parsed=parsePaymentIntentResponse(raw);
+      if (!response.ok || !parsed) throw new Error(typeof raw === "object" && raw && "error" in raw && typeof raw.error === "string" ? raw.error : "Unable to create the payment intent.");
+      onIntentCreated(parsed.paymentIntent);
+    } catch (reason) { setError(reason instanceof Error ? reason.message : "Unable to create the payment intent."); }
+    finally { setBusy(false); }
+  }
   return <section className="rounded-[1.4rem] border border-brand-primary/25 bg-brand-primary/[0.07] p-5">
     <p className="text-xs font-medium uppercase tracking-[0.16em] text-brand-secondary">Recipient selected</p>
     <h3 className="mt-3 text-xl font-semibold">Payment Identity confirmed</h3>
-    <p className="mt-3 text-sm leading-6 text-foreground-secondary">@{recipient.username} is selected. Connecting Payment Identities to Payment Intents is coming in the next integration phase; no payment has been created.</p>
+    <p className="mt-3 text-sm leading-6 text-foreground-secondary">@{recipient.username} is selected. The backend will resolve the current eligible destination when the intent is created; no payment has been created yet.</p>
+    <form onSubmit={submit} className="mt-5 grid gap-4" noValidate><label className="grid gap-2 text-sm font-medium">USDC amount<input value={amount} onChange={(event)=>update(setAmount,event.target.value)} inputMode="decimal" className="h-12 rounded-xl border border-border-default bg-background/70 px-4 font-normal" /></label><label className="grid gap-2 text-sm font-medium">Purpose<input value={purpose} maxLength={120} onChange={(event)=>update(setPurpose,event.target.value)} className="h-12 rounded-xl border border-border-default bg-background/70 px-4 font-normal" /></label>{error?<p role="alert" className="text-sm text-red-300">{error}</p>:null}<Button type="submit" loading={busy}>Review payment</Button></form>
     <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
       <Button variant="outline" onClick={onChange}>Change recipient</Button>
       <Button variant="ghost" href="/personal">Return to dashboard</Button>

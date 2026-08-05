@@ -100,16 +100,17 @@ describe("recipient BFF and UI invariants", () => {
     assert.doesNotMatch(ui, /type="email"|name="email"|name="displayName"|placeholder="email/i);
   });
 
-  it("provides focus, live-region, trust, handoff, and no-payment boundaries", async () => {
+  it("provides focus, live-region, trust, and intent-creation boundaries", async () => {
     const ui = await source("src/components/product/personal/RecipientExperience.tsx");
     assert.match(ui, /role="status"/); assert.match(ui, /aria-live="polite"/); assert.match(ui, /warningHeading\.current\?\.focus/);
     assert.match(ui, /requestAnimationFrame\(\(\) => resultAction\.current\?\.focus/);
     assert.match(ui, /Identity not verified/); assert.match(ui, /Identity verification pending/); assert.match(ui, /Continue anyway/);
     assert.match(ui, /Recipient unavailable/); assert.match(ui, /no payment has been created/);
-    assert.match(ui, /temporary and is not yet stored/); assert.doesNotMatch(ui, /\/api\/payment-intents|wallet address resolved|funds processing/i);
+    assert.match(ui, /temporary and is not yet stored/); assert.match(ui, /\/api\/payment-intents/);
+    assert.doesNotMatch(ui, /wallet address resolved|funds processing/i);
   });
 
-  it("keeps Advanced Wallet collapsed, mutually exclusive, and the sole intent submission path", async () => {
+  it("keeps Advanced Wallet collapsed, mutually exclusive, and backward compatible", async () => {
     const workspace = await source("src/components/product/personal/PaymentIntentWorkspace.tsx");
     assert.match(workspace, /useState\(false\)/); assert.match(workspace, /aria-expanded=\{advancedOpen\}/);
     assert.match(workspace, /setAdvancedOpen\(false\).*walletFallback: ""/s);

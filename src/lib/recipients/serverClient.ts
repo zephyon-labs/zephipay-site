@@ -3,12 +3,12 @@ import "server-only";
 import { randomUUID } from "node:crypto";
 
 import { authConfigured, getAuth0 } from "@/lib/auth0";
-import { parseRecipientResolveResponse, parseRecipientSearchResponse, type RecipientResolveSuccess, type RecipientSearchSuccess } from "./contract";
+import { parseRecipientRecentResponse, parseRecipientResolveResponse, parseRecipientSearchResponse, type RecipientRecentSuccess, type RecipientResolveSuccess, type RecipientSearchSuccess } from "./contract";
 import { normalizeRecipientError, recipientFailure, type SafeRecipientError } from "./errors";
 
 export type RecipientApiResult = Readonly<{
   status: number;
-  body: RecipientSearchSuccess | RecipientResolveSuccess | SafeRecipientError;
+  body: RecipientSearchSuccess | RecipientResolveSuccess | RecipientRecentSuccess | SafeRecipientError;
 }>;
 
 export async function requireRecipientSession(): Promise<RecipientApiResult | undefined> {
@@ -19,7 +19,7 @@ export async function requireRecipientSession(): Promise<RecipientApiResult | un
 export async function callRecipientApi(input: Readonly<{
   method: "GET" | "POST";
   path: string;
-  response: "search" | "resolve";
+  response: "search" | "resolve" | "recent";
   requestId?: string | null;
   body?: unknown;
 }>): Promise<RecipientApiResult> {
@@ -47,7 +47,7 @@ export async function callRecipientApi(input: Readonly<{
     }
     const raw: unknown = await response.json().catch(() => undefined);
     if (!response.ok) return normalizeRecipientError(response.status);
-    const parsed = input.response === "search" ? parseRecipientSearchResponse(raw) : parseRecipientResolveResponse(raw);
+    const parsed = input.response === "search" ? parseRecipientSearchResponse(raw) : input.response === "resolve" ? parseRecipientResolveResponse(raw) : parseRecipientRecentResponse(raw);
     return parsed ? { status: response.status, body: parsed } : recipientFailure(503, "Recipient search is temporarily unavailable.");
   } catch {
     return recipientFailure(503, "Recipient search is temporarily unavailable.");

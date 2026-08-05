@@ -18,6 +18,8 @@ export type PublicRecipient = Readonly<{
 
 export type RecipientSearchSuccess = Readonly<{ ok: true; recipients: PublicRecipient[] }>;
 export type RecipientResolveSuccess = Readonly<{ ok: true; recipient: PublicRecipient }>;
+export type RecentPaymentIdentity = Readonly<Pick<PublicRecipient, "accountId" | "username" | "displayName" | "accountType" | "verificationState">>;
+export type RecipientRecentSuccess = Readonly<{ ok: true; recipients: RecentPaymentIdentity[] }>;
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const RECIPIENT_KEYS = ["accountId", "username", "displayName", "accountType", "verificationState", "payabilityState", "avatarUrl"];
@@ -33,6 +35,19 @@ export function parseRecipientResolveResponse(value: unknown): RecipientResolveS
   if (!hasExactKeys(value, ["ok", "recipient"]) || value.ok !== true) return undefined;
   const recipient = parseRecipient(value.recipient);
   return recipient ? { ok: true, recipient } : undefined;
+}
+
+export function parseRecipientRecentResponse(value: unknown): RecipientRecentSuccess | undefined {
+  if (!hasExactKeys(value,["ok","recipients"]) || value.ok !== true || !Array.isArray(value.recipients) || value.recipients.length > 5) return undefined;
+  const recipients = value.recipients.map((entry) => {
+    if (!hasExactKeys(entry,["accountId","username","displayName","accountType","verificationState"])) return undefined;
+    if (typeof entry.accountId !== "string" || !UUID.test(entry.accountId) || typeof entry.username !== "string" ||
+        typeof entry.displayName !== "string" || !RECIPIENT_ACCOUNT_TYPES.includes(entry.accountType as RecipientAccountType) ||
+        !RECIPIENT_VERIFICATION_STATES.includes(entry.verificationState as RecipientVerificationState)) return undefined;
+    return Object.freeze({ accountId: entry.accountId.toLowerCase(), username: entry.username, displayName: entry.displayName,
+      accountType: entry.accountType as RecipientAccountType, verificationState: entry.verificationState as RecipientVerificationState });
+  });
+  return recipients.some((entry) => !entry) ? undefined : { ok: true, recipients: recipients as RecentPaymentIdentity[] };
 }
 
 function parseRecipient(value: unknown): PublicRecipient | undefined {

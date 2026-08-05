@@ -119,13 +119,17 @@ export function PaymentIntentWorkspace({ recoveryId }: { recoveryId?: string }) 
   function directorySelected() {
     setAdvancedOpen(false); setForm((current) => ({ ...current, walletFallback: "" })); setError(undefined);
   }
+  function directoryIntentCreated(created: PaymentIntent) {
+    setCreationCompleted(true); setIntent(created); setError(undefined);
+    router.replace(`/personal/send?intent=${encodeURIComponent(created.id)}`);
+  }
 
   if (!intent) return (
     <WorkspaceShell step="Compose" title="Choose who to pay" description="Find a Payment Identity by exact username, or use Advanced Wallet for the current address-based USDC devnet flow.">
       {error ? <ErrorNotice message={error} /> : null}
       {busy && recoveryId ? <p className="text-sm text-foreground-secondary">Recovering the authoritative payment intent…</p> : (
         <div className="grid gap-7">
-          <RecipientExperience key={recipientResetKey} onDirectorySelected={directorySelected} onUseAdvancedWallet={openAdvancedWallet} />
+          <RecipientExperience key={recipientResetKey} onDirectorySelected={directorySelected} onUseAdvancedWallet={openAdvancedWallet} onIntentCreated={directoryIntentCreated} />
           <div className="border-t border-border-subtle pt-6">
             <p className="text-sm text-foreground-secondary">Can&apos;t find the recipient?</p>
             <button type="button" aria-expanded={advancedOpen} aria-controls="advanced-wallet-panel" onClick={toggleAdvancedWallet} className="mt-3 min-h-11 rounded-full border border-border-default px-5 text-sm font-medium outline-none transition hover:border-brand-primary/40 hover:bg-brand-primary/[0.07] focus-visible:ring-2 focus-visible:ring-brand-primary/40">Advanced options · Send by wallet address</button>
@@ -156,7 +160,13 @@ export function PaymentIntentWorkspace({ recoveryId }: { recoveryId?: string }) 
       <dl className="grid gap-px overflow-hidden rounded-[1.4rem] border border-border-default bg-border-subtle sm:grid-cols-2">
         <Detail label="Amount" value={`${intent.amount} ${intent.asset}`} prominent />
         <Detail label="Network" value="Solana devnet" />
-        <Detail label="Recipient" value={intent.recipient} mono />
+        {intent.recipientType === "payment_identity" ? <>
+          <Detail label="Payment Identity" value={intent.recipientSnapshot.displayName} />
+          <Detail label="Username" value={`@${intent.recipientSnapshot.username}`} />
+          <Detail label="Account type" value={intent.recipientSnapshot.accountType === "ai_agent" ? "AI Agent" : intent.recipientSnapshot.accountType} />
+          <Detail label="Verification at creation" value={intent.recipientSnapshot.verificationState} />
+          <Detail label="Trust confirmation" value={intent.recipientSnapshot.trustOutcome === "acknowledged" ? "Acknowledged" : "Not required"} />
+        </> : <Detail label="Recipient" value={intent.recipient} mono />}
         <Detail label="Purpose" value={intent.purpose} />
         <Detail label="Current status" value={processing ? "Confirmed and ready for execution" : "Ready for your review"} />
         <Detail label="Created" value={formatTime(intent.createdAt)} />
