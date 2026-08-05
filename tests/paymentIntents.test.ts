@@ -108,8 +108,9 @@ describe("BFF and UI security invariants", () => {
     assert.match(ui, /creationKey\.current \?\?= crypto\.randomUUID\(\)/);
     assert.match(ui, /\/personal\/send\?intent=/);
     assert.match(ui, /router\.replace\("\/personal\/send"\)/);
-    assert.match(ui, /Recipient lookup is not connected yet/);
-    assert.match(ui, /Advanced: Solana wallet address/);
+    assert.match(ui, /RecipientExperience/);
+    assert.match(ui, /Advanced options · Send by wallet address/);
+    assert.match(ui, /Direct wallet payment/);
     assert.match(ui, /JSON\.stringify\(requestBody\)/);
     assert.match(ui, /Test payment access has not been activated for this account\./);
     assert.doesNotMatch(ui, /beta\.zephipay\.com|location\.(?:assign|replace)|router\.(?:push|replace)\([^\n]*beta/);
