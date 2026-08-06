@@ -586,7 +586,7 @@ export default function ZeraCreatorsPage() {
                 <p className="mt-6 text-lg leading-8 text-foreground-secondary">
                   Reward programs should reinforce useful activity, meaningful
                   communities, ecosystem contribution, and long-term creator
-                  value—not manufactured engagement.
+                  value rather than manufactured engagement.
                 </p>
               </div>
 

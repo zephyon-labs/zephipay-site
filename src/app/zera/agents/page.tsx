@@ -543,8 +543,8 @@ export default function ZeraAgentsPage() {
 
               <p className="mt-6 text-lg leading-8 text-foreground-secondary">
                 Agent payments should move through a complete decision and
-                verification path—not jump directly from instruction to
-                settlement.
+                verification path instead of jumping directly from instruction
+                to settlement.
               </p>
             </div>
 

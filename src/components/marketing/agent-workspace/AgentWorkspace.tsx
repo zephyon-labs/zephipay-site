@@ -313,7 +313,7 @@ export function AgentWorkspace() {
 
           <p className="mt-2 max-w-2xl text-sm leading-6 text-foreground-secondary">
             Identity, permissions, spending limits, approval policies,
-            and runtime protection—all in one guided workspace.
+            and runtime protection in one guided workspace.
           </p>
         </div>
 

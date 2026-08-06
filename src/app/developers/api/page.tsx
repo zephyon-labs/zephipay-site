@@ -26,7 +26,7 @@ const principles = [
     number: "01",
     title: "Economic context",
     description:
-      "Requests describe the participant, purpose, asset, recipient, and intended action—not only an amount.",
+      "Requests describe the participant, purpose, asset, recipient, and intended action, not only an amount.",
   },
   {
     number: "02",

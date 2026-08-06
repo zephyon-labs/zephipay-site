@@ -435,7 +435,7 @@ export default function BusinessPage() {
               <p className="mt-6 text-lg leading-8 text-foreground-secondary">
                 ZephiPay is being built so businesses can serve customers,
                 applications, and AI agents through the same trusted payment
-                infrastructure—without sacrificing policy, verification, or
+                infrastructure without sacrificing policy, verification, or
                 operational visibility.
               </p>
 

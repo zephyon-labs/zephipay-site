@@ -31,7 +31,7 @@ description="Preserve trustworthy payment evidence across Runtime decisions, set
 ],
 [
 "Integrity",
-"Receipts can be independently verified rather than simply displayed."
+"Receipts can be independently verified rather than only displayed."
 ],
 [
 "Transparency",

@@ -189,8 +189,8 @@ export default function TransactionTransparencyPage() {
 
               <p className="mt-6 text-lg leading-8 text-foreground-secondary">
                 ZephiPay preserves the information people and organizations
-                need to understand a transaction later—not merely whether money
-                moved.
+                need to understand a transaction later, including more than
+                whether money moved.
               </p>
             </div>
 

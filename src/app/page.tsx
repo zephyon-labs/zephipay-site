@@ -44,14 +44,13 @@ export default function HomePage() {
 
             <p className="mt-6 max-w-3xl text-lg leading-8 text-foreground-secondary sm:text-xl sm:leading-9">
               Send money, accept payments, grow your business, or power
-              intelligent agents—all through one trusted platform designed to
-              make every transaction effortless, transparent, verifiable, and
-              ready for what&apos;s next.
+              intelligent agents through one trusted platform that makes every
+              transaction clear, transparent, and verifiable.
             </p>
 
             <p className="mt-7 max-w-3xl text-base font-medium italic leading-7 text-foreground-secondary md:text-lg">
-              Because ZephiPay doesn&apos;t just move money—it preserves the
-              context that builds trust.
+              ZephiPay moves money while preserving the context that builds
+              trust.
             </p>
 
             <div className="mt-10 flex flex-wrap items-center gap-4">
@@ -123,8 +122,8 @@ export default function HomePage() {
 
               <p className="mt-6 text-lg leading-8 text-foreground-secondary">
                 Personal payments, creator commerce, business tools, and
-                intelligent systems—one calm experience with different ways
-                to move value.
+                intelligent systems come together in one calm experience with
+                different ways to move value.
               </p>
             </div>
 
@@ -152,7 +151,7 @@ export default function HomePage() {
               </h2>
 
               <p className="mt-6 text-xl text-brand-primary font-medium">
-                Send money, accept payments, grow your business, or power intelligent agents—all through one trusted platform designed to make every transaction effortless, transparent, verifiable, and ready for what&apos;s next.
+                Send money, accept payments, grow your business, or power intelligent agents through one trusted platform that makes every transaction clear, transparent, and verifiable.
               </p>
 
               <p className="mx-auto mt-8 max-w-3xl text-lg leading-8 text-foreground-secondary">

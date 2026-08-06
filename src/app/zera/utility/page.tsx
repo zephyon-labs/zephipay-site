@@ -740,8 +740,8 @@ export default function ZeraUtilityPage() {
 
               <p className="mt-6 text-lg leading-8 text-foreground-secondary">
                 The long-term model is designed around economic activity
-                flowing through useful services—not manufactured volume or
-                speculation alone.
+                flowing through useful services rather than manufactured volume
+                or speculation alone.
               </p>
             </div>
 

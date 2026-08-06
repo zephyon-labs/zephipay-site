@@ -479,7 +479,7 @@ export default function ZeraBusinessPage() {
               </h2>
 
               <p className="mt-6 text-lg leading-8 text-foreground-secondary">
-                ZERA utility can support the wider business lifecycle—not only
+                ZERA utility can support the wider business lifecycle, not only
                 the moment a customer pays.
               </p>
             </div>

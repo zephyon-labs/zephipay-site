@@ -149,7 +149,7 @@ export default function PersonalPage() {
               </p>
 
               <h1 className="mt-6 max-w-5xl text-5xl font-semibold tracking-[-0.05em] sm:text-7xl lg:text-[5rem] lg:leading-[0.98]">
-                Personal payments that simply make sense.
+                Personal payments that make sense.
               </h1>
 
               <p className="mt-8 max-w-4xl text-xl leading-9 text-foreground-secondary sm:text-2xl">
@@ -185,8 +185,8 @@ export default function PersonalPage() {
 
               <p className="mt-5 leading-7 text-foreground-secondary">
                 People should not need to understand payment rails,
-                settlement infrastructure, or verification systems just to
-                move money confidently.
+                settlement infrastructure, or verification systems to move
+                money confidently.
               </p>
 
               <div className="mt-7 grid gap-3">
@@ -329,8 +329,8 @@ export default function PersonalPage() {
                 </h2>
 
                 <p className="mt-6 text-lg leading-8 text-foreground-secondary">
-                  ZephiPay does not just record that money moved. It is
-                  designed to preserve the context that helps people
+                  ZephiPay records that money moved and preserves the context
+                  that helps people
                   understand, verify, and trust the transaction later.
                 </p>
               </div>
@@ -454,7 +454,7 @@ export default function PersonalPage() {
           <div className="grid items-center gap-8 border-t border-border-subtle pt-20 lg:grid-cols-[1fr_auto]">
             <div>
               <p className="text-sm uppercase tracking-[0.18em] text-brand-secondary">
-                Make payments feel effortless
+                Make payments feel straightforward
               </p>
 
               <h2 className="mt-5 max-w-4xl text-4xl font-semibold tracking-[-0.045em] sm:text-5xl">

@@ -1146,7 +1146,7 @@ export default function ZeraDevelopersPage() {
                 </p>
 
                 <h2 className="mt-5 text-4xl font-semibold tracking-[-0.045em] sm:text-5xl">
-                  Powerful infrastructure should remain understandable.
+                  Advanced infrastructure should remain understandable.
                 </h2>
 
                 <p className="mt-6 text-lg leading-8 text-foreground-secondary">

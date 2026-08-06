@@ -130,7 +130,7 @@ export default function AIAgentsPage() {
               </p>
 
               <h1 className="mt-6 text-5xl font-semibold tracking-[-0.055em] sm:text-7xl lg:text-[5.25rem] lg:leading-[0.98]">
-                Put your AI to work—with you in control.
+                Put your AI to work while you stay in control.
               </h1>
 
               <p className="mt-8 max-w-3xl text-xl font-medium leading-9 text-foreground sm:text-2xl">

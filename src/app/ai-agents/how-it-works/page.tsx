@@ -211,8 +211,8 @@ export default function AIHowItWorksPage() {
 
               <p className="mt-6 text-lg leading-8 text-foreground-secondary">
                 Traditional processors focus on the transfer. Zephyon
-                coordinates the full event surrounding it—before, during, and
-                after settlement.
+                coordinates the full event before, during, and after
+                settlement.
               </p>
             </div>
 
@@ -395,7 +395,8 @@ export default function AIHowItWorksPage() {
             <p className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-foreground-secondary">
               Zephyon receipts preserve the payment result, runtime decision,
               settlement reference, execution timeline, and verification
-              state—creating records that people and software can trust.
+              state. Together, they create records that people and software can
+              trust.
             </p>
 
             <div className="mt-9 flex flex-wrap justify-center gap-4">

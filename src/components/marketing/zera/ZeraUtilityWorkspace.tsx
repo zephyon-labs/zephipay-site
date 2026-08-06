@@ -353,7 +353,7 @@ export function ZeraUtilityWorkspace() {
                 <p className="mt-2 text-sm leading-6 text-foreground-secondary">
                   ZephiPay remains useful without ZERA. The token is designed
                   to make eligible participation more rewarding, capable, and
-                  connected—not to block basic access.
+                  connected while keeping basic access open.
                 </p>
               </div>
             </div>
