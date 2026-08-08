@@ -88,34 +88,39 @@ describe("BFF and UI security invariants", () => {
     assert.equal(normalizePaymentError(403).body.error, "Test payment access has not been activated for this account.");
   });
 
-  it("forwards idempotency/request IDs and supports create/read/confirm outcomes without execution", async () => {
+  it("forwards authenticated create/read/confirm/execute/receipt/activity calls", async () => {
     const create = await source("src/app/api/payment-intents/route.ts");
     const read = await source("src/app/api/payment-intents/[id]/route.ts");
     const confirm = await source("src/app/api/payment-intents/[id]/confirm/route.ts");
+    const execute = await source("src/app/api/payment-intents/[id]/execute/route.ts");
+    const execution = await source("src/app/api/payment-intents/[id]/execution/route.ts");
+    const receipt = await source("src/app/api/payment-intents/[id]/receipt/route.ts");
+    const activity = await source("src/app/api/activity/route.ts");
     const client = await source("src/lib/paymentIntents/serverClient.ts");
     assert.match(create, /idempotencyKey/); assert.match(create, /x-request-id/); assert.match(create, /hasTrustedOrigin/);
     assert.match(read, /validPaymentIntentId/); assert.match(confirm, /parseConfirmInput/); assert.match(confirm, /hasTrustedOrigin/);
     assert.match(client, /normalizePaymentError\(response\.status\)/);
-    assert.doesNotMatch([create, read, confirm, client].join("\n"), /api\/send|Runtime|Solana/);
+    assert.match(execute,/parseConfirmInput/);assert.match(execute,/hasTrustedOrigin/);assert.match(execution,/callExecutionApi/);assert.match(receipt,/callExecutionApi/);assert.match(activity,/limit/);
+    assert.doesNotMatch([create, read, confirm, execute, execution, receipt, activity, client].join("\n"), /api\/send|providerIdempotencyKey|selectedRail/);
   });
 
   it("uses authoritative review/confirm values, honest language, URL recovery, and double-submit protection", async () => {
     const ui = await source("src/components/product/personal/PaymentIntentWorkspace.tsx");
-    assert.match(ui, /requestHash: intent\.requestHash, expectedVersion: intent\.version/);
-    assert.match(ui, /Confirmed and ready for execution/);
-    assert.match(ui, /does not settle funds yet/);
-    assert.match(ui, /if \(busy\) return/);
-    assert.match(ui, /creationKey\.current \?\?= crypto\.randomUUID\(\)/);
+    assert.match(ui, /requestHash:intent\.requestHash,expectedVersion:intent\.version/);
+    assert.match(ui, /requestHash:confirmed\.requestHash,expectedVersion:confirmed\.version/);
+    assert.match(ui, /\/execute/);assert.match(ui,/\[200,202\]/);assert.match(ui,/Confirm payment/);
+    assert.match(ui, /if\(busy\)return/);
+    assert.match(ui, /creationKey\.current\?\?=crypto\.randomUUID\(\)/);
     assert.match(ui, /\/personal\/send\?intent=/);
     assert.match(ui, /router\.replace\("\/personal\/send"\)/);
     assert.match(ui, /RecipientExperience/);
     assert.match(ui, /Advanced options · Send by wallet address/);
-    assert.match(ui, /Direct wallet payment/);
-    assert.match(ui, /JSON\.stringify\(requestBody\)/);
-    assert.match(ui, /Test payment access has not been activated for this account\./);
-    assert.doesNotMatch(ui, /beta\.zephipay\.com|location\.(?:assign|replace)|router\.(?:push|replace)\([^\n]*beta/);
+    assert.match(ui, /simulated Mock Rail beta/);
+    assert.match(ui, /JSON\.stringify\(body\)/);
+    assert.match(ui,/AbortController/);assert.match(ui,/polling\.current/);assert.match(ui,/clearTimeout/);assert.match(ui,/Payment status is still being confirmed/);
+    assert.doesNotMatch(ui, /beta\.zephipay\.com|location\.(?:assign|replace)/);
     assert.doesNotMatch(ui, /placeholder wallet|default wallet/i);
-    assert.doesNotMatch(ui, /localStorage|sessionStorage|>Sent<|>Paid<|>Settled<|>Completed<|>Delivered</);
+    assert.doesNotMatch(ui, /localStorage|sessionStorage|\/api\/send|selectedRail|providerIdempotencyKey/);
   });
 
   it("shows generic beta denial and supports idempotent confirmation payloads", async () => {

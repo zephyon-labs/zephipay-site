@@ -172,12 +172,12 @@ function DirectoryHandoff({ recipient, trustAcknowledged, onChange, onAdvanced, 
   function update(setter: (value:string) => void, value: string) { setter(value); key.current=undefined; setError(undefined); }
   async function submit(event: React.FormEvent) {
     event.preventDefault(); if (busy) return;
-    if (!/^(?:0|[1-9]\d*)(?:\.\d{1,6})?$/.test(amount) || amount === "0" || !purpose.trim()) { setError("Enter a positive amount and a purpose."); return; }
+    if (!/^(?:0|[1-9]\d*)(?:\.\d{1,6})?$/.test(amount) || amount === "0") { setError("Enter a positive USDC amount with no more than 6 decimal places."); return; }
     key.current ??= crypto.randomUUID(); setBusy(true); setError(undefined);
     try {
       const response = await fetch("/api/payment-intents", { method:"POST",credentials:"same-origin",
         headers:{"Content-Type":"application/json","Idempotency-Key":key.current},
-        body:JSON.stringify({recipientType:"payment_identity",recipientAccountId:recipient.accountId,amount,purpose:purpose.trim(),...(trustAcknowledged?{trustAcknowledgment:{acknowledged:true}}:{})}) });
+        body:JSON.stringify({recipientType:"payment_identity",recipientAccountId:recipient.accountId,amount,purpose:purpose.trim()||null,...(trustAcknowledged?{trustAcknowledgment:{acknowledged:true}}:{})}) });
       const raw: unknown = await response.json().catch(() => undefined); const parsed=parsePaymentIntentResponse(raw);
       if (!response.ok || !parsed) throw new Error(typeof raw === "object" && raw && "error" in raw && typeof raw.error === "string" ? raw.error : "Unable to create the payment intent.");
       onIntentCreated(parsed.paymentIntent);
@@ -188,7 +188,7 @@ function DirectoryHandoff({ recipient, trustAcknowledged, onChange, onAdvanced, 
     <p className="text-xs font-medium uppercase tracking-[0.16em] text-brand-secondary">Recipient selected</p>
     <h3 className="mt-3 text-xl font-semibold">Payment Identity confirmed</h3>
     <p className="mt-3 text-sm leading-6 text-foreground-secondary">@{recipient.username} is selected. The backend will resolve the current eligible destination when the intent is created; no payment has been created yet.</p>
-    <form onSubmit={submit} className="mt-5 grid gap-4" noValidate><label className="grid gap-2 text-sm font-medium">USDC amount<input value={amount} onChange={(event)=>update(setAmount,event.target.value)} inputMode="decimal" className="h-12 rounded-xl border border-border-default bg-background/70 px-4 font-normal" /></label><label className="grid gap-2 text-sm font-medium">Purpose<input value={purpose} maxLength={120} onChange={(event)=>update(setPurpose,event.target.value)} className="h-12 rounded-xl border border-border-default bg-background/70 px-4 font-normal" /></label>{error?<p role="alert" className="text-sm text-red-300">{error}</p>:null}<Button type="submit" loading={busy}>Review payment</Button></form>
+    <form onSubmit={submit} className="mt-5 grid gap-4" noValidate><label className="grid gap-2 text-sm font-medium">USDC amount<input value={amount} onChange={(event)=>update(setAmount,event.target.value)} inputMode="decimal" className="h-12 rounded-xl border border-border-default bg-background/70 px-4 font-normal" /></label><label className="grid gap-2 text-sm font-medium">Purpose (optional)<input value={purpose} maxLength={120} placeholder="What is this payment for?" onChange={(event)=>update(setPurpose,event.target.value)} className="h-12 rounded-xl border border-border-default bg-background/70 px-4 font-normal" /></label>{error?<p role="alert" className="text-sm text-red-300">{error}</p>:null}<Button type="submit" loading={busy}>Review and Send</Button></form>
     <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
       <Button variant="outline" onClick={onChange}>Change recipient</Button>
       <Button variant="ghost" href="/personal">Return to dashboard</Button>

@@ -1,0 +1,2 @@
+import { callExecutionApi } from "@/lib/paymentIntents/backendProxy";import { apiResponse,routeError } from "@/lib/paymentIntents/routeResponse";
+export async function GET(request:Request){const raw=new URL(request.url).searchParams.get("limit")??"20";if(!/^\d+$/.test(raw)||Number(raw)<1||Number(raw)>50)return routeError(400,"Activity limit must be between 1 and 50.");return apiResponse(await callExecutionApi({method:"GET",path:`/api/activity?limit=${raw}`,requestId:request.headers.get("x-request-id")}));}

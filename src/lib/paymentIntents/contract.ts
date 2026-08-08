@@ -18,7 +18,7 @@ type PaymentIntentBase = Readonly<{
   amount: string;
   asset: "USDC";
   network: "solana-devnet";
-  purpose: string;
+  purpose: string | null;
   createdAt: string;
   userConfirmedAt?: string;
 }>;
@@ -54,7 +54,7 @@ export function parsePaymentIntentResponse(value: unknown): PaymentIntentSuccess
     typeof intent.amountRaw !== "string" || !INTEGER.test(intent.amountRaw) || intent.amountRaw === "0" ||
     typeof intent.amount !== "string" || !AMOUNT.test(intent.amount) ||
     intent.asset !== "USDC" || intent.network !== "solana-devnet" ||
-    typeof intent.purpose !== "string" || intent.purpose.length === 0 || new TextEncoder().encode(intent.purpose).length > 120 ||
+    (intent.purpose !== null && (typeof intent.purpose !== "string" || intent.purpose.length === 0 || new TextEncoder().encode(intent.purpose).length > 120)) ||
     typeof intent.createdAt !== "string" || !isIsoDate(intent.createdAt) ||
     (intent.userConfirmedAt !== undefined &&
       (typeof intent.userConfirmedAt !== "string" || !isIsoDate(intent.userConfirmedAt))) ||

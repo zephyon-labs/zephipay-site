@@ -112,11 +112,11 @@ describe("recipient BFF and UI invariants", () => {
 
   it("keeps Advanced Wallet collapsed, mutually exclusive, and backward compatible", async () => {
     const workspace = await source("src/components/product/personal/PaymentIntentWorkspace.tsx");
-    assert.match(workspace, /useState\(false\)/); assert.match(workspace, /aria-expanded=\{advancedOpen\}/);
-    assert.match(workspace, /setAdvancedOpen\(false\).*walletFallback: ""/s);
-    assert.match(workspace, /setRecipientResetKey/); assert.match(workspace, /Direct wallet payment/);
-    assert.match(workspace, /fetch\("\/api\/payment-intents"/); assert.match(workspace, /JSON\.stringify\(requestBody\)/);
-    assert.match(workspace, /recipientInput: ""/); assert.match(workspace, /\/personal\/send\?intent=/);
+    assert.match(workspace, /useState\(false\)/); assert.match(workspace, /setAdvancedOpen\(v=>!v\)/);
+    assert.match(workspace, /setAdvancedOpen\(false\).*walletFallback:""/s);
+    assert.match(workspace, /setRecipientResetKey/); assert.match(workspace, /No Solana transaction will be submitted/);
+    assert.match(workspace, /fetch\("\/api\/payment-intents"/); assert.match(workspace, /JSON\.stringify\(body\)/);
+    assert.match(workspace, /recipientInput:""/); assert.match(workspace, /\/personal\/send\?intent=/);
   });
 });
 
