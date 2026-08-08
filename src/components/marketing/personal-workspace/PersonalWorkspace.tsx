@@ -1,15 +1,11 @@
 "use client";
 
 import {
-  useMemo,
   useState,
   type FormEvent,
 } from "react";
+import { useRouter } from "next/navigation";
 
-import {
-  isZephiPayConfigured,
-  sendPayment,
-} from "@/lib/zephipay/client";
 import type {
   MoneyMode,
   PaymentRecipientType,
@@ -64,22 +60,13 @@ const initialSendInput: SendPaymentInput = {
   purpose: "",
 };
 
-function shortenValue(
-  value: string,
-  start = 7,
-  end = 5,
-): string {
-  if (!value || value.length <= start + end + 3) {
-    return value;
-  }
-
+function shortenValue(value: string, start = 7, end = 5): string {
+  if (!value || value.length <= start + end + 3) return value;
   return `${value.slice(0, start)}...${value.slice(-end)}`;
 }
 
 function formatLabel(value: string): string {
-  return value
-    .replace(/[-_]/g, " ")
-    .replace(/\b\w/g, (character) => character.toUpperCase());
+  return value.replace(/[-_]/g, " ").replace(/\b\w/g, (character) => character.toUpperCase());
 }
 
 function EmptyState({
@@ -118,6 +105,7 @@ function FieldError({
 export function PersonalWorkspace({
   className,
 }: PersonalWorkspaceProps) {
+  const router = useRouter();
   const [activeMode, setActiveMode] =
     useState<MoneyMode>("send");
   const [sendInput, setSendInput] =
@@ -125,21 +113,11 @@ export function PersonalWorkspace({
   const [errors, setErrors] = useState<
     Partial<Record<keyof SendPaymentInput, string>>
   >({});
-  const [submissionError, setSubmissionError] =
-    useState<string | null>(null);
-  const [result, setResult] =
-    useState<PaymentResult | null>(null);
-  const [submitting, setSubmitting] = useState(false);
-
-  const configured = useMemo(
-    () => isZephiPayConfigured(),
-    [],
-  );
-
-  async function handleSend(event: FormEvent<HTMLFormElement>) {
+  const [submissionError] = useState<string | null>(null);
+  const [result] = useState<PaymentResult | null>(null);
+  const [submitting] = useState(false);
+  function handleSend(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setSubmissionError(null);
-    setResult(null);
 
     const validation = validateSendPayment(sendInput);
     setErrors(validation.errors);
@@ -148,22 +126,7 @@ export function PersonalWorkspace({
       return;
     }
 
-    setSubmitting(true);
-
-    try {
-      const paymentResult = await sendPayment(sendInput);
-      setResult(paymentResult);
-      setSendInput(initialSendInput);
-      setErrors({});
-    } catch (error) {
-      setSubmissionError(
-        error instanceof Error
-          ? error.message
-          : "The payment could not be submitted.",
-      );
-    } finally {
-      setSubmitting(false);
-    }
+    router.push("/personal/send");
   }
 
   return (
@@ -245,8 +208,6 @@ export function PersonalWorkspace({
                 aria-selected={activeMode === mode.id}
                 onClick={() => {
                   setActiveMode(mode.id);
-                  setSubmissionError(null);
-                  setResult(null);
                 }}
                 className={cn(
                   "rounded-full px-4 py-2",
@@ -388,17 +349,6 @@ export function PersonalWorkspace({
                   />
                   <FieldError message={errors.purpose} />
                 </div>
-
-                {!configured ? (
-                  <p className="mt-5 rounded-xl border border-amber-400/20 bg-amber-400/10 px-4 py-3 text-sm leading-6 text-foreground-secondary">
-                    The form is ready, but the live payment
-                    service has not been connected through
-                    <code className="mx-1 text-foreground">
-                      NEXT_PUBLIC_ZEPHIPAY_API_URL
-                    </code>
-                    yet.
-                  </p>
-                ) : null}
 
                 {submissionError ? (
                   <p
