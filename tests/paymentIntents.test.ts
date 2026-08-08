@@ -113,10 +113,10 @@ describe("BFF and UI security invariants", () => {
     assert.match(ui, /creationKey\.current\?\?=crypto\.randomUUID\(\)/);
     assert.match(ui, /\/personal\/send\?intent=/);
     assert.match(ui, /router\.replace\("\/personal\/send"\)/);
-    assert.match(ui, /RecipientExperience/);
-    assert.match(ui, /Advanced options · Send by wallet address/);
-    assert.match(ui, /simulated Mock Rail beta/);
-    assert.match(ui, /JSON\.stringify\(body\)/);
+    assert.match(ui, /PaymentComposeForm/);
+    assert.match(ui, /Advanced Wallet/);
+    assert.match(ui, /Mock Rail only/);
+    assert.match(ui, /recipientAccountId:value\.recipient\.accountId/);
     assert.match(ui,/AbortController/);assert.match(ui,/polling\.current/);assert.match(ui,/clearTimeout/);assert.match(ui,/Payment status is still being confirmed/);
     assert.doesNotMatch(ui, /beta\.zephipay\.com|location\.(?:assign|replace)/);
     assert.doesNotMatch(ui, /placeholder wallet|default wallet/i);
@@ -125,15 +125,14 @@ describe("BFF and UI security invariants", () => {
 
   it("presents one review decision while preserving compose values and verification", async () => {
     const ui = await source("src/components/product/personal/PaymentIntentWorkspace.tsx");
-    const recipient = await source("src/components/product/personal/RecipientExperience.tsx");
-    assert.match(ui, />Review payment<\/Button>/);
-    assert.match(recipient, />Review payment<\/Button>/);
+    const recipient = await source("src/components/product/personal/PaymentComposeForm.tsx");
+    assert.match(recipient, /"Review payment":"Review request"/);
     assert.equal((ui.match(/>Send payment<\/Button>/g) ?? []).length, 1);
     assert.doesNotMatch(`${ui}\n${recipient}`, />Confirm payment<\/Button>|Review and Send/);
     assert.match(ui, /onClick=\{confirmAndExecute\}[^>]*>Send payment/);
     assert.match(ui, /\["Recipient"[\s\S]*\["Verification"[\s\S]*\["Amount"/);
     assert.match(ui, /intent\.purpose\?\[\["Purpose",intent\.purpose\]/);
-    assert.match(ui, /"Verified"[\s\S]*"Pending verification"[\s\S]*"Unverified"/);
+    assert.match(recipient, /"Verified"[\s\S]*"Pending verification"[\s\S]*"Unverified"/);
     assert.match(ui, />Back<\/Button>/);
   });
 

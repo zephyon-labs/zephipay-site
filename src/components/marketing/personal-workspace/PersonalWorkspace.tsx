@@ -4,6 +4,8 @@ import { useState } from "react";
 
 import { ActivityInterfacePreview } from "@/components/product/personal";
 import { PaymentIntentWorkspace } from "@/components/product/personal/PaymentIntentWorkspace";
+import { PaymentRequestWorkspace } from "@/components/product/personal/PaymentRequestWorkspace";
+import { PaymentRequestActivity } from "@/components/product/personal/PaymentRequestActivity";
 import { Button } from "@/components/ui/Button";
 import type { MoneyMode } from "@/lib/zephipay/types";
 import { cn } from "@/utils/cn";
@@ -61,12 +63,15 @@ export function PersonalWorkspace({ className, authenticated = false, recoveryId
               <Button className="mt-6" href="/auth/login?returnTo=%2Fpersonal%23personal-workspace">Sign in to send</Button>
             </section>
           : null}
-        {activeMode === "request" ? <EmptyState title="Payment requests are not connected yet." description="Nothing will be generated until the authoritative request endpoint exists." /> : null}
-        {activeMode === "transfer" ? <EmptyState title="Connect an account to transfer funds." description="ZephiPay will not display fictional accounts or simulate a completed transfer." /> : null}
+        {activeMode === "request" ? authenticated
+          ? <PaymentRequestWorkspace />
+          : <section className="rounded-[1.5rem] border border-border-default bg-background/55 p-6"><p className="text-xs font-medium uppercase tracking-[0.16em] text-brand-secondary">Authenticated beta</p><h3 className="mt-3 text-xl font-semibold">Sign in to request money</h3><p className="mt-3 max-w-2xl text-sm leading-6 text-foreground-secondary">Requests are created from your authenticated ZephiPay account.</p><Button className="mt-6" href="/auth/login?returnTo=%2Fpersonal%23personal-workspace">Sign in to request</Button></section>
+          : null}
+        {activeMode === "transfer" ? <EmptyState title="Transfer is not available in this beta." description="Transfers between your ZephiPay-linked accounts will be available after owned accounts and balances are supported." /> : null}
       </div>
 
       <div id="personal-activity" className="scroll-mt-32 border-t border-border-subtle pt-8">
-        {authenticated ? <ActivityInterfacePreview /> : <EmptyState title="Sign in to view activity." description="Authoritative payment history is available after authentication." />}
+        {authenticated ? <><ActivityInterfacePreview /><PaymentRequestActivity /></> : <EmptyState title="Sign in to view activity." description="Authoritative payment history is available after authentication." />}
       </div>
     </div>
   </div>;

@@ -12,32 +12,32 @@ describe("in-place Personal payment flow", () => {
 
   it("keeps compose mounted through review so Back restores entered values", async () => {
     const flow = await source("src/components/product/personal/PaymentIntentWorkspace.tsx");
-    assert.match(flow, /className=\{intent\?"hidden":undefined\}>\{composeView\}/);
+    assert.match(flow, /className=\{intent\?"hidden":undefined\}>\{compose\}/);
     assert.match(flow, /function backToCompose\(\)\{setIntent\(undefined\)/);
-    assert.doesNotMatch(flow, /function backToCompose[^}]*setForm\(emptyForm\)/);
-    assert.match(flow, /<RecipientExperience key=\{recipientResetKey\}/);
+    assert.doesNotMatch(flow, /function backToCompose[^}]*setResetKey/);
+    assert.match(flow, /<PaymentComposeForm key=\{resetKey\}/);
   });
 
   it("does not navigate the in-place flow during review or execution", async () => {
     const flow = await source("src/components/product/personal/PaymentIntentWorkspace.tsx");
     assert.match(flow, /window\.history\.replaceState\(null,"",`\/personal\?intent=/);
     assert.match(flow, /else router\.replace\(`\/personal\/send\?intent=/);
-    assert.match(flow, /onIntentCreated=\{i=>\{setIntent\(i\);rememberIntent\(i\.id\)\}\}/);
+    assert.match(flow, /onIntent=\{i=>\{setIntent\(i\);rememberIntent\(i\.id\)\}\}/);
   });
 
   it("preserves backend-authoritative recipient resolution and trust", async () => {
-    const recipient = await source("src/components/product/personal/RecipientExperience.tsx");
+    const recipient = await source("src/components/product/personal/PaymentComposeForm.tsx");
     assert.match(recipient, /\/api\/recipients\/search/);
-    assert.match(recipient, /\/api\/recipients\/\$\{encodeURIComponent\(recipient\.accountId\)\}/);
-    assert.match(recipient, /trustModeFor\(selected\.verificationState\)/);
-    assert.match(recipient, /trustAcknowledgment:\{acknowledged:true\}/);
+    assert.match(recipient, /\/api\/recipients\/\$\{encodeURIComponent\(found\.recipients\[0\]\.accountId\)\}/);
+    assert.match(recipient, /trustModeFor\(recipient\.verificationState\)/);
+    assert.match(recipient, /trustAcknowledged/);
     assert.doesNotMatch(recipient, /localStorage|sessionStorage/);
   });
 
   it("uses Review payment without execution, then one Send payment decision", async () => {
     const flow = await source("src/components/product/personal/PaymentIntentWorkspace.tsx");
-    const recipient = await source("src/components/product/personal/RecipientExperience.tsx");
-    assert.match(recipient, />Review payment<\/Button>/);
+    const recipient = await source("src/components/product/personal/PaymentComposeForm.tsx");
+    assert.match(recipient, /"Review payment":"Review request"/);
     assert.equal((flow.match(/>Send payment<\/Button>/g) ?? []).length, 1);
     assert.doesNotMatch(`${flow}\n${recipient}`, />Confirm payment<\/Button>|Review and Send/);
     assert.match(flow, /onClick=\{confirmAndExecute\}[^>]*>Send payment/);
@@ -57,9 +57,9 @@ describe("in-place Personal payment flow", () => {
 
   it("keeps Purpose optional and conditional in review and receipt", async () => {
     const flow = await source("src/components/product/personal/PaymentIntentWorkspace.tsx");
-    const recipient = await source("src/components/product/personal/RecipientExperience.tsx");
+    const recipient = await source("src/components/product/personal/PaymentComposeForm.tsx");
     assert.match(recipient, /Purpose \(optional\)/);
-    assert.match(recipient, /purpose:purpose\.trim\(\)\|\|null/);
+    assert.match(recipient, /purpose:cleanPurpose\|\|null/);
     assert.match(flow, /intent\.purpose\?\[\["Purpose",intent\.purpose\]/);
     assert.match(flow, /receipt\.memo\?\[\["Purpose",receipt\.memo\]/);
   });
