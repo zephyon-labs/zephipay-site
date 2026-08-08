@@ -4,13 +4,11 @@ import { access } from "node:fs/promises";
 import { describe, it } from "node:test";
 
 describe("legacy Personal workspace execution cleanup", () => {
-  it("hands validated Review payment into the canonical authenticated workspace", async () => {
+  it("embeds the canonical payment flow in the authenticated Personal workspace", async () => {
     const workspace = await source("src/components/marketing/personal-workspace/PersonalWorkspace.tsx");
-    assert.match(workspace, /validateSendPayment\(sendInput\)/);
-    assert.match(workspace, /if \(!validation\.valid\)/);
-    assert.match(workspace, /router\.push\("\/personal\/send"\)/);
-    assert.match(workspace, /Review payment/i);
-    assert.match(workspace, /Purpose \(optional\)/);
+    assert.match(workspace, /<PaymentIntentWorkspace inPlace recoveryId=\{recoveryId\} \/>/);
+    assert.doesNotMatch(workspace, /validateSendPayment|router\.push\("\/personal\/send"\)/);
+    assert.match(workspace, /Sign in before entering payment details/);
   });
 
   it("contains no active legacy send call or client-selected execution authority", async () => {

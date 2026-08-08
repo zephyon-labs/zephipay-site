@@ -9,6 +9,8 @@ import {
   PersonalWorkspace,
 } from "@/components/marketing/personal-workspace";
 import { Button } from "@/components/ui/Button";
+import { authConfigured, getAuth0 } from "@/lib/auth0";
+import { isPaymentIntentId } from "@/lib/paymentIntents/contract";
 
 const everydayActions = [
   {
@@ -131,7 +133,10 @@ export const metadata = {
     "Send money, request payment, transfer funds, and understand every transaction through one trusted personal payment experience.",
 };
 
-export default function PersonalPage() {
+export default async function PersonalPage({ searchParams }: { searchParams: Promise<{ intent?: string | string[] }> }) {
+  const authenticated = authConfigured() && Boolean(await getAuth0().getSession());
+  const rawIntent = (await searchParams).intent;
+  const recoveryId = authenticated && typeof rawIntent === "string" && isPaymentIntentId(rawIntent) ? rawIntent : undefined;
   return (
     <main className="relative isolate min-h-screen overflow-hidden bg-transparent text-foreground">
       <SiteHeader />
@@ -218,7 +223,7 @@ export default function PersonalPage() {
       <Section id="personal-workspace" className="scroll-mt-28">
         <Container>
           <div className="border-t border-border-subtle pt-20">
-            <PersonalWorkspace />
+            <PersonalWorkspace authenticated={authenticated} recoveryId={recoveryId} />
           </div>
         </Container>
       </Section>

@@ -31,9 +31,10 @@ describe("legacy PersonalWorkspace optional purpose validation", () => {
   it("allows PersonalWorkspace submission without purpose and removes legacy required copy", async () => {
     const workspace = await source("src/components/marketing/personal-workspace/PersonalWorkspace.tsx");
     const validation = await source("src/lib/zephipay/validation.ts");
-    assert.match(workspace, /validateSendPayment\(sendInput\)/);
-    assert.match(workspace, /if \(!validation\.valid\)/);
-    assert.match(workspace, /Purpose \(optional\)/);
+    const canonical = await source("src/components/product/personal/RecipientExperience.tsx");
+    assert.match(workspace, /PaymentIntentWorkspace/);
+    assert.match(canonical, /Purpose \(optional\)/);
+    assert.match(canonical, /purpose:purpose\.trim\(\)\|\|null/);
     assert.doesNotMatch(`${workspace}\n${validation}`, /Add a payment purpose\./);
   });
 });
