@@ -18,8 +18,9 @@ export function validateSendPayment(
     errors.amount = "Enter an amount greater than zero.";
   }
 
-  if (!input.purpose.trim()) {
-    errors.purpose = "Add a payment purpose.";
+  const purpose = input.purpose.trim();
+  if (purpose && new TextEncoder().encode(purpose).length > 120) {
+    errors.purpose = "Purpose must not exceed 120 UTF-8 bytes.";
   }
 
   return {

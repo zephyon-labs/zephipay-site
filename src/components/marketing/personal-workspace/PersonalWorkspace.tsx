@@ -372,7 +372,7 @@ export function PersonalWorkspace({
                     htmlFor="payment-purpose"
                     className="text-sm font-medium text-foreground"
                   >
-                    Purpose
+                    Purpose (optional)
                   </label>
                   <input
                     id="payment-purpose"
