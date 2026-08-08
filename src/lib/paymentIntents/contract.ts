@@ -7,7 +7,9 @@ export type PaymentIdentitySnapshot = Readonly<{
   accountType: "personal" | "creator" | "business" | "ai_agent";
   verificationState: "unverified" | "pending" | "verified";
   payabilityState: "available"; capturedAt: string; schemaVersion: 1;
-  resolutionSource: "recipient_directory"; trustOutcome: "not_required" | "acknowledged";
+  identitySource?: "recipient_directory" | "synthetic_beta";
+  resolutionSource: "recipient_directory" | "synthetic_beta";
+  trustOutcome: "not_required" | "acknowledged";
 }>;
 type PaymentIntentBase = Readonly<{
   id: string;
@@ -93,13 +95,19 @@ function parseIntentRecipient(intent: Record<string, unknown>):
   }
   if (intent.recipientType !== "payment_identity" || intent.recipient !== undefined || !isRecord(intent.recipientSnapshot)) return undefined;
   const value = intent.recipientSnapshot;
-  const keys = ["accountId","username","displayName","accountType","verificationState","payabilityState","capturedAt","schemaVersion","resolutionSource","trustOutcome"];
-  if (Object.keys(value).some((key) => !keys.includes(key)) || Object.keys(value).length !== keys.length ||
+  const requiredKeys = ["accountId","username","displayName","accountType","verificationState","payabilityState","capturedAt","schemaVersion","resolutionSource","trustOutcome"];
+  const allowedKeys = [...requiredKeys, "identitySource"];
+  const actualKeys = Object.keys(value);
+  if (actualKeys.some((key) => !allowedKeys.includes(key)) ||
+      requiredKeys.some((key) => !actualKeys.includes(key)) ||
       typeof value.accountId !== "string" || !UUID.test(value.accountId) || typeof value.username !== "string" ||
       typeof value.displayName !== "string" || !["personal","creator","business","ai_agent"].includes(String(value.accountType)) ||
       !["unverified","pending","verified"].includes(String(value.verificationState)) || value.payabilityState !== "available" ||
       typeof value.capturedAt !== "string" || !isIsoDate(value.capturedAt) || value.schemaVersion !== 1 ||
-      value.resolutionSource !== "recipient_directory" || !["not_required","acknowledged"].includes(String(value.trustOutcome))) return undefined;
+      !["recipient_directory","synthetic_beta"].includes(String(value.resolutionSource)) ||
+      (value.identitySource !== undefined &&
+        !["recipient_directory","synthetic_beta"].includes(String(value.identitySource))) ||
+      !["not_required","acknowledged"].includes(String(value.trustOutcome))) return undefined;
   return { recipientType: "payment_identity", recipientSnapshot: value as PaymentIdentitySnapshot };
 }
 

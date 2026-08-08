@@ -1,10 +1,12 @@
 export const RECIPIENT_ACCOUNT_TYPES = ["personal", "creator", "business", "ai_agent"] as const;
 export const RECIPIENT_VERIFICATION_STATES = ["unverified", "pending", "verified", "restricted"] as const;
 export const RECIPIENT_PAYABILITY_STATES = ["available", "unavailable", "restricted"] as const;
+export const RECIPIENT_IDENTITY_SOURCES = ["recipient_directory", "synthetic_beta"] as const;
 
 export type RecipientAccountType = (typeof RECIPIENT_ACCOUNT_TYPES)[number];
 export type RecipientVerificationState = (typeof RECIPIENT_VERIFICATION_STATES)[number];
 export type RecipientPayabilityState = (typeof RECIPIENT_PAYABILITY_STATES)[number];
+export type RecipientIdentitySource = (typeof RECIPIENT_IDENTITY_SOURCES)[number];
 
 export type PublicRecipient = Readonly<{
   accountId: string;
@@ -13,6 +15,7 @@ export type PublicRecipient = Readonly<{
   accountType: RecipientAccountType;
   verificationState: RecipientVerificationState;
   payabilityState: RecipientPayabilityState;
+  identitySource?: RecipientIdentitySource;
   avatarUrl?: string;
 }>;
 
@@ -22,7 +25,7 @@ export type RecentPaymentIdentity = Readonly<Pick<PublicRecipient, "accountId" |
 export type RecipientRecentSuccess = Readonly<{ ok: true; recipients: RecentPaymentIdentity[] }>;
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-const RECIPIENT_KEYS = ["accountId", "username", "displayName", "accountType", "verificationState", "payabilityState", "avatarUrl"];
+const RECIPIENT_KEYS = ["accountId", "username", "displayName", "accountType", "verificationState", "payabilityState", "identitySource", "avatarUrl"];
 
 export function parseRecipientSearchResponse(value: unknown): RecipientSearchSuccess | undefined {
   if (!hasExactKeys(value, ["ok", "recipients"]) || value.ok !== true || !Array.isArray(value.recipients) || value.recipients.length > 1) return undefined;
@@ -61,6 +64,8 @@ function parseRecipient(value: unknown): PublicRecipient | undefined {
     !RECIPIENT_ACCOUNT_TYPES.includes(value.accountType as RecipientAccountType) ||
     !RECIPIENT_VERIFICATION_STATES.includes(value.verificationState as RecipientVerificationState) ||
     !RECIPIENT_PAYABILITY_STATES.includes(value.payabilityState as RecipientPayabilityState) ||
+    (value.identitySource !== undefined &&
+      !RECIPIENT_IDENTITY_SOURCES.includes(value.identitySource as RecipientIdentitySource)) ||
     (value.avatarUrl !== undefined && !isSafeAvatar(value.avatarUrl))
   ) return undefined;
   return Object.freeze({
@@ -68,6 +73,9 @@ function parseRecipient(value: unknown): PublicRecipient | undefined {
     accountType: value.accountType as RecipientAccountType,
     verificationState: value.verificationState as RecipientVerificationState,
     payabilityState: value.payabilityState as RecipientPayabilityState,
+    ...(typeof value.identitySource === "string"
+      ? { identitySource: value.identitySource as RecipientIdentitySource }
+      : {}),
     ...(typeof value.avatarUrl === "string" ? { avatarUrl: value.avatarUrl } : {}),
   });
 }
