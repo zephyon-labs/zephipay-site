@@ -4,12 +4,12 @@ import { access } from "node:fs/promises";
 import { describe, it } from "node:test";
 
 describe("legacy Personal workspace execution cleanup", () => {
-  it("hands validated Review and Send into the canonical authenticated workspace", async () => {
+  it("hands validated Review payment into the canonical authenticated workspace", async () => {
     const workspace = await source("src/components/marketing/personal-workspace/PersonalWorkspace.tsx");
     assert.match(workspace, /validateSendPayment\(sendInput\)/);
     assert.match(workspace, /if \(!validation\.valid\)/);
     assert.match(workspace, /router\.push\("\/personal\/send"\)/);
-    assert.match(workspace, /Review and send/i);
+    assert.match(workspace, /Review payment/i);
     assert.match(workspace, /Purpose \(optional\)/);
   });
 

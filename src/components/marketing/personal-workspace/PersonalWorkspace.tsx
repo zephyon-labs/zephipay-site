@@ -557,7 +557,7 @@ export function PersonalWorkspace({
                 >
                   {submitting
                     ? "Submitting payment..."
-                    : "Review and send"}
+                    : "Review payment"}
                 </button>
               </div>
             </form>

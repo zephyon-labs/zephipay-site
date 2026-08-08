@@ -108,7 +108,7 @@ describe("BFF and UI security invariants", () => {
     const ui = await source("src/components/product/personal/PaymentIntentWorkspace.tsx");
     assert.match(ui, /requestHash:intent\.requestHash,expectedVersion:intent\.version/);
     assert.match(ui, /requestHash:confirmed\.requestHash,expectedVersion:confirmed\.version/);
-    assert.match(ui, /\/execute/);assert.match(ui,/\[200,202\]/);assert.match(ui,/Confirm payment/);
+    assert.match(ui, /\/execute/);assert.match(ui,/\[200,202\]/);assert.match(ui,/>Send payment<\/Button>/);
     assert.match(ui, /if\(busy\)return/);
     assert.match(ui, /creationKey\.current\?\?=crypto\.randomUUID\(\)/);
     assert.match(ui, /\/personal\/send\?intent=/);
@@ -121,6 +121,20 @@ describe("BFF and UI security invariants", () => {
     assert.doesNotMatch(ui, /beta\.zephipay\.com|location\.(?:assign|replace)/);
     assert.doesNotMatch(ui, /placeholder wallet|default wallet/i);
     assert.doesNotMatch(ui, /localStorage|sessionStorage|\/api\/send|selectedRail|providerIdempotencyKey/);
+  });
+
+  it("presents one review decision while preserving compose values and verification", async () => {
+    const ui = await source("src/components/product/personal/PaymentIntentWorkspace.tsx");
+    const recipient = await source("src/components/product/personal/RecipientExperience.tsx");
+    assert.match(ui, />Review payment<\/Button>/);
+    assert.match(recipient, />Review payment<\/Button>/);
+    assert.equal((ui.match(/>Send payment<\/Button>/g) ?? []).length, 1);
+    assert.doesNotMatch(`${ui}\n${recipient}`, />Confirm payment<\/Button>|Review and Send/);
+    assert.match(ui, /onClick=\{confirmAndExecute\}[^>]*>Send payment/);
+    assert.match(ui, /\["Recipient"[\s\S]*\["Verification"[\s\S]*\["Amount"/);
+    assert.match(ui, /intent\.purpose\?\[\["Purpose",intent\.purpose\]/);
+    assert.match(ui, /"Verified"[\s\S]*"Pending verification"[\s\S]*"Unverified"/);
+    assert.match(ui, />Back<\/Button>/);
   });
 
   it("shows generic beta denial and supports idempotent confirmation payloads", async () => {
