@@ -85,7 +85,7 @@ describe("BFF and UI security invariants", () => {
   it("preserves safe meaningful upstream statuses and normalizes unknown failures", () => {
     for (const status of [400, 401, 403, 404, 409, 503]) assert.equal(normalizePaymentError(status).status, status);
     assert.deepEqual(normalizePaymentError(500), { status: 502, body: { ok: false, error: "Payment service is temporarily unavailable." } });
-    assert.equal(normalizePaymentError(403).body.error, "Test payment access has not been activated for this account.");
+    assert.equal(normalizePaymentError(403).body.error, "This payment action is not authorized for this account.");
   });
 
   it("forwards authenticated create/read/confirm/execute/receipt/activity calls", async () => {
@@ -117,7 +117,7 @@ describe("BFF and UI security invariants", () => {
     assert.match(ui, /Advanced Wallet/);
     assert.match(ui, /Mock Rail only/);
     assert.match(ui, /recipientAccountId:value\.recipient\.accountId/);
-    assert.match(ui,/AbortController/);assert.match(ui,/polling\.current/);assert.match(ui,/clearTimeout/);assert.match(ui,/Payment status is still being confirmed/);
+    assert.match(ui,/AbortController/);assert.match(ui,/polling\.current/);assert.match(ui,/clearTimeout/);assert.match(ui,/Confirming payment/);
     assert.doesNotMatch(ui, /beta\.zephipay\.com|location\.(?:assign|replace)/);
     assert.doesNotMatch(ui, /placeholder wallet|default wallet/i);
     assert.doesNotMatch(ui, /localStorage|sessionStorage|\/api\/send|selectedRail|providerIdempotencyKey/);
@@ -126,7 +126,7 @@ describe("BFF and UI security invariants", () => {
   it("presents one review decision while preserving compose values and verification", async () => {
     const ui = await source("src/components/product/personal/PaymentIntentWorkspace.tsx");
     const recipient = await source("src/components/product/personal/PaymentComposeForm.tsx");
-    assert.match(recipient, /"Review payment":"Review request"/);
+    assert.match(recipient, /"Review payment"\s*:\s*"Review request"/);
     assert.equal((ui.match(/>Send payment<\/Button>/g) ?? []).length, 1);
     assert.doesNotMatch(`${ui}\n${recipient}`, />Confirm payment<\/Button>|Review and Send/);
     assert.match(ui, /onClick=\{confirmAndExecute\}[^>]*>Send payment/);
@@ -136,11 +136,12 @@ describe("BFF and UI security invariants", () => {
     assert.match(ui, />Back<\/Button>/);
   });
 
-  it("shows generic beta denial and supports idempotent confirmation payloads", async () => {
+  it("shows bounded authorization denial and supports idempotent confirmation payloads", async () => {
     const errors = await source("src/lib/paymentIntents/errors.ts");
     const contract = parsePaymentIntentResponse({ ...payload("processing"), applied: false });
     assert.equal(contract?.applied, false);
-    assert.match(errors, /Test payment access has not been activated for this account\./);
+    assert.match(errors, /This payment action is not authorized for this account\./);
+    assert.doesNotMatch(errors, /Test payment access has not been activated/);
   });
 });
 

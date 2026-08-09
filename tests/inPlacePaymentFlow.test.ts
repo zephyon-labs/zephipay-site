@@ -29,7 +29,7 @@ describe("in-place Personal payment flow", () => {
     const recipient = await source("src/components/product/personal/PaymentComposeForm.tsx");
     assert.match(recipient, /\/api\/recipients\/search/);
     assert.match(recipient, /\/api\/recipients\/\$\{encodeURIComponent\(found\.recipients\[0\]\.accountId\)\}/);
-    assert.match(recipient, /trustModeFor\(recipient\.verificationState\)/);
+    assert.match(recipient, /trustModeForRecipient\(recipient\)/);
     assert.match(recipient, /trustAcknowledged/);
     assert.doesNotMatch(recipient, /localStorage|sessionStorage/);
   });
@@ -37,7 +37,7 @@ describe("in-place Personal payment flow", () => {
   it("uses Review payment without execution, then one Send payment decision", async () => {
     const flow = await source("src/components/product/personal/PaymentIntentWorkspace.tsx");
     const recipient = await source("src/components/product/personal/PaymentComposeForm.tsx");
-    assert.match(recipient, /"Review payment":"Review request"/);
+    assert.match(recipient, /"Review payment"\s*:\s*"Review request"/);
     assert.equal((flow.match(/>Send payment<\/Button>/g) ?? []).length, 1);
     assert.doesNotMatch(`${flow}\n${recipient}`, />Confirm payment<\/Button>|Review and Send/);
     assert.match(flow, /onClick=\{confirmAndExecute\}[^>]*>Send payment/);
@@ -59,9 +59,9 @@ describe("in-place Personal payment flow", () => {
     const flow = await source("src/components/product/personal/PaymentIntentWorkspace.tsx");
     const recipient = await source("src/components/product/personal/PaymentComposeForm.tsx");
     assert.match(recipient, /Purpose \(optional\)/);
-    assert.match(recipient, /purpose:cleanPurpose\|\|null/);
+    assert.match(recipient, /purpose:\s*cleanPurpose\s*\|\|\s*null/);
     assert.match(flow, /intent\.purpose\?\[\["Purpose",intent\.purpose\]/);
-    assert.match(flow, /receipt\.memo\?\[\["Purpose",receipt\.memo\]/);
+    assert.match(flow, /receipt\.memo\?<p/);
   });
 
   it("preserves authenticated direct-entry recovery and protects the public workspace", async () => {

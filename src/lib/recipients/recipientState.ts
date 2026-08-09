@@ -8,9 +8,14 @@ export function trustModeFor(verificationState: RecipientVerificationState): Tru
   return "confirmation_required";
 }
 
+export function trustModeForRecipient(recipient: PublicRecipient): TrustMode {
+  if (recipient.identitySource === "synthetic_beta") return "ready";
+  return trustModeFor(recipient.verificationState);
+}
+
 export function canReachDirectoryHandoff(recipient: PublicRecipient, acknowledged: boolean): boolean {
   if (recipient.payabilityState !== "available") return false;
-  const mode = trustModeFor(recipient.verificationState);
+  const mode = trustModeForRecipient(recipient);
   return mode === "ready" || mode === "confirmation_required" && acknowledged;
 }
 

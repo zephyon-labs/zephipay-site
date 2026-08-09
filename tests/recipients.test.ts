@@ -5,7 +5,7 @@ import { describe, it } from "node:test";
 import { parseRecipientResolveResponse, parseRecipientSearchResponse, type PublicRecipient } from "../src/lib/recipients/contract";
 import { normalizeRecipientError } from "../src/lib/recipients/errors";
 import { parseRecipientSearchInput, validRecipientAccountId } from "../src/lib/recipients/requests";
-import { canReachDirectoryHandoff, openAdvancedWallet, selectDirectoryRecipient, trustModeFor } from "../src/lib/recipients/recipientState";
+import { canReachDirectoryHandoff, openAdvancedWallet, selectDirectoryRecipient, trustModeFor, trustModeForRecipient } from "../src/lib/recipients/recipientState";
 
 const accountId = "00000000-0000-4000-8000-000000000001";
 const recipient = (overrides: Partial<PublicRecipient> = {}): PublicRecipient => ({
@@ -61,6 +61,10 @@ describe("trust and mutually exclusive modes", () => {
     assert.equal(canReachDirectoryHandoff(recipient({ verificationState: "verified" }), false), true);
     assert.equal(canReachDirectoryHandoff(recipient({ verificationState: "unverified" }), false), false);
     assert.equal(canReachDirectoryHandoff(recipient({ verificationState: "unverified" }), true), true);
+    assert.equal(trustModeForRecipient(recipient({ verificationState: "unverified", identitySource: "synthetic_beta" })), "ready");
+    assert.equal(canReachDirectoryHandoff(recipient({ verificationState: "unverified", identitySource: "synthetic_beta" }), false), true);
+    assert.equal(trustModeForRecipient(recipient({ verificationState: "unverified", identitySource: "recipient_directory" })), "confirmation_required");
+    assert.equal(trustModeForRecipient(recipient({ verificationState: "pending", identitySource: "recipient_directory" })), "confirmation_required");
     assert.equal(canReachDirectoryHandoff(recipient({ verificationState: "restricted" }), true), false);
     assert.equal(canReachDirectoryHandoff(recipient({ payabilityState: "unavailable" }), true), false);
   });
