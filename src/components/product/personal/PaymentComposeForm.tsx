@@ -47,6 +47,10 @@ export function PaymentComposeForm({ flow, onReview, advanced }: Readonly<{ flow
         setResolved(recipient);
       }
       if (current !== sequence.current) return;
+      if (flow === "request" && recipient.identitySource === "synthetic_beta") {
+        setError("Beta test recipients can receive Send payments, but cannot sign in to accept requests. Request a canonical ZephiPay account instead.");
+        return;
+      }
       const mode = trustModeForRecipient(recipient);
       if (mode === "blocked") throw new Error("This Payment Identity is restricted and cannot be selected.");
       if (mode === "confirmation_required" && !trustAcknowledged) { setError("Review the verification status and acknowledge it before continuing."); return; }

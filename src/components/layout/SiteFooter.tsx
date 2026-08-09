@@ -25,7 +25,6 @@ const footerGroups = [
       { label: "Zephyon Runtime", href: "/runtime" },
       { label: "Telemetry", href: "/#network" },
       { label: "Security", href: "/#security" },
-      { label: "Design system", href: "/design" },
     ],
   },
   {

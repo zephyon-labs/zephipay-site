@@ -27,8 +27,4 @@ export const utilityNavigation: NavigationItem[] = [
     label: "Platform",
     href: "/#platform",
   },
-  {
-    label: "Design system",
-    href: "/design",
-  },
 ];
