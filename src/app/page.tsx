@@ -1,6 +1,7 @@
 import { AmbientBackground } from "@/components/marketing/AmbientBackground";
 import { AudienceGrid } from "@/components/marketing/AudienceGrid";
 import { NetworkMetrics } from "@/components/marketing/NetworkMetrics";
+import { OpenBetaActivity } from "@/components/marketing/OpenBetaActivity";
 import { RuntimeFlow } from "@/components/marketing/RuntimeFlow";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
@@ -96,6 +97,7 @@ export default function HomePage() {
       >
         <Container>
           <NetworkMetrics />
+          <OpenBetaActivity />
         </Container>
       </Section>
 
