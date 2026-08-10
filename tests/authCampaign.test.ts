@@ -37,7 +37,7 @@ describe("account BFF contract", () => {
     assert.match(component, /Join beta/);
     assert.match(component, /Open ZephiPay Beta/);
     assert.match(component, /"\/personal\/send"/);
-    assert.match(component, /"\/auth\/login\?screen_hint=signup"/);
+    assert.match(component, /"\/auth\/login\?screen_hint=signup&returnTo=%2Fpersonal%2Fidentity"/);
     assert.match(component, /betaCtaState\(response\.status\)/);
     assert.doesNotMatch(component, /Request beta access|beta\.zephipay\.com|paymentAccess/);
   });

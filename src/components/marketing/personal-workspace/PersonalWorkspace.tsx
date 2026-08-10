@@ -6,6 +6,7 @@ import { ActivityInterfacePreview } from "@/components/product/personal";
 import { PaymentIntentWorkspace } from "@/components/product/personal/PaymentIntentWorkspace";
 import { PaymentRequestWorkspace } from "@/components/product/personal/PaymentRequestWorkspace";
 import { PaymentRequestActivity } from "@/components/product/personal/PaymentRequestActivity";
+import { PaymentIdentityStatus } from "@/components/product/personal/PaymentIdentityStatus";
 import { Button } from "@/components/ui/Button";
 import type { MoneyMode } from "@/lib/zephipay/types";
 import { cn } from "@/utils/cn";
@@ -42,6 +43,7 @@ export function PersonalWorkspace({ className, authenticated = false, recoveryId
     </div>
 
     <div className="p-6 sm:p-8">
+      {authenticated ? <PaymentIdentityStatus /> : null}
       <div className="flex flex-col gap-5 border-b border-border-subtle pb-7 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-brand-secondary">Personal</p>

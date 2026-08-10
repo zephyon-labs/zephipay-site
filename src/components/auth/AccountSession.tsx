@@ -35,7 +35,7 @@ export function AccountSession({ mobile = false }: { mobile?: boolean }) {
   return (
     <div className={`flex items-center gap-2 ${mobile ? "w-full justify-between" : ""}`} aria-busy={!resolved}>
       <a className="text-sm text-foreground hover:underline" href="/auth/login">Sign in</a>
-      <a className="rounded-full bg-brand-primary px-3 py-2 text-sm text-white" href="/auth/login?screen_hint=signup">Create account</a>
+      <a className="rounded-full bg-brand-primary px-3 py-2 text-sm text-white" href="/auth/login?screen_hint=signup&returnTo=%2Fpersonal%2Fidentity">Create account</a>
     </div>
   );
 }

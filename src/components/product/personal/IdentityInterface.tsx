@@ -8,26 +8,27 @@ type FormState = { username: string; displayName: string; avatarUrl: string; dis
 type FieldErrors = Partial<Record<"username" | "displayName" | "avatarUrl", string>>;
 const EMPTY: FormState = { username: "", displayName: "", avatarUrl: "", discoverability: "private" };
 
-export function IdentityInterface() {
+export function IdentityInterface({ emailVerified }: { emailVerified: boolean }) {
   const [identity, setIdentity] = useState<PaymentIdentity | null>(null);
   const [form, setForm] = useState<FormState>(EMPTY);
   const [loading, setLoading] = useState(true); const [editing, setEditing] = useState(false); const [saving, setSaving] = useState(false);
   const [loadError, setLoadError] = useState(""); const [notice, setNotice] = useState(""); const [errors, setErrors] = useState<FieldErrors>({});
   const [conflict, setConflict] = useState(false);
+  const [setupStarted, setSetupStarted] = useState(false);
 
   async function load() {
     setLoading(true); setLoadError(""); setConflict(false);
     try {
       const response = await fetch("/api/account/identity", { cache: "no-store" }); const body: unknown = await response.json().catch(() => undefined);
       if (!response.ok || !isSuccess(body)) { setLoadError(failureMessage(body)); return; }
-      setIdentity(body.identity); setForm(body.identity ? toForm(body.identity) : EMPTY); setEditing(body.identity === null); setNotice("");
+      setIdentity(body.identity); setForm(body.identity ? toForm(body.identity) : EMPTY); setEditing(false); setSetupStarted(false); setNotice("");
     } catch { setLoadError("Payment Identity is temporarily unavailable. Try again."); }
     finally { setLoading(false); }
   }
   useEffect(() => { const timer = window.setTimeout(() => void load(), 0); return () => window.clearTimeout(timer); }, []);
 
   const persisted = identity ? toForm(identity) : EMPTY; const dirty = !same(form, persisted);
-  function cancel() { setForm(persisted); setErrors({}); setNotice(""); setConflict(false); setEditing(identity === null); }
+  function cancel() { setForm(persisted); setErrors({}); setNotice(""); setConflict(false); setEditing(false); if (!identity) setSetupStarted(false); }
   async function save() {
     const nextErrors = validate(form); setErrors(nextErrors); setNotice(""); setConflict(false);
     const first = nextErrors.username ? "identity-username" : nextErrors.displayName ? "identity-display-name" : nextErrors.avatarUrl ? "identity-avatar" : undefined;
@@ -47,10 +48,19 @@ export function IdentityInterface() {
     finally { setSaving(false); }
   }
 
-  if (loading) return <WorkspaceShell><p role="status" className="p-8 text-sm text-foreground-secondary">Loading your Payment Identity…</p></WorkspaceShell>;
-  if (loadError) return <WorkspaceShell><div className="p-8"><h2 className="text-xl font-semibold">Payment Identity unavailable</h2><p className="mt-3 text-sm text-foreground-secondary">{loadError}</p><Action onClick={() => void load()}>Try again</Action></div></WorkspaceShell>;
+  if (loading) return <IdentityPageState emailVerified={emailVerified}><WorkspaceShell><p role="status" className="p-8 text-sm text-foreground-secondary">Loading your Payment Identity…</p></WorkspaceShell></IdentityPageState>;
+  if (loadError) return <IdentityPageState emailVerified={emailVerified}><WorkspaceShell><div className="p-8"><h2 className="text-xl font-semibold">Payment Identity unavailable</h2><p className="mt-3 text-sm text-foreground-secondary">{loadError}</p><Action onClick={() => void load()}>Try again</Action></div></WorkspaceShell></IdentityPageState>;
 
-  return <WorkspaceShell>
+  if (!identity && !setupStarted) return <IdentityPageState emailVerified={emailVerified}><WorkspaceShell><section className="p-6 sm:p-9" aria-labelledby="payment-identity-onboarding-title">
+    <p className="text-xs font-medium uppercase tracking-[0.18em] text-brand-secondary">Optional setup</p>
+    <h2 id="payment-identity-onboarding-title" className="mt-4 text-3xl font-semibold">Create your Payment Identity</h2>
+    <p className="mt-4 max-w-2xl text-lg leading-8 text-foreground-secondary">Choose a username people can use to find you and send you payments on ZephiPay.</p>
+    <p className="mt-3 max-w-2xl text-sm leading-6 text-foreground-secondary">You can set this up now or come back later. You don’t need a Payment Identity to send a payment. Until you create one, people cannot send to you by ZephiPay username.</p>
+    <div className="mt-7 flex flex-wrap gap-3"><button type="button" onClick={() => { setSetupStarted(true); setEditing(true); }} className="min-h-11 rounded-full bg-brand-primary px-6 py-3 text-sm font-medium text-brand-contrast">Set up Payment Identity</button>
+      <a href="/personal" className="inline-flex min-h-11 items-center rounded-full border border-border-default px-6 py-3 text-sm font-medium">Skip for now</a></div>
+  </section></WorkspaceShell></IdentityPageState>;
+
+  return <IdentityPageState emailVerified={emailVerified}><WorkspaceShell>
     <div aria-live="polite" className="sr-only">{notice}</div>
     <div className="grid min-w-0 lg:grid-cols-[0.8fr_1.2fr]">
       <IdentitySummary identity={identity} />
@@ -72,7 +82,16 @@ export function IdentityInterface() {
       </section>
     </div>
     {identity ? <div className="border-t border-border-subtle p-5 sm:p-8"><StatusWorkspace identity={identity} detailed /></div> : null}
-  </WorkspaceShell>;
+  </WorkspaceShell></IdentityPageState>;
+}
+
+function IdentityPageState({ emailVerified, children }: { emailVerified: boolean; children: React.ReactNode }) {
+  return <div className="grid gap-6"><EmailVerificationNotice verified={emailVerified} />{children}</div>;
+}
+
+function EmailVerificationNotice({ verified }: { verified: boolean }) {
+  if (verified) return <section className="rounded-2xl border border-emerald-400/25 bg-emerald-400/10 p-5" aria-label="Email verification"><p className="text-sm font-medium">Email verified</p><p className="mt-2 text-sm text-foreground-secondary">Your sign-in email is verified. This does not change your Payment Identity or payment ownership.</p></section>;
+  return <section className="rounded-2xl border border-amber-400/30 bg-amber-400/10 p-5" aria-labelledby="verify-email-title"><p className="text-xs font-medium uppercase tracking-[0.16em] text-amber-300">Verify your email</p><h2 id="verify-email-title" className="mt-2 text-lg font-semibold">Check your inbox</h2><p className="mt-2 max-w-3xl text-sm leading-6 text-foreground-secondary">Check your inbox and verify your email address to finish securing your ZephiPay account. You can continue using Mock Send during this beta.</p><a className="mt-4 inline-flex min-h-11 items-center rounded-full border border-border-default px-5 py-2.5 text-sm font-medium" href="/auth/login?returnTo=%2Fpersonal%2Fidentity">I’ve verified my email — check again</a></section>;
 }
 
 function IdentityForm({ form, setForm, errors }: { form: FormState; setForm: (value: FormState) => void; errors: FieldErrors }) {

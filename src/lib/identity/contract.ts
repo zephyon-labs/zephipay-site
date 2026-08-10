@@ -20,7 +20,7 @@ export type PaymentIdentity = Readonly<{
 }>;
 
 export type IdentitySuccess = Readonly<{ ok: true; identity: PaymentIdentity | null }>;
-export type IdentityErrorCode = "AUTH_REQUIRED" | "ACCESS_DENIED" | "VALIDATION_ERROR" | "USERNAME_UNAVAILABLE" | "VERSION_CONFLICT" | "SERVICE_UNAVAILABLE";
+export type IdentityErrorCode = "AUTHENTICATION_REQUIRED" | "AUTHORIZATION_DENIED" | "NOT_FOUND" | "NOT_CONFIGURED" | "RATE_LIMITED" | "TEMPORARILY_UNAVAILABLE" | "VALIDATION_ERROR" | "USERNAME_UNAVAILABLE" | "VERSION_CONFLICT";
 export type IdentityFailure = Readonly<{ ok: false; code: IdentityErrorCode; error: string }>;
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;

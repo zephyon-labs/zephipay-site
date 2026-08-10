@@ -36,9 +36,10 @@ describe("Economic Identity site contract", () => {
   it("keeps the BFF authenticated, same-origin, bounded, uncached, and server-only", async () => {
     const route = await readFile(new URL("../src/app/api/account/identity/route.ts", import.meta.url), "utf8");
     const client = await readFile(new URL("../src/lib/identity/serverClient.ts", import.meta.url), "utf8");
+    const errors = await readFile(new URL("../src/lib/identity/errors.ts", import.meta.url), "utf8");
     assert.match(route, /hasTrustedOrigin\(request\)/); assert.match(route, /parseIdentityWriteInput/); assert.match(route, /private, no-store/);
     assert.match(client, /getSession\(\)/); assert.match(client, /getAccessToken/); assert.match(client, /AbortSignal\.timeout\(5_000\)/);
-    assert.match(client, /cache: "no-store"/); assert.match(client, /USERNAME_UNAVAILABLE/); assert.match(client, /VERSION_CONFLICT/);
+    assert.match(client, /cache: "no-store"/); assert.match(errors, /USERNAME_UNAVAILABLE/); assert.match(errors, /VERSION_CONFLICT/);
     assert.doesNotMatch(route, /Authorization/);
   });
 

@@ -24,7 +24,7 @@ export function getAuth0(): Auth0Client {
       scope: authorizationScope(),
     },
     appBaseUrl: process.env.APP_BASE_URL,
-    signInReturnToPath: "/personal/identity",
+    signInReturnToPath: "/personal",
     enableAccessTokenEndpoint: false,
     tokenRefreshBuffer: 60,
     session: {

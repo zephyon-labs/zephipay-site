@@ -12,7 +12,7 @@ type Props = Omit<LinkButtonProps, "children" | "external" | "href"> & Readonly<
   rightIcon?: ReactNode;
 }>;
 
-const SIGN_UP_HREF = "/auth/login?screen_hint=signup";
+const SIGN_UP_HREF = "/auth/login?screen_hint=signup&returnTo=%2Fpersonal%2Fidentity";
 const BETA_HREF = "/personal/send";
 
 export function AccountAwareBetaCta({
