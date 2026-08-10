@@ -83,8 +83,9 @@ describe("BFF and UI security invariants", () => {
   });
 
   it("preserves safe meaningful upstream statuses and normalizes unknown failures", () => {
-    for (const status of [400, 401, 403, 404, 409, 503]) assert.equal(normalizePaymentError(status).status, status);
-    assert.deepEqual(normalizePaymentError(500), { status: 502, body: { ok: false, error: "Payment service is temporarily unavailable." } });
+    for (const status of [400, 401, 403, 404, 409, 429, 503]) assert.equal(normalizePaymentError(status).status, status);
+    assert.deepEqual(normalizePaymentError(500), { status: 503, body: { ok: false, code: "TEMPORARILY_UNAVAILABLE", error: "Payment service is temporarily unavailable." } });
+    assert.equal(normalizePaymentError(429).body.code, "RATE_LIMITED");
     assert.equal(normalizePaymentError(403).body.error, "This payment action is not authorized for this account.");
   });
 

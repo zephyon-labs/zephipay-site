@@ -8,7 +8,7 @@ import { failure, normalizePaymentError } from "./errors";
 
 export type PaymentIntentApiResult = Readonly<{
   status: number;
-  body: PaymentIntentSuccess | { ok: false; error: string };
+  body: PaymentIntentSuccess | ReturnType<typeof failure>["body"];
 }>;
 
 export async function requirePaymentSession(): Promise<PaymentIntentApiResult | undefined> {
@@ -29,13 +29,14 @@ export async function callPaymentIntentApi(input: Readonly<{
   const backendUrl = process.env.ZEPHIPAY_BACKEND_URL?.trim();
   const audience = process.env.AUTH0_AUDIENCE?.trim();
   if (!backendUrl || !audience) return failure(503, "Payment service is not configured.");
+  const requestId = boundedRequestId(input.requestId);
 
   try {
     const { token } = await auth0.getAccessToken({ audience, scope: paymentScopes });
     const headers: Record<string, string> = {
       Accept: "application/json",
       Authorization: `Bearer ${token}`,
-      "X-Request-Id": boundedRequestId(input.requestId),
+      "X-Request-Id": requestId,
     };
     if (input.body !== undefined) headers["Content-Type"] = "application/json";
     if (input.idempotencyKey) headers["Idempotency-Key"] = input.idempotencyKey;
@@ -55,8 +56,11 @@ export async function callPaymentIntentApi(input: Readonly<{
       const parsed = parsePaymentIntentResponse(upstream);
       return parsed ? { status: response.status, body: parsed } : failure(502, "Payment service returned an invalid response.");
     }
-    return normalizePaymentError(response.status);
+    const normalized = normalizePaymentError(response.status);
+    console.warn("Payment intent upstream request failed.", { category: normalized.body.code, requestId, status: response.status });
+    return normalized;
   } catch {
+    console.warn("Payment intent upstream request failed.", { category: "TEMPORARILY_UNAVAILABLE", requestId, status: 503 });
     return failure(503, "Payment service is temporarily unavailable.");
   }
 }
