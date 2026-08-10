@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState, type ReactNode } from "react";
+import { type ReactNode } from "react";
 
 import { Button, type ButtonProps } from "@/components/ui/Button";
 import { betaCtaState, type BetaCtaState } from "@/lib/betaCtaState";
+import { useAccountHydration } from "@/components/auth/AccountHydrationProvider";
 
 type LinkButtonProps = Extract<ButtonProps, { href: string }>;
 type Props = Omit<LinkButtonProps, "children" | "external" | "href"> & Readonly<{
@@ -19,17 +20,8 @@ export function AccountAwareBetaCta({
   appearance = "button",
   ...buttonProps
 }: Props) {
-  const [state, setState] = useState<BetaCtaState>("signed-out");
-
-  useEffect(() => {
-    const controller = new AbortController();
-    fetch("/api/account", { cache: "no-store", credentials: "same-origin", signal: controller.signal })
-      .then(async (response) => {
-        if (!controller.signal.aborted) setState(betaCtaState(response.status));
-      })
-      .catch(() => { if (!controller.signal.aborted) setState("signed-in"); });
-    return () => controller.abort();
-  }, []);
+  const { status } = useAccountHydration();
+  const state: BetaCtaState = betaCtaState(status === "authenticated" ? 200 : status === "error" ? 502 : 401);
 
   const signedIn = state === "signed-in";
   const label = signedIn ? "Open ZephiPay Beta" : "Join beta";

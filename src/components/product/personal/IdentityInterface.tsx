@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import type { Discoverability, IdentityFailure, IdentitySuccess, PaymentIdentity, PayabilityState, VerificationState } from "@/lib/identity/contract";
+import { ACCOUNT_HYDRATION_REFRESH_EVENT } from "@/components/auth/AccountHydrationProvider";
 
 type FormState = { username: string; displayName: string; avatarUrl: string; discoverability: Discoverability };
 type FieldErrors = Partial<Record<"username" | "displayName" | "avatarUrl", string>>;
@@ -40,7 +41,7 @@ export function IdentityInterface({ emailVerified }: { emailVerified: boolean })
         discoverability: form.discoverability, ...(identity ? { expectedVersion: identity.version } : {}),
       }) });
       const body: unknown = await response.json().catch(() => undefined);
-      if (response.ok && isSuccess(body) && body.identity) { setIdentity(body.identity); setForm(toForm(body.identity)); setEditing(false); setNotice("Your Payment Identity was saved."); return; }
+      if (response.ok && isSuccess(body) && body.identity) { setIdentity(body.identity); setForm(toForm(body.identity)); setEditing(false); setNotice("Your Payment Identity was saved."); window.dispatchEvent(new Event(ACCOUNT_HYDRATION_REFRESH_EVENT)); return; }
       if (isFailure(body) && body.code === "USERNAME_UNAVAILABLE") { setErrors({ username: "That username is unavailable. Choose another." }); document.getElementById("identity-username")?.focus(); }
       else if (isFailure(body) && body.code === "VERSION_CONFLICT") { setConflict(true); setNotice("Your Payment Identity changed in another session. Reload the latest version before saving again."); }
       else setNotice(failureMessage(body));
