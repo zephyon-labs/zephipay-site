@@ -22,6 +22,26 @@ test("makes Devnet wallet a primary Send mode while preserving Request", async (
   assert.match(request, /flow="request"/);
 });
 
+test("keeps page support copy consistent with the selected mode through review", async () => {
+  const experience = await source("src/components/product/personal/PersonalSendExperience.tsx");
+  assert.match(experience, /recipientMode === "solana-devnet"/);
+  assert.match(experience, /ZephiPay Devnet/);
+  assert.match(experience, /Circle USDC · Solana Devnet/);
+  assert.match(experience, /secure backend connection is available/);
+  assert.match(experience, /ZephiPay Beta/);
+  assert.match(experience, /Mock Rail · simulated settlement/);
+});
+
+test("keeps the embedded wallet surface compact and responsive", async () => {
+  const bar = await source("src/components/product/personal/DevnetTestBar.tsx");
+  assert.match(bar, /embedded = false/);
+  assert.match(bar, /min-w-0 overflow-hidden/);
+  assert.match(bar, /sm:flex-row/);
+  assert.match(bar, /min-h-11/);
+  assert.match(bar, /truncate text-sm font-medium/);
+  assert.match(bar, /aria-expanded=\{expanded\}/);
+});
+
 test("stops wallet review before any browser payment mutation", async () => {
   const workspace = await source("src/components/product/personal/PaymentIntentWorkspace.tsx");
   const devnetBoundary = workspace.slice(workspace.indexOf("const devnetView="), workspace.indexOf("return <div>", workspace.indexOf("const devnetView=")));

@@ -23,7 +23,7 @@ declare global { interface Window { phantom?: { solana?: InjectedSolanaWallet };
 type NetworkState = "idle" | "checking" | "connected" | "unavailable" | "wrong-network";
 type Balances = { sol: string; usdc: string; ataExists: boolean; walletAccountExists: boolean };
 
-export function DevnetTestBar({ paymentMode = "zephipay" }: { paymentMode?: SendRecipientMode }) {
+export function DevnetTestBar({ paymentMode = "zephipay", embedded = false }: { paymentMode?: SendRecipientMode; embedded?: boolean }) {
   const [expanded, setExpanded] = useState(false);
   const [walletAddress, setWalletAddress] = useState<string>();
   const [network, setNetwork] = useState<NetworkState>("idle");
@@ -71,8 +71,8 @@ export function DevnetTestBar({ paymentMode = "zephipay" }: { paymentMode?: Send
   async function disconnect() { try { await wallet?.disconnect(); } finally { setWalletAddress(undefined); setBalances(undefined); setNetwork("idle"); setMessage("Wallet disconnected. No payment was attempted."); } }
 
   const connected = Boolean(walletAddress), status = networkLabel(network), summary = connected && balances ? `${shortAddress(walletAddress!)} · ${balances.sol} SOL · ${balances.usdc} USDC` : message;
-  return <section aria-label="Solana Devnet testing" className="mt-4 overflow-hidden rounded-[1.4rem] border border-border-default bg-surface-glass shadow-[var(--shadow-soft)] backdrop-blur-xl">
-    <div className="flex min-w-0 flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between sm:px-5">
+  return <section aria-label="Solana Devnet testing" className={`${embedded ? "" : "mt-4 shadow-[var(--shadow-soft)] backdrop-blur-xl"} min-w-0 overflow-hidden rounded-[1.4rem] border border-border-default bg-surface-glass`}>
+    <div className="flex min-w-0 flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex min-w-0 items-start gap-3">
         <span aria-hidden="true" className="mt-1.5 size-2 shrink-0 rounded-full bg-brand-secondary shadow-[0_0_0_4px_color-mix(in_srgb,var(--color-brand-secondary)_15%,transparent)]" />
         <div className="min-w-0"><div className="flex flex-wrap items-center gap-2"><h3 className="font-medium">Solana Devnet</h3><span className="rounded-full border border-border-default bg-background/60 px-2 py-0.5 text-[0.68rem] font-medium uppercase tracking-[.12em] text-foreground-secondary">Test network</span></div><p aria-live="polite" className="mt-1 max-w-xl break-words text-sm leading-5 text-foreground-secondary">{summary}</p></div>
