@@ -1,4 +1,5 @@
 import { isPaymentIntentId } from "./contract";
+import { address } from "@solana/kit";
 
 const AMOUNT = /^(?:0|[1-9]\d*)(?:\.\d{1,6})?$/;
 const HASH = /^[a-f0-9]{64}$/;
@@ -51,7 +52,9 @@ export function validIdempotencyKey(value: string | null): value is string {
 export function validPaymentIntentId(value: string): boolean { return isPaymentIntentId(value); }
 
 export function isCanonicalSolanaAddressInput(value: string): boolean {
-  return SOLANA_ADDRESS.test(value.trim());
+  const canonical = value.trim();
+  if (canonical !== value || !SOLANA_ADDRESS.test(canonical)) return false;
+  try { return String(address(canonical)) === canonical; } catch { return false; }
 }
 
 export function paymentIntentRequestFromRecipient(input: Readonly<{

@@ -15,10 +15,10 @@ describe("open-beta final site audit", () => {
 
   it("rejects synthetic beta Request without weakening synthetic Send", async () => {
     const compose = await source("src/components/product/personal/PaymentComposeForm.tsx");
-    assert.match(compose, /flow === "request" && recipient\.identitySource === "synthetic_beta"/);
+    assert.match(compose, /flow==="request"&&recipient\.identitySource==="synthetic_beta"/);
     assert.match(compose, /cannot sign in to accept requests/);
-    assert.match(compose, /const mode = trustModeForRecipient\(recipient\)/);
-    assert.doesNotMatch(compose, /flow === "send" && recipient\.identitySource === "synthetic_beta"/);
+    assert.match(compose, /const mode=trustModeForRecipient\(recipient\)/);
+    assert.doesNotMatch(compose, /flow==="send"&&recipient\.identitySource==="synthetic_beta"/);
   });
 
   it("uses consumer payment terminology without changing authoritative status values", async () => {

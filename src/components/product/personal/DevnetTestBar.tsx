@@ -16,13 +16,14 @@ import {
   walletConnectionFailure,
   type InjectedSolanaWallet,
 } from "@/lib/devnetWallet";
+import type { SendRecipientMode } from "./PaymentComposeForm";
 
 declare global { interface Window { phantom?: { solana?: InjectedSolanaWallet }; solana?: InjectedSolanaWallet } }
 
 type NetworkState = "idle" | "checking" | "connected" | "unavailable" | "wrong-network";
-type Balances = { sol: string; usdc: string; ataExists: boolean };
+type Balances = { sol: string; usdc: string; ataExists: boolean; walletAccountExists: boolean };
 
-export function DevnetTestBar() {
+export function DevnetTestBar({ paymentMode = "zephipay" }: { paymentMode?: SendRecipientMode }) {
   const [expanded, setExpanded] = useState(false);
   const [walletAddress, setWalletAddress] = useState<string>();
   const [network, setNetwork] = useState<NetworkState>("idle");
@@ -39,11 +40,11 @@ export function DevnetTestBar() {
         setNetwork("wrong-network"); setBalances(undefined); setMessage("The RPC endpoint is not Solana Devnet."); return;
       }
       const owner = importedAddress(address), ata = importedAddress(await deriveCircleDevnetUsdcAta(address));
-      const [balanceResult, accountResult] = await Promise.all([rpc.getBalance(owner, { commitment: "confirmed" }).send(), rpc.getAccountInfo(ata, { commitment: "confirmed" }).send()]);
+      const [balanceResult, walletAccountResult, accountResult] = await Promise.all([rpc.getBalance(owner, { commitment: "confirmed" }).send(), rpc.getAccountInfo(owner, { commitment: "confirmed" }).send(), rpc.getAccountInfo(ata, { commitment: "confirmed" }).send()]);
       let rawUsdc = "0";
       if (accountResult.value) rawUsdc = (await rpc.getTokenAccountBalance(ata, { commitment: "confirmed" }).send()).value.amount;
-      setBalances({ sol: formatSolBalance(Number(balanceResult.value)), usdc: formatUsdcBalance(rawUsdc), ataExists: Boolean(accountResult.value) });
-      setNetwork("connected"); setMessage(accountResult.value ? "Balances are read from Solana Devnet." : "No Circle Devnet USDC account yet. Balance is 0 USDC.");
+      setBalances({ sol: formatSolBalance(Number(balanceResult.value)), usdc: formatUsdcBalance(rawUsdc), ataExists: Boolean(accountResult.value), walletAccountExists: Boolean(walletAccountResult.value) });
+      setNetwork("connected"); setMessage(!walletAccountResult.value ? "Wallet connected, but this address has not been funded on Devnet yet." : accountResult.value ? "Balances are read from Solana Devnet." : "No Circle Devnet USDC account yet. Balance is 0 USDC.");
     } catch {
       setNetwork("unavailable"); setBalances(undefined); setMessage("Wallet connected. Devnet balances are temporarily unavailable; no payment was attempted.");
     }
@@ -83,16 +84,16 @@ export function DevnetTestBar() {
       </div>
     </div>
     {expanded ? <div id="devnet-test-details" className="border-t border-border-subtle p-4 sm:p-5">
-      <p className="max-w-2xl text-sm leading-6 text-foreground-secondary">This testing layer shows the Solana Devnet activity behind ZephiPay. Everyday payments remain the primary experience.</p>
+      <p className="max-w-2xl text-sm leading-6 text-foreground-secondary">{paymentMode === "solana-devnet" ? "This connected Phantom wallet provides tester context. It is not automatically the destination wallet entered above." : "This testing layer shows read-only Solana Devnet wallet context. ZephiPay username payments remain independent of this connection."}</p>
       <div className="mt-5 grid gap-3 sm:grid-cols-2">
         <Info label="Network" value="Solana Devnet" detail="Test network only" />
         <Info label="RPC status" value={status} detail={message} />
         <Info label="Wallet" value={walletAddress ? shortAddress(walletAddress) : "Not connected"} detail={walletAddress ?? "Connection is always user initiated."} copy={walletAddress} />
-        <Info label="SOL balance" value={balances ? `${balances.sol} SOL` : "—"} detail="Devnet fee balance" />
+        <Info label="SOL balance" value={balances ? `${balances.sol} SOL` : "—"} detail={balances && !balances.walletAccountExists ? "Address not funded on Devnet" : "Devnet fee balance"} />
         <Info label="Circle Devnet USDC" value={balances ? `${balances.usdc} USDC` : "—"} detail={balances && !balances.ataExists ? "Associated account does not exist" : "Read-only balance"} />
         <Info label="USDC mint" value={shortAddress(CIRCLE_DEVNET_USDC_MINT)} detail="Canonical Circle Devnet asset" copy={CIRCLE_DEVNET_USDC_MINT} />
       </div>
-      <div className="mt-5 rounded-xl border border-border-subtle bg-background/45 p-4"><p className="text-xs font-medium uppercase tracking-[.14em] text-foreground-muted">Live payment status</p><p className="mt-2 text-sm font-medium">No live Devnet payment started</p><p className="mt-1 text-sm text-foreground-secondary">Wallet balances are read-only. The payment form above currently keeps its own clearly labeled payment lifecycle.</p></div>
+      <div className="mt-5 rounded-xl border border-border-subtle bg-background/45 p-4"><p className="text-xs font-medium uppercase tracking-[.14em] text-foreground-muted">Live payment status</p><p className="mt-2 text-sm font-medium">No live Devnet payment started</p><p className="mt-1 text-sm text-foreground-secondary">Wallet balances are read-only. Connecting Phantom does not sign or submit a payment.</p></div>
       <div className="mt-5 flex flex-wrap gap-2">
         {walletAddress ? <><Button variant="outline" onClick={() => refresh(walletAddress)}>Refresh balances</Button><Button variant="outline" onClick={disconnect}>Disconnect</Button><a className="inline-flex min-h-11 items-center rounded-xl border border-border-default px-4 text-sm font-medium hover:bg-background/60" href={solanaExplorerAddressUrl(walletAddress)} target="_blank" rel="noreferrer">View wallet on Explorer ↗</a></> : <Button onClick={connect}>Connect wallet</Button>}
       </div>

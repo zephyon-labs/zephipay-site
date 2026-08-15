@@ -114,13 +114,13 @@ describe("recipient BFF and UI invariants", () => {
     assert.doesNotMatch(ui, /wallet address resolved|funds processing/i);
   });
 
-  it("keeps Advanced Wallet collapsed, mutually exclusive, and backward compatible", async () => {
+  it("replaces Advanced Wallet with a primary Devnet recipient mode without browser submission", async () => {
     const workspace = await source("src/components/product/personal/PaymentIntentWorkspace.tsx");
-    assert.match(workspace, /useState\(false\)/); assert.match(workspace, /setOpen\(!open\)/);
-    assert.match(workspace, /setAdvancedOpen\(false\)/);
-    assert.match(workspace, /setResetKey/); assert.match(workspace, /No Solana transaction is submitted/);
-    assert.match(workspace, /fetch\("\/api\/payment-intents"/); assert.match(workspace, /recipient:wallet\.trim\(\)/);
-    assert.match(workspace, /isCanonicalSolanaAddressInput/); assert.match(workspace, /\/personal\/send\?intent=/);
+    const compose = await source("src/components/product/personal/PaymentComposeForm.tsx");
+    assert.doesNotMatch(workspace, /Advanced Wallet|recipient:wallet\.trim/);
+    assert.match(compose, /Solana Devnet wallet/); assert.match(compose, /isCanonicalSolanaAddressInput/);
+    assert.match(workspace, /No payment intent was created/); assert.match(workspace, /no transaction will be signed or submitted/);
+    assert.match(workspace, /setResetKey/); assert.match(workspace, /\/personal\/send\?intent=/);
   });
 });
 

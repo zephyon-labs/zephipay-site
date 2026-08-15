@@ -2,8 +2,7 @@ import { redirect } from "next/navigation";
 
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { AmbientBackground } from "@/components/marketing/AmbientBackground";
-import { PaymentIntentWorkspace } from "@/components/product/personal/PaymentIntentWorkspace";
-import { DevnetTestBar } from "@/components/product/personal/DevnetTestBar";
+import { PersonalSendExperience } from "@/components/product/personal/PersonalSendExperience";
 import { authConfigured, getAuth0 } from "@/lib/auth0";
 import { isPaymentIntentId } from "@/lib/paymentIntents/contract";
 
@@ -26,8 +25,7 @@ export default async function PersonalSendPage({ searchParams }: { searchParams:
         </div>
       </aside>
       <div className="min-w-0">
-        <PaymentIntentWorkspace recoveryId={recoveryId} />
-        <DevnetTestBar />
+        <PersonalSendExperience recoveryId={recoveryId} />
       </div>
     </div>
   </main>;

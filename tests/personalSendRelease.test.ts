@@ -35,10 +35,10 @@ describe("Personal Send open-beta presentation", () => {
     const compose = await source("src/components/product/personal/PaymentComposeForm.tsx");
     const trust = await source("src/lib/recipients/recipientState.ts");
     assert.match(compose, /trustModeForRecipient\(recipient\)/);
-    assert.match(compose, /identitySource === "synthetic_beta" \? "Beta · Unverified"/);
+    assert.match(compose, /identitySource==="synthetic_beta"\?"Beta · Unverified"/);
     assert.match(trust, /recipient\.identitySource === "synthetic_beta"/);
     assert.match(trust, /return trustModeFor\(recipient\.verificationState\)/);
-    assert.match(compose, /mode === "confirmation_required" && !trustAcknowledged/);
+    assert.match(compose, /mode==="confirmation_required"&&!trustAcknowledged/);
   });
 
   it("recovers settled execution through its durable backend receipt and keeps legacy send absent", async () => {

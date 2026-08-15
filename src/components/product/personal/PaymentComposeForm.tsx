@@ -1,78 +1,16 @@
 "use client";
-
-import { useRef, useState } from "react";
-import { Button } from "@/components/ui/Button";
-import { parseRecipientResolveResponse, parseRecipientSearchResponse, type PublicRecipient } from "@/lib/recipients/contract";
-import { trustModeForRecipient } from "@/lib/recipients/recipientState";
-
-export type PaymentComposeValue = { recipient: PublicRecipient; amount: string; purpose: string | null; trustAcknowledged: boolean };
-
-export function PaymentComposeForm({ flow, onReview, advanced }: Readonly<{ flow: "send" | "request"; onReview: (value: PaymentComposeValue) => void; advanced?: React.ReactNode }>) {
-  const [username, setUsername] = useState("");
-  const [amount, setAmount] = useState("");
-  const [purpose, setPurpose] = useState("");
-  const [resolved, setResolved] = useState<PublicRecipient>();
-  const [trustAcknowledged, setTrustAcknowledged] = useState(false);
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string>();
-  const sequence = useRef(0);
-
-  function changeRecipient(value: string) {
-    setUsername(value); setResolved(undefined); setTrustAcknowledged(false); setError(undefined);
-  }
-
-  async function submit(event: React.FormEvent) {
-    event.preventDefault();
-    if (busy) return;
-    const identity = username.trim().replace(/^@/, "");
-    if (!identity || identity.length > 64) { setError("Enter a valid exact ZephiPay username."); return; }
-    if (!/^(?:0|[1-9]\d*)(?:\.\d{1,6})?$/.test(amount) || amount === "0") { setError("Enter a positive USDC amount with no more than 6 decimal places."); return; }
-    const cleanPurpose = purpose.trim();
-    if (new TextEncoder().encode(cleanPurpose).length > 120) { setError("Purpose must not exceed 120 UTF-8 bytes."); return; }
-    setBusy(true); setError(undefined);
-    const current = ++sequence.current;
-    try {
-      let recipient = resolved;
-      if (!recipient || recipient.username.toLowerCase() !== identity.toLowerCase()) {
-        const search = await fetch("/api/recipients/search", { method: "POST", credentials: "same-origin", cache: "no-store", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username: identity }) });
-        const searchRaw: unknown = await search.json().catch(() => undefined);
-        const found = parseRecipientSearchResponse(searchRaw);
-        if (!search.ok || !found) throw new Error(search.status === 429 ? "Too many recipient checks. Wait a moment and try again." : "Recipient lookup is temporarily unavailable.");
-        if (!found.recipients[0]) throw new Error("We couldn't find that ZephiPay username.");
-        const response = await fetch(`/api/recipients/${encodeURIComponent(found.recipients[0].accountId)}`, { credentials: "same-origin", cache: "no-store" });
-        const raw: unknown = await response.json().catch(() => undefined);
-        const parsed = parseRecipientResolveResponse(raw);
-        if (!response.ok || !parsed || parsed.recipient.payabilityState !== "available") throw new Error("This Payment Identity is not available right now.");
-        recipient = parsed.recipient;
-        setResolved(recipient);
-      }
-      if (current !== sequence.current) return;
-      if (flow === "request" && recipient.identitySource === "synthetic_beta") {
-        setError("Beta test recipients can receive Send payments, but cannot sign in to accept requests. Request a canonical ZephiPay account instead.");
-        return;
-      }
-      const mode = trustModeForRecipient(recipient);
-      if (mode === "blocked") throw new Error("This Payment Identity is restricted and cannot be selected.");
-      if (mode === "confirmation_required" && !trustAcknowledged) { setError("Review the verification status and acknowledge it before continuing."); return; }
-      onReview({ recipient, amount, purpose: cleanPurpose || null, trustAcknowledged });
-    } catch (reason) {
-      if (current === sequence.current) setError(reason instanceof Error ? reason.message : "Recipient lookup is temporarily unavailable.");
-    } finally {
-      if (current === sequence.current) setBusy(false);
-    }
-  }
-
-  const trust = resolved ? trustModeForRecipient(resolved) : undefined;
-  return <form onSubmit={submit} className="grid gap-6" noValidate>
-    <label className="grid gap-2 text-sm font-medium">{flow === "send" ? "Recipient" : "Request from"}<input value={username} onChange={event => changeRecipient(event.target.value)} autoComplete="off" spellCheck={false} placeholder="@username" className="h-12 rounded-xl border border-border-default bg-background/70 px-4 font-normal"/><span className="text-xs font-normal text-foreground-muted">Enter an exact ZephiPay username.</span></label>
-    <label className="grid gap-2 text-sm font-medium">Amount<input value={amount} onChange={event => { setAmount(event.target.value); setError(undefined); }} inputMode="decimal" placeholder="0.00" className="h-12 rounded-xl border border-border-default bg-background/70 px-4 font-normal"/><span className="text-xs font-normal text-foreground-muted">USDC</span></label>
-    <label className="grid gap-2 text-sm font-medium">Purpose (optional)<input value={purpose} onChange={event => { setPurpose(event.target.value); setError(undefined); }} placeholder={flow === "send" ? "What is this payment for?" : "What is this request for?"} className="h-12 rounded-xl border border-border-default bg-background/70 px-4 font-normal"/></label>
-    {resolved ? <div className="rounded-xl border border-border-default bg-background/50 p-4"><p className="font-medium">{resolved.displayName} (@{resolved.username})</p><p className="mt-1 text-sm text-foreground-secondary">{resolved.identitySource === "synthetic_beta" ? "Beta · Unverified" : verificationLabel(resolved.verificationState)}</p>{trust === "confirmation_required" ? <label className="mt-3 flex gap-3 text-sm"><input type="checkbox" checked={trustAcknowledged} onChange={event => { setTrustAcknowledged(event.target.checked); setError(undefined); }}/>I confirmed this is the Payment Identity I intend to {flow === "send" ? "pay" : "request from"}.</label> : null}</div> : null}
-    {error ? <p role="alert" className="rounded-xl border border-red-400/25 bg-red-400/10 p-4 text-sm">{error}</p> : null}
-    <Button type="submit" loading={busy}>{flow === "send" ? "Review payment" : "Review request"}</Button>{advanced}
-  </form>;
-}
-
-export function verificationLabel(value: PublicRecipient["verificationState"]) {
-  return value === "verified" ? "Verified" : value === "pending" ? "Pending verification" : value === "restricted" ? "Restricted" : "Unverified";
-}
+import {useRef,useState} from "react";import{Button}from"@/components/ui/Button";import{isCanonicalSolanaAddressInput}from"@/lib/paymentIntents/requests";import{parseRecipientResolveResponse,parseRecipientSearchResponse,type PublicRecipient}from"@/lib/recipients/contract";import{trustModeForRecipient}from"@/lib/recipients/recipientState";
+export type SendRecipientMode="zephipay"|"solana-devnet";export type PaymentComposeValue={recipient:PublicRecipient;amount:string;purpose:string|null;trustAcknowledged:boolean};export type DevnetPaymentComposeValue={walletAddress:string;amount:string;purpose:string|null};
+type Props=Readonly<{flow:"send"|"request";onReview:(value:PaymentComposeValue)=>void;recipientMode?:SendRecipientMode;onRecipientModeChange?:(mode:SendRecipientMode)=>void;onDevnetReview?:(value:DevnetPaymentComposeValue)=>void}>;
+export function PaymentComposeForm({flow,onReview,recipientMode="zephipay",onRecipientModeChange,onDevnetReview}:Props){const[username,setUsername]=useState(""),[walletAddress,setWalletAddress]=useState(""),[amount,setAmount]=useState(""),[purpose,setPurpose]=useState(""),[resolved,setResolved]=useState<PublicRecipient>(),[trustAcknowledged,setTrustAcknowledged]=useState(false),[busy,setBusy]=useState(false),[error,setError]=useState<string>();const sequence=useRef(0),devnetMode=flow==="send"&&recipientMode==="solana-devnet";
+ function changeRecipient(value:string){setUsername(value);setResolved(undefined);setTrustAcknowledged(false);setError(undefined)}
+ async function submit(event:React.FormEvent){event.preventDefault();if(busy)return;if(!/^(?:0|[1-9]\d*)(?:\.\d{1,6})?$/.test(amount)||amount==="0"){setError("Enter a positive USDC amount with no more than 6 decimal places.");return}const cleanPurpose=purpose.trim();if(new TextEncoder().encode(cleanPurpose).length>120){setError("Purpose must not exceed 120 UTF-8 bytes.");return}if(devnetMode){if(!isCanonicalSolanaAddressInput(walletAddress)){setError("Enter a canonical Solana wallet address without leading or trailing spaces.");return}onDevnetReview?.({walletAddress,amount,purpose:cleanPurpose||null});return}const identity=username.trim().replace(/^@/,"");if(!identity||identity.length>64){setError("Enter a valid exact ZephiPay username.");return}setBusy(true);setError(undefined);const current=++sequence.current;try{let recipient=resolved;if(!recipient||recipient.username.toLowerCase()!==identity.toLowerCase()){const search=await fetch("/api/recipients/search",{method:"POST",credentials:"same-origin",cache:"no-store",headers:{"Content-Type":"application/json"},body:JSON.stringify({username:identity})}),searchRaw:unknown=await search.json().catch(()=>undefined),found=parseRecipientSearchResponse(searchRaw);if(!search.ok||!found)throw new Error(search.status===429?"Too many recipient checks. Wait a moment and try again.":"Recipient lookup is temporarily unavailable.");if(!found.recipients[0])throw new Error("We couldn't find that ZephiPay username.");const response=await fetch(`/api/recipients/${encodeURIComponent(found.recipients[0].accountId)}`,{credentials:"same-origin",cache:"no-store"}),raw:unknown=await response.json().catch(()=>undefined),parsed=parseRecipientResolveResponse(raw);if(!response.ok||!parsed||parsed.recipient.payabilityState!=="available")throw new Error("This Payment Identity is not available right now.");recipient=parsed.recipient;setResolved(recipient)}if(current!==sequence.current)return;if(flow==="request"&&recipient.identitySource==="synthetic_beta"){setError("Beta test recipients can receive Send payments, but cannot sign in to accept requests. Request a canonical ZephiPay account instead.");return}const mode=trustModeForRecipient(recipient);if(mode==="blocked")throw new Error("This Payment Identity is restricted and cannot be selected.");if(mode==="confirmation_required"&&!trustAcknowledged){setError("Review the verification status and acknowledge it before continuing.");return}onReview({recipient,amount,purpose:cleanPurpose||null,trustAcknowledged})}catch(reason){if(current===sequence.current)setError(reason instanceof Error?reason.message:"Recipient lookup is temporarily unavailable.")}finally{if(current===sequence.current)setBusy(false)}}
+ const trust=resolved?trustModeForRecipient(resolved):undefined;return <form onSubmit={submit} className="grid gap-6" noValidate>
+  {flow==="send"&&onRecipientModeChange?<fieldset><legend className="mb-2 text-sm font-medium">Send to</legend><div className="grid grid-cols-2 rounded-xl border border-border-default bg-background/50 p-1" role="group" aria-label="Recipient type">{(["zephipay","solana-devnet"]as const).map(mode=><button key={mode} type="button" aria-pressed={recipientMode===mode} onClick={()=>{setError(undefined);onRecipientModeChange(mode)}} className={`min-h-11 rounded-lg px-3 text-sm font-medium transition ${recipientMode===mode?"bg-surface-elevated text-foreground shadow-sm":"text-foreground-secondary hover:text-foreground"}`}>{mode==="zephipay"?"ZephiPay username":"Solana Devnet wallet"}</button>)}</div></fieldset>:null}
+  {devnetMode?<label className="grid gap-2 text-sm font-medium">Recipient wallet<input value={walletAddress} onChange={event=>{setWalletAddress(event.target.value);setError(undefined)}} autoComplete="off" spellCheck={false} placeholder="Solana wallet address" className="h-12 rounded-xl border border-border-default bg-background/70 px-4 font-mono text-sm font-normal"/><span className="text-xs font-normal text-foreground-muted">Send to a wallet on Solana Devnet. Mainnet is not supported.</span></label>:<label className="grid gap-2 text-sm font-medium">{flow==="send"?"Recipient":"Request from"}<input value={username} onChange={event=>changeRecipient(event.target.value)} autoComplete="off" spellCheck={false} placeholder="@username" className="h-12 rounded-xl border border-border-default bg-background/70 px-4 font-normal"/><span className="text-xs font-normal text-foreground-muted">Enter an exact ZephiPay username.</span></label>}
+  <label className="grid gap-2 text-sm font-medium">Amount<input value={amount} onChange={event=>{setAmount(event.target.value);setError(undefined)}} inputMode="decimal" placeholder="0.00" className="h-12 rounded-xl border border-border-default bg-background/70 px-4 font-normal"/><span className="text-xs font-normal text-foreground-muted">USDC</span></label>
+  <label className="grid gap-2 text-sm font-medium">Purpose (optional)<input value={purpose} onChange={event=>{setPurpose(event.target.value);setError(undefined)}} placeholder={flow==="send"?"What is this payment for?":"What is this request for?"} className="h-12 rounded-xl border border-border-default bg-background/70 px-4 font-normal"/></label>
+  {!devnetMode&&resolved?<div className="rounded-xl border border-border-default bg-background/50 p-4"><p className="font-medium">{resolved.displayName} (@{resolved.username})</p><p className="mt-1 text-sm text-foreground-secondary">{resolved.identitySource==="synthetic_beta"?"Beta · Unverified":verificationLabel(resolved.verificationState)}</p>{trust==="confirmation_required"?<label className="mt-3 flex gap-3 text-sm"><input type="checkbox" checked={trustAcknowledged} onChange={event=>{setTrustAcknowledged(event.target.checked);setError(undefined)}}/>I confirmed this is the Payment Identity I intend to {flow==="send"?"pay":"request from"}.</label>:null}</div>:null}
+  {error?<p role="alert" className="rounded-xl border border-red-400/25 bg-red-400/10 p-4 text-sm">{error}</p>:null}<Button type="submit" loading={busy}>{flow==="send"?"Review payment":"Review request"}</Button>
+ </form>}
+export function verificationLabel(value:PublicRecipient["verificationState"]){return value==="verified"?"Verified":value==="pending"?"Pending verification":value==="restricted"?"Restricted":"Unverified"}

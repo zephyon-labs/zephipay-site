@@ -1,11 +1,13 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
-import { CIRCLE_DEVNET_USDC_MINT, deriveCircleDevnetUsdcAta, detectPhantomProvider, formatSolBalance, formatUsdcBalance, shortAddress, solanaExplorerAddressUrl, walletConnectionFailure, type InjectedSolanaWallet } from "../src/lib/devnetWallet";
+import { CIRCLE_DEVNET_USDC_MINT, SOLANA_DEVNET_GENESIS_HASH, deriveCircleDevnetUsdcAta, detectPhantomProvider, formatSolBalance, formatUsdcBalance, shortAddress, solanaExplorerAddressUrl, walletConnectionFailure, type InjectedSolanaWallet } from "../src/lib/devnetWallet";
 
 const wallet="DWLaEPUUyLgPqhoJDGni8PRaL58FdfSmXdL6Qtrp1hJ8";
 
 test("derives and formats canonical Circle Devnet balances",async()=>{
+  assert.equal(SOLANA_DEVNET_GENESIS_HASH,"EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG");
+  assert.notEqual(SOLANA_DEVNET_GENESIS_HASH,"EtWTRABZaYq6iMfeYKouRu166VU2xqa1");
   assert.equal(CIRCLE_DEVNET_USDC_MINT,"4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU");
   assert.equal(await deriveCircleDevnetUsdcAta(wallet),"AndxfxZ2vX8aBwsYAG8HRMptjBHtUrvGDseRGvUMr9mM");
   assert.equal(formatSolBalance(4_997_955_720),"4.998");
@@ -43,6 +45,8 @@ test("component is user-initiated, read-only, accessible, responsive, and Devnet
   assert(source.includes("getGenesisHash().send()"));
   assert(source.includes("getTokenAccountBalance"));
   assert(source.includes("Associated account does not exist"));
+  assert(source.includes("has not been funded on Devnet yet"));
+  assert(source.includes("walletAccountExists"));
   assert(source.includes("temporarily unavailable"));
   assert(source.includes("HTTPS, localhost, or 127.0.0.1"));
   assert(source.includes("SOLANA_DEVNET_GENESIS_HASH"));
@@ -53,5 +57,7 @@ test("component is user-initiated, read-only, accessible, responsive, and Devnet
 
 test("Devnet bar is directly beneath the primary payment workspace",async()=>{
   const page=await readFile(new URL("../src/app/personal/send/page.tsx",import.meta.url),"utf8");
-  assert(page.indexOf("<PaymentIntentWorkspace")<page.indexOf("<DevnetTestBar"));
+  const experience=await readFile(new URL("../src/components/product/personal/PersonalSendExperience.tsx",import.meta.url),"utf8");
+  assert(page.includes("<PersonalSendExperience recoveryId={recoveryId} />"));
+  assert(experience.indexOf("<PaymentIntentWorkspace")<experience.indexOf("<DevnetTestBar"));
 });

@@ -3,7 +3,7 @@ import { address } from "@solana/kit";
 
 export const CIRCLE_DEVNET_USDC_MINT = "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU";
 export const CIRCLE_DEVNET_USDC_DECIMALS = 6;
-export const SOLANA_DEVNET_GENESIS_HASH = "EtWTRABZaYq6iMfeYKouRu166VU2xqa1";
+export const SOLANA_DEVNET_GENESIS_HASH = "EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG";
 export const SOLANA_DEVNET_RPC_URL = "https://api.devnet.solana.com";
 
 export async function deriveCircleDevnetUsdcAta(owner: string) {

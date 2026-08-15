@@ -12,7 +12,7 @@ describe("in-place Personal payment flow", () => {
 
   it("keeps compose mounted through review so Back restores entered values", async () => {
     const flow = await source("src/components/product/personal/PaymentIntentWorkspace.tsx");
-    assert.match(flow, /className=\{intent\?"hidden":undefined\}>\{compose\}/);
+    assert.match(flow, /className=\{intent\|\|devnetDraft\?"hidden":undefined\}>\{compose\}/);
     assert.match(flow, /function backToCompose\(\)\{setIntent\(undefined\)/);
     assert.doesNotMatch(flow, /function backToCompose[^}]*setResetKey/);
     assert.match(flow, /<PaymentComposeForm key=\{resetKey\}/);
@@ -22,7 +22,7 @@ describe("in-place Personal payment flow", () => {
     const flow = await source("src/components/product/personal/PaymentIntentWorkspace.tsx");
     assert.match(flow, /window\.history\.replaceState\(null,"",`\/personal\?intent=/);
     assert.match(flow, /else router\.replace\(`\/personal\/send\?intent=/);
-    assert.match(flow, /onIntent=\{i=>\{setIntent\(i\);rememberIntent\(i\.id\)\}\}/);
+    assert.doesNotMatch(flow, /AdvancedWallet|onIntent=/);
   });
 
   it("preserves backend-authoritative recipient resolution and trust", async () => {
@@ -73,7 +73,7 @@ describe("in-place Personal payment flow", () => {
     assert.match(page, /<PersonalWorkspace authenticated=\{authenticated\} recoveryId=\{recoveryId\} \/>/);
     assert.match(personal, /\/auth\/login\?returnTo=%2Fpersonal%23personal-workspace/);
     assert.match(direct, /isPaymentIntentId/);
-    assert.match(direct, /<PaymentIntentWorkspace recoveryId=\{recoveryId\} \/>/);
+    assert.match(direct, /<PersonalSendExperience recoveryId=\{recoveryId\} \/>/);
   });
 });
 
