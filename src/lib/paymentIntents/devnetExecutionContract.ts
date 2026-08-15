@@ -19,6 +19,7 @@ export type DevnetExecution = Readonly<{
   reconciliationPending: boolean;
   receiptId?: string;
 }>;
+export type DevnetExecutionReadResult = Readonly<{ kind: "execution"; execution: DevnetExecution }> | Readonly<{ kind: "not_started" }>;
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const INTEGER = /^(?:0|[1-9]\d*)$/;
@@ -44,6 +45,14 @@ export function parseDevnetExecutionResponse(value: unknown): DevnetExecution | 
       (execution.failureCategory !== undefined && !["provider_rejected", "chain_failed", "internal_validation"].includes(String(execution.failureCategory))) ||
       (execution.receiptId !== undefined && typeof execution.receiptId !== "string")) return;
   return execution as unknown as DevnetExecution;
+}
+
+export function parseDevnetExecutionReadResponse(value: unknown): DevnetExecutionReadResult | undefined {
+  const execution = parseDevnetExecutionResponse(value);
+  if (execution) return { kind: "execution", execution };
+  if (record(value) && value.ok === false && value.code === "DEVNET_EXECUTION_NOT_FOUND" && value.error === "No Devnet execution has started yet.") {
+    return { kind: "not_started" };
+  }
 }
 
 export function devnetExecutionTerminal(status: DevnetExecutionStatus) {

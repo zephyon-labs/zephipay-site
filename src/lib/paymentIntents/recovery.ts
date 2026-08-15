@@ -13,7 +13,7 @@ export function isDefinitiveRecoveryFailure(code: PaymentErrorCode | undefined):
 export function paymentErrorCode(value: unknown): PaymentErrorCode | undefined {
   if (!value || typeof value !== "object") return undefined;
   const code = (value as { code?: unknown }).code;
-  return typeof code === "string" && ["INVALID_REQUEST", "AUTHENTICATION_REQUIRED", "AUTHORIZATION_DENIED", "NOT_FOUND", "CONFLICT", "RATE_LIMITED", "TEMPORARILY_UNAVAILABLE"].includes(code)
+  return typeof code === "string" && ["INVALID_REQUEST", "AUTHENTICATION_REQUIRED", "AUTHORIZATION_DENIED", "NOT_FOUND", "DEVNET_EXECUTION_NOT_FOUND", "CONFLICT", "RATE_LIMITED", "TEMPORARILY_UNAVAILABLE"].includes(code)
     ? code as PaymentErrorCode
     : undefined;
 }
