@@ -117,7 +117,7 @@ describe("BFF and UI security invariants", () => {
     assert.match(ui, /router\.replace\("\/personal\/send"\)/);
     assert.match(ui, /PaymentComposeForm/);
     assert.doesNotMatch(ui, /Advanced Wallet|Mock Rail only/);
-    assert.match(ui, /Backend connection required/);
+    assert.match(ui, /Send on Solana Devnet/);
     assert.match(ui, /recipientAccountId:value\.recipient\.accountId/);
     assert.match(ui,/AbortController/);assert.match(ui,/polling\.current/);assert.match(ui,/clearTimeout/);assert.match(ui,/Confirming payment/);
     assert.doesNotMatch(ui, /beta\.zephipay\.com|location\.(?:assign|replace)/);

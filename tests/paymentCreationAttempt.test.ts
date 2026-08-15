@@ -43,6 +43,7 @@ describe("payment creation attempts", () => {
     assert.match(source, /if\(!intent\|\|mutationInFlight\.current\)return/);
     assert.match(source, /if\(response\.status===409\)\{await readExecution\(confirmed\.id\);return\}/);
     assert.match(source, /function startAnother\(\)\{creationAttempt\.current=undefined/);
-    assert.equal((source.match(/\/execute`,\{method:"POST"/g) ?? []).length, 1);
+    assert.equal((source.match(/\/execute`,\{method:"POST"/g) ?? []).length, 2);
+    assert.equal((source.match(/\/devnet\/execute`,\{method:"POST"/g) ?? []).length, 1);
   });
 });

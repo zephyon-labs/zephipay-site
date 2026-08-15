@@ -49,7 +49,7 @@ describe("Personal Send open-beta presentation", () => {
       source("src/lib/paymentIntents/backendProxy.ts"),
     ]);
     assert.match(workspace, /if\(parsed\.status==="settled"\)await readReceipt\(id,signal\)/);
-    assert.match(workspace, /execution\?\.status!=="settled"\|\|receipt/);
+    assert.match(workspace, /execution\?\.status!=="settled"&&devnetExecution\?\.status!=="settled"/);
     assert.doesNotMatch(executable.join("\n"), /\/api\/send/);
   });
 });

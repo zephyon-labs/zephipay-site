@@ -119,7 +119,7 @@ describe("recipient BFF and UI invariants", () => {
     const compose = await source("src/components/product/personal/PaymentComposeForm.tsx");
     assert.doesNotMatch(workspace, /Advanced Wallet|recipient:wallet\.trim/);
     assert.match(compose, /Solana Devnet wallet/); assert.match(compose, /isCanonicalSolanaAddressInput/);
-    assert.match(workspace, /No payment intent was created/); assert.match(workspace, /no transaction will be signed or submitted/);
+    assert.match(workspace, /Send on Solana Devnet/); assert.match(workspace, /secure backend rail/);
     assert.match(workspace, /setResetKey/); assert.match(workspace, /\/personal\/send\?intent=/);
   });
 });

@@ -32,6 +32,11 @@ export function solanaExplorerAddressUrl(address: string) {
   return `https://explorer.solana.com/address/${encodeURIComponent(canonical)}?cluster=devnet`;
 }
 
+export function solanaExplorerTransactionUrl(signature: string) {
+  if (!/^[1-9A-HJ-NP-Za-km-z]{64,96}$/.test(signature)) throw new Error("Invalid Solana transaction signature.");
+  return `https://explorer.solana.com/tx/${encodeURIComponent(signature)}?cluster=devnet`;
+}
+
 const importedAddress = address;
 
 export type InjectedSolanaWallet = {

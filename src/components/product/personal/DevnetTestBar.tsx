@@ -13,9 +13,11 @@ import {
   formatUsdcBalance,
   shortAddress,
   solanaExplorerAddressUrl,
+  solanaExplorerTransactionUrl,
   walletConnectionFailure,
   type InjectedSolanaWallet,
 } from "@/lib/devnetWallet";
+import type { DevnetExecution } from "@/lib/paymentIntents/devnetExecutionContract";
 import type { SendRecipientMode } from "./PaymentComposeForm";
 
 declare global { interface Window { phantom?: { solana?: InjectedSolanaWallet }; solana?: InjectedSolanaWallet } }
@@ -23,7 +25,7 @@ declare global { interface Window { phantom?: { solana?: InjectedSolanaWallet };
 type NetworkState = "idle" | "checking" | "connected" | "unavailable" | "wrong-network";
 type Balances = { sol: string; usdc: string; ataExists: boolean; walletAccountExists: boolean };
 
-export function DevnetTestBar({ paymentMode = "zephipay", embedded = false }: { paymentMode?: SendRecipientMode; embedded?: boolean }) {
+export function DevnetTestBar({ paymentMode = "zephipay", embedded = false, execution }: { paymentMode?: SendRecipientMode; embedded?: boolean; execution?: DevnetExecution }) {
   const [expanded, setExpanded] = useState(false);
   const [walletAddress, setWalletAddress] = useState<string>();
   const [network, setNetwork] = useState<NetworkState>("idle");
@@ -51,6 +53,14 @@ export function DevnetTestBar({ paymentMode = "zephipay", embedded = false }: { 
   }, []);
 
   useEffect(() => {
+    const provider = detectPhantomProvider(window), connectedAddress = provider?.publicKey?.toBase58();
+    if (!provider || !connectedAddress) return;
+    let active = true;
+    queueMicrotask(() => { if (active) { setWallet(provider); setWalletAddress(connectedAddress); void refresh(connectedAddress); } });
+    return () => { active = false; };
+  }, [refresh]);
+
+  useEffect(() => {
     if (!wallet?.on) return;
     const disconnected = () => { setWalletAddress(undefined); setBalances(undefined); setNetwork("idle"); setMessage("Connect a wallet to test the live payment rail."); };
     const changed = (key?: { toBase58(): string } | null) => { const address = key?.toBase58(); setWalletAddress(address); setBalances(undefined); if (address) void refresh(address); else disconnected(); };
@@ -70,7 +80,7 @@ export function DevnetTestBar({ paymentMode = "zephipay", embedded = false }: { 
   }
   async function disconnect() { try { await wallet?.disconnect(); } finally { setWalletAddress(undefined); setBalances(undefined); setNetwork("idle"); setMessage("Wallet disconnected. No payment was attempted."); } }
 
-  const connected = Boolean(walletAddress), status = networkLabel(network), summary = connected && balances ? `${shortAddress(walletAddress!)} · ${balances.sol} SOL · ${balances.usdc} USDC` : message;
+  const connected = Boolean(walletAddress), status = networkLabel(network), walletSummary = connected && balances ? `${shortAddress(walletAddress!)} · ${balances.sol} SOL · ${balances.usdc} USDC` : message, summary = execution ? `${executionLabel(execution.status)} · ${walletSummary}` : walletSummary;
   return <section aria-label="Solana Devnet testing" className={`${embedded ? "" : "mt-4 shadow-[var(--shadow-soft)] backdrop-blur-xl"} min-w-0 overflow-hidden rounded-[1.4rem] border border-border-default bg-surface-glass`}>
     <div className="flex min-w-0 flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex min-w-0 items-start gap-3">
@@ -93,7 +103,7 @@ export function DevnetTestBar({ paymentMode = "zephipay", embedded = false }: { 
         <Info label="Circle Devnet USDC" value={balances ? `${balances.usdc} USDC` : "—"} detail={balances && !balances.ataExists ? "Associated account does not exist" : "Read-only balance"} />
         <Info label="USDC mint" value={shortAddress(CIRCLE_DEVNET_USDC_MINT)} detail="Canonical Circle Devnet asset" copy={CIRCLE_DEVNET_USDC_MINT} />
       </div>
-      <div className="mt-5 rounded-xl border border-border-subtle bg-background/45 p-4"><p className="text-xs font-medium uppercase tracking-[.14em] text-foreground-muted">Live payment status</p><p className="mt-2 text-sm font-medium">No live Devnet payment started</p><p className="mt-1 text-sm text-foreground-secondary">Wallet balances are read-only. Connecting Phantom does not sign or submit a payment.</p></div>
+      <div className="mt-5 rounded-xl border border-border-subtle bg-background/45 p-4"><p className="text-xs font-medium uppercase tracking-[.14em] text-foreground-muted">Live payment status</p><p className="mt-2 text-sm font-medium">{execution ? executionLabel(execution.status) : "No live Devnet payment started"}</p><p className="mt-1 text-sm text-foreground-secondary">{execution ? "ZephiPay executes this Devnet payment through the secure backend rail. Connected Phantom provides test-wallet context and does not sign this payment." : "Wallet balances are read-only. Connecting Phantom does not sign or submit a payment."}</p>{execution?.transactionSignature ? <a className="mt-3 inline-flex min-h-11 items-center text-sm font-medium underline underline-offset-4" href={solanaExplorerTransactionUrl(execution.transactionSignature)} target="_blank" rel="noreferrer">View transaction on Explorer ↗</a> : null}</div>
       <div className="mt-5 flex flex-wrap gap-2">
         {walletAddress ? <><Button variant="outline" onClick={() => refresh(walletAddress)}>Refresh balances</Button><Button variant="outline" onClick={disconnect}>Disconnect</Button><a className="inline-flex min-h-11 items-center rounded-xl border border-border-default px-4 text-sm font-medium hover:bg-background/60" href={solanaExplorerAddressUrl(walletAddress)} target="_blank" rel="noreferrer">View wallet on Explorer ↗</a></> : <Button onClick={connect}>Connect wallet</Button>}
       </div>
@@ -109,4 +119,5 @@ function Info({ label, value, detail, copy }: { label: string; value: string; de
 }
 
 function networkLabel(state: NetworkState) { return state === "connected" ? "Connected to Devnet" : state === "checking" ? "Checking Devnet" : state === "wrong-network" ? "Wrong network" : state === "unavailable" ? "Unavailable" : "Not checked"; }
+function executionLabel(status: DevnetExecution["status"]) { return status === "preparing" ? "Preparing payment" : status === "prepared" ? "Payment prepared" : status === "submitting" ? "Submitting payment" : status === "accepted" ? "Transaction accepted" : status === "reconciling" ? "Verifying settlement" : status === "settled" ? "Settled on Solana Devnet" : status === "failed" ? "Payment did not settle" : "Verifying uncertain submission status"; }
 const importedAddress = address;

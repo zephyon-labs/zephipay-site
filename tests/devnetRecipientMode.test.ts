@@ -27,7 +27,7 @@ test("keeps page support copy consistent with the selected mode through review",
   assert.match(experience, /recipientMode === "solana-devnet"/);
   assert.match(experience, /ZephiPay Devnet/);
   assert.match(experience, /Circle USDC · Solana Devnet/);
-  assert.match(experience, /secure backend connection is available/);
+  assert.match(experience, /secure Devnet payment lifecycle/);
   assert.match(experience, /ZephiPay Beta/);
   assert.match(experience, /Mock Rail · simulated settlement/);
 });
@@ -42,12 +42,13 @@ test("keeps the embedded wallet surface compact and responsive", async () => {
   assert.match(bar, /aria-expanded=\{expanded\}/);
 });
 
-test("stops wallet review before any browser payment mutation", async () => {
+test("routes wallet review through the backend-owned Devnet contract", async () => {
   const workspace = await source("src/components/product/personal/PaymentIntentWorkspace.tsx");
-  const devnetBoundary = workspace.slice(workspace.indexOf("const devnetView="), workspace.indexOf("return <div>", workspace.indexOf("const devnetView=")));
-  assert.match(devnetBoundary, /Backend connection required/);
-  assert.match(devnetBoundary, /No payment intent was created/);
-  assert.doesNotMatch(devnetBoundary, /fetch\(|confirmAndExecute|sendTransaction|signMessage|signTransaction/);
+  const devnetBoundary = workspace.slice(workspace.indexOf("devnetView="), workspace.indexOf("return <div>", workspace.indexOf("devnetView=")));
+  assert.match(devnetBoundary, /Send on Solana Devnet/);
+  assert.match(workspace, /requestHash:confirmed\.requestHash,expectedVersion:confirmed\.version,mode:"solana-devnet"/);
+  assert.match(workspace, /devnet\/execution/);
+  assert.doesNotMatch(workspace, /sendTransaction|signMessage|signTransaction|mainnet-beta/);
   assert.doesNotMatch(workspace, /Advanced Wallet/);
 });
 

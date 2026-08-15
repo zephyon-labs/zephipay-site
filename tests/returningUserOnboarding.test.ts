@@ -58,7 +58,8 @@ describe("returning-user and first-run lifecycle", () => {
     assert.match(payment, /setTimeout\(recover,2000\)/);
     assert.match(payment, /if\(parsed\.status==="settled"\)await readReceipt\(id,signal\)/);
     assert.match(payment, /if\(mutationInFlight\.current\)return/);
-    assert.equal((payment.match(/\/execute`/g) ?? []).length, 1);
+    assert.equal((payment.match(/\/execute`/g) ?? []).length, 2);
+    assert.equal((payment.match(/\/devnet\/execute`/g) ?? []).length, 1);
     assert.doesNotMatch(payment, /\/api\/send/);
   });
 });
