@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { address, createSolanaRpc } from "@solana/kit";
 import { Button } from "@/components/ui/Button";
 import {
@@ -8,21 +8,16 @@ import {
   SOLANA_DEVNET_GENESIS_HASH,
   SOLANA_DEVNET_RPC_URL,
   deriveCircleDevnetUsdcAta,
+  detectPhantomProvider,
   formatSolBalance,
   formatUsdcBalance,
   shortAddress,
   solanaExplorerAddressUrl,
+  walletConnectionFailure,
+  type InjectedSolanaWallet,
 } from "@/lib/devnetWallet";
 
-type InjectedWallet = {
-  isPhantom?: boolean;
-  publicKey?: { toBase58(): string } | null;
-  connect(): Promise<{ publicKey: { toBase58(): string } }>;
-  disconnect(): Promise<void>;
-  on?(event: "disconnect" | "accountChanged", listener: (key?: { toBase58(): string } | null) => void): void;
-  removeListener?(event: "disconnect" | "accountChanged", listener: (key?: { toBase58(): string } | null) => void): void;
-};
-declare global { interface Window { phantom?: { solana?: InjectedWallet }; solana?: InjectedWallet } }
+declare global { interface Window { phantom?: { solana?: InjectedSolanaWallet }; solana?: InjectedSolanaWallet } }
 
 type NetworkState = "idle" | "checking" | "connected" | "unavailable" | "wrong-network";
 type Balances = { sol: string; usdc: string; ataExists: boolean };
@@ -33,7 +28,7 @@ export function DevnetTestBar() {
   const [network, setNetwork] = useState<NetworkState>("idle");
   const [balances, setBalances] = useState<Balances>();
   const [message, setMessage] = useState("Connect a wallet to test the live payment rail.");
-  const wallet = useMemo(() => typeof window === "undefined" ? undefined : window.phantom?.solana ?? window.solana, []);
+  const [wallet, setWallet] = useState<InjectedSolanaWallet>();
 
   const refresh = useCallback(async (address: string) => {
     setNetwork("checking"); setMessage("Checking Devnet balances…");
@@ -50,7 +45,7 @@ export function DevnetTestBar() {
       setBalances({ sol: formatSolBalance(Number(balanceResult.value)), usdc: formatUsdcBalance(rawUsdc), ataExists: Boolean(accountResult.value) });
       setNetwork("connected"); setMessage(accountResult.value ? "Balances are read from Solana Devnet." : "No Circle Devnet USDC account yet. Balance is 0 USDC.");
     } catch {
-      setNetwork("unavailable"); setBalances(undefined); setMessage("Devnet balances are temporarily unavailable. No payment was attempted.");
+      setNetwork("unavailable"); setBalances(undefined); setMessage("Wallet connected. Devnet balances are temporarily unavailable; no payment was attempted.");
     }
   }, []);
 
@@ -63,9 +58,14 @@ export function DevnetTestBar() {
   }, [refresh, wallet]);
 
   async function connect() {
-    if (!wallet) { setExpanded(true); setNetwork("unavailable"); setMessage("A compatible Solana wallet such as Phantom was not found."); return; }
-    try { const result = await wallet.connect(); const address = result.publicKey.toBase58(); setWalletAddress(address); await refresh(address); }
-    catch { setNetwork("unavailable"); setMessage("Wallet connection was cancelled or unavailable."); }
+    const provider = detectPhantomProvider(window);
+    if (!provider) { setExpanded(true); setNetwork("unavailable"); setMessage("Phantom was not detected. Use its extension on HTTPS, localhost, or 127.0.0.1."); return; }
+    setWallet(provider);
+    try {
+      const result = await provider.connect(), publicKey = result?.publicKey ?? provider.publicKey;
+      if (!publicKey) throw new Error("Provider returned no public key.");
+      const connectedAddress = publicKey.toBase58(); setWalletAddress(connectedAddress); await refresh(connectedAddress);
+    } catch (error) { setNetwork("unavailable"); setMessage(walletConnectionFailure(error)); }
   }
   async function disconnect() { try { await wallet?.disconnect(); } finally { setWalletAddress(undefined); setBalances(undefined); setNetwork("idle"); setMessage("Wallet disconnected. No payment was attempted."); } }
 
@@ -74,7 +74,7 @@ export function DevnetTestBar() {
     <div className="flex min-w-0 flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between sm:px-5">
       <div className="flex min-w-0 items-start gap-3">
         <span aria-hidden="true" className="mt-1.5 size-2 shrink-0 rounded-full bg-brand-secondary shadow-[0_0_0_4px_color-mix(in_srgb,var(--color-brand-secondary)_15%,transparent)]" />
-        <div className="min-w-0"><div className="flex flex-wrap items-center gap-2"><h3 className="font-medium">Solana Devnet</h3><span className="rounded-full border border-border-default bg-background/60 px-2 py-0.5 text-[0.68rem] font-medium uppercase tracking-[.12em] text-foreground-secondary">Test network</span></div><p aria-live="polite" className="mt-1 truncate text-sm text-foreground-secondary">{summary}</p></div>
+        <div className="min-w-0"><div className="flex flex-wrap items-center gap-2"><h3 className="font-medium">Solana Devnet</h3><span className="rounded-full border border-border-default bg-background/60 px-2 py-0.5 text-[0.68rem] font-medium uppercase tracking-[.12em] text-foreground-secondary">Test network</span></div><p aria-live="polite" className="mt-1 max-w-xl break-words text-sm leading-5 text-foreground-secondary">{summary}</p></div>
       </div>
       <div className="flex shrink-0 flex-wrap items-center gap-2">
         <span className="text-xs text-foreground-muted"><span aria-hidden="true">●</span> {connected ? "Connected" : "Not connected"}</span>

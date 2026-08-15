@@ -34,6 +34,30 @@ export function solanaExplorerAddressUrl(address: string) {
 
 const importedAddress = address;
 
+export type InjectedSolanaWallet = {
+  isPhantom?: boolean;
+  publicKey?: { toBase58(): string } | null;
+  connect(): Promise<{ publicKey?: { toBase58(): string } } | void>;
+  disconnect(): Promise<void>;
+  on?(event: "disconnect" | "accountChanged", listener: (key?: { toBase58(): string } | null) => void): void;
+  removeListener?(event: "disconnect" | "accountChanged", listener: (key?: { toBase58(): string } | null) => void): void;
+};
+
+export function detectPhantomProvider(target: { phantom?: { solana?: InjectedSolanaWallet }; solana?: InjectedSolanaWallet }) {
+  const modern = target.phantom?.solana;
+  if (modern?.isPhantom && typeof modern.connect === "function") return modern;
+  const legacy = target.solana;
+  return legacy?.isPhantom && typeof legacy.connect === "function" ? legacy : undefined;
+}
+
+export function walletConnectionFailure(error: unknown) {
+  const value = error && typeof error === "object" ? error as { code?: unknown; message?: unknown } : undefined;
+  const message = typeof value?.message === "string" ? value.message.toLowerCase() : "";
+  if (value?.code === 4001 || /reject|cancel|declin/.test(message)) return "Connection request cancelled. Your wallet remains unchanged.";
+  if (value?.code === -32002 || /already.*pending|request.*pending/.test(message)) return "A Phantom connection request is already open. Finish it in the wallet, then try again.";
+  return "Phantom could not connect. Unlock the extension and try again.";
+}
+
 function formatBalance(value: number, decimals: number) {
   if (!Number.isFinite(value) || value < 0) throw new Error("Invalid balance.");
   return new Intl.NumberFormat("en-US", { maximumFractionDigits: decimals }).format(value);

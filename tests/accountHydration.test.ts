@@ -32,6 +32,22 @@ describe("shared authenticated account hydration", () => {
     assert.doesNotMatch(provider, /localStorage|sessionStorage|email|token|cookie/i);
   });
 
+  it("never renders guest CTAs while session-backed account details are loading or unavailable", async () => {
+    const [route, provider, session, response] = await Promise.all([
+      source("src/app/api/account/route.ts"),
+      source("src/components/auth/AccountHydrationProvider.tsx"),
+      source("src/components/auth/AccountSession.tsx"),
+      source("src/lib/accountResponse.ts"),
+    ]);
+    assert.match(route, /safeError\(502, "Account service is temporarily unavailable\.", true\)/);
+    assert.match(response, /isAuthenticatedAccountFailure/);
+    assert.match(provider, /"authenticated-unavailable"/);
+    assert.match(session, /status === "loading"[\s\S]*Checking sign-in/);
+    assert.match(session, /status === "authenticated-unavailable"[\s\S]*Signed in · Account details unavailable/);
+    const loading = session.slice(session.indexOf('if (status === "loading")'), session.indexOf('if (status === "authenticated-unavailable")'));
+    assert.doesNotMatch(loading, /Sign in|Create account/);
+  });
+
   it("keeps Payment Identity authoritative and refreshes presentation only after a successful mutation", async () => {
     const [provider, identity, identityRoute, identityClient, payment] = await Promise.all([
       source("src/components/auth/AccountHydrationProvider.tsx"),

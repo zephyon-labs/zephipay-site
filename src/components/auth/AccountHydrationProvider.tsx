@@ -2,9 +2,9 @@
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 
-import { isAccountResponse, type AccountResponse } from "@/lib/accountResponse";
+import { isAccountResponse, isAuthenticatedAccountFailure, type AccountResponse } from "@/lib/accountResponse";
 
-type AccountHydrationStatus = "loading" | "authenticated" | "signed-out" | "error";
+type AccountHydrationStatus = "loading" | "authenticated" | "authenticated-unavailable" | "signed-out" | "error";
 type AccountHydration = Readonly<{
   account: AccountResponse["account"] | null;
   status: AccountHydrationStatus;
@@ -39,7 +39,7 @@ export function AccountHydrationProvider({ children }: Readonly<{ children: Reac
         setStatus("authenticated");
       } else {
         setAccount(null);
-        setStatus(response.status === 401 ? "signed-out" : "error");
+        setStatus(isAuthenticatedAccountFailure(body) ? "authenticated-unavailable" : response.status === 401 ? "signed-out" : "error");
       }
     } catch {
       if (!controller.signal.aborted) {

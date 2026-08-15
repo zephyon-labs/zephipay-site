@@ -10,6 +10,10 @@ export type AccountResponse = Readonly<{
   }>;
 }>;
 
+export function isAuthenticatedAccountFailure(value: unknown): boolean {
+  return Boolean(value && typeof value === "object" && (value as Record<string, unknown>).ok === false && (value as Record<string, unknown>).authenticated === true);
+}
+
 export function isAccountResponse(value: unknown): value is AccountResponse {
   if (!value || typeof value !== "object") return false;
   const root = value as Record<string, unknown>;

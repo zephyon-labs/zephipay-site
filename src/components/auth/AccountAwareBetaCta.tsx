@@ -21,7 +21,7 @@ export function AccountAwareBetaCta({
   ...buttonProps
 }: Props) {
   const { status } = useAccountHydration();
-  const state: BetaCtaState = betaCtaState(status === "authenticated" ? 200 : status === "error" ? 502 : 401);
+  const state: BetaCtaState = betaCtaState(status === "authenticated" || status === "authenticated-unavailable" ? 200 : status === "error" ? 502 : 401);
 
   const signedIn = state === "signed-in";
   const label = signedIn ? "Open ZephiPay Beta" : "Join beta";

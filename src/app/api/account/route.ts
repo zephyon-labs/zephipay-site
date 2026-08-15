@@ -13,7 +13,7 @@ export async function GET() {
   const session = await auth0.getSession();
   if (!session) return safeError(401, "Sign in is required.");
   const backendUrl = process.env.ZEPHIPAY_BACKEND_URL?.trim();
-  if (!backendUrl) return safeError(503, "Account service is not configured.");
+  if (!backendUrl) return safeError(503, "Account service is not configured.", true);
 
   try {
     const { token } = await auth0.getAccessToken();
@@ -22,17 +22,17 @@ export async function GET() {
       cache: "no-store",
       signal: AbortSignal.timeout(5_000),
     });
-    if (response.status === 401) return safeError(401, "Your session must be renewed.");
-    if (response.status === 403) return safeError(403, "Account access is unavailable.");
-    if (!response.ok) return safeError(502, "Account service is temporarily unavailable.");
+    if (response.status === 401) return safeError(401, "Your session must be renewed.", true);
+    if (response.status === 403) return safeError(403, "Account access is unavailable.", true);
+    if (!response.ok) return safeError(502, "Account service is temporarily unavailable.", true);
     const body: unknown = await response.json();
-    if (!isAccountResponse(body)) return safeError(502, "Account service returned an invalid response.");
+    if (!isAccountResponse(body)) return safeError(502, "Account service returned an invalid response.", true);
     return NextResponse.json(body, { headers });
   } catch {
-    return safeError(502, "Account service is temporarily unavailable.");
+    return safeError(502, "Account service is temporarily unavailable.", true);
   }
 }
 
-function safeError(status: number, error: string) {
-  return NextResponse.json({ ok: false, error }, { status, headers });
+function safeError(status: number, error: string, authenticated = false) {
+  return NextResponse.json({ ok: false, authenticated, error }, { status, headers });
 }
