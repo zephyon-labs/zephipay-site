@@ -19,12 +19,12 @@ export function OpenBetaActivityPanel({ activity }: { activity?: OpenBetaActivit
   const qaStatus = !available || !qa
     ? "Live QA telemetry syncing"
     : qa.totalLiveRuns === 0
-      ? "No live H2H/P2P tests yet"
-      : `${qa.passed} live H2H/P2P ${qa.passed === 1 ? "test" : "tests"} passed · ${qa.invariantViolationCount} invariant ${qa.invariantViolationCount === 1 ? "violation" : "violations"}`;
+      ? "Live Devnet reporting is being connected"
+      : `${qa.passed} live P2P ${qa.passed === 1 ? "test" : "tests"} passed · ${qa.invariantViolationCount} invariant ${qa.invariantViolationCount === 1 ? "violation" : "violations"}`;
   const qaDetail = !available || !qa
     ? "Synthetic Solana Devnet testing is tracked separately from human Open Beta activity."
     : qa.totalLiveRuns === 0
-      ? "Synthetic Solana Devnet QA remains separate from human Open Beta metrics."
+      ? "Synthetic Solana Devnet testing remains separate from human Open Beta metrics."
       : `${qa.passed}/${qa.totalLiveRuns} recorded live Devnet runs passed. Synthetic QA does not affect human beta activity metrics.`;
 
   return (
@@ -33,7 +33,7 @@ export function OpenBetaActivityPanel({ activity }: { activity?: OpenBetaActivit
         <div>
           <p className="text-sm font-medium uppercase tracking-[0.16em] text-brand-secondary">Open Beta Activity</p>
           <h2 id="open-beta-activity-heading" className="mt-2 text-xl font-semibold tracking-[-0.03em] sm:text-2xl">Real testing across Mock Rail and Solana Devnet.</h2>
-          <p className="mt-3 max-w-2xl text-sm leading-6 text-foreground-secondary">Human Open Beta metrics use simulated Mock Rail settlement; Devnet QA is reported separately. No production or Mainnet funds are transferred.</p>
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-foreground-secondary">Human Open Beta metrics use simulated Mock Rail settlement; Devnet testing is reported separately. No production or Mainnet funds are transferred.</p>
         </div>
         <div className="flex flex-wrap gap-2">
           <span className="rounded-full border border-brand-primary/30 bg-brand-primary/10 px-3 py-2 text-xs font-medium uppercase tracking-[0.12em] text-brand-secondary">Open Beta</span>
@@ -63,7 +63,7 @@ export function OpenBetaActivityPanel({ activity }: { activity?: OpenBetaActivit
       <div className="border-t border-brand-primary/20 bg-brand-primary/[0.035] px-5 py-5 sm:px-7 sm:py-6">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-sm font-medium uppercase tracking-[0.16em] text-brand-secondary">Solana Devnet QA</p>
+            <p className="text-sm font-medium uppercase tracking-[0.16em] text-brand-secondary">Solana Devnet Testing</p>
             <p className="mt-2 text-lg font-semibold tracking-[-0.02em] sm:text-xl">{qaStatus}</p>
             <p className="mt-2 max-w-3xl text-sm leading-6 text-foreground-secondary">{qaDetail}</p>
           </div>
