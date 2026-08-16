@@ -16,7 +16,16 @@ export function OpenBetaActivityPanel({ activity }: { activity?: OpenBetaActivit
   ] as const;
   const completionRate = !available ? "—" : zero ? "Not yet available" : `${(activity.paymentCompletionRate.basisPoints! / 100).toFixed(2)}%`;
   const qa = activity?.devnetQa;
-  const qaLine = !available || !qa ? "Devnet QA · Temporarily unavailable" : qa.totalLiveRuns === 0 ? "Devnet QA · No live H2H/P2P tests yet" : `Devnet QA · ${qa.passed} live H2H/P2P ${qa.passed === 1 ? "test" : "tests"} passed · ${qa.invariantViolationCount} invariant ${qa.invariantViolationCount === 1 ? "violation" : "violations"}`;
+  const qaStatus = !available || !qa
+    ? "Live QA telemetry syncing"
+    : qa.totalLiveRuns === 0
+      ? "No live H2H/P2P tests yet"
+      : `${qa.passed} live H2H/P2P ${qa.passed === 1 ? "test" : "tests"} passed · ${qa.invariantViolationCount} invariant ${qa.invariantViolationCount === 1 ? "violation" : "violations"}`;
+  const qaDetail = !available || !qa
+    ? "Synthetic Solana Devnet testing is tracked separately from human Open Beta activity."
+    : qa.totalLiveRuns === 0
+      ? "Synthetic Solana Devnet QA remains separate from human Open Beta metrics."
+      : `${qa.passed}/${qa.totalLiveRuns} recorded live Devnet runs passed. Synthetic QA does not affect human beta activity metrics.`;
 
   return (
     <section aria-labelledby="open-beta-activity-heading" className="mt-6 overflow-hidden rounded-[1.65rem] border border-brand-primary/25 bg-surface-glass shadow-[var(--shadow-soft)] backdrop-blur-2xl sm:mt-8">
@@ -51,8 +60,17 @@ export function OpenBetaActivityPanel({ activity }: { activity?: OpenBetaActivit
           <p className="mt-3 text-sm leading-6 text-foreground-secondary">{available ? zero ? "Metrics will populate as authenticated testers complete payments." : "These aggregate metrics come from durable Mock Rail execution and receipt records." : "The homepage and payment experience remain available while telemetry recovers."}</p>
         </div>
       </div>
-      <div className="border-t border-border-subtle px-5 py-3 sm:px-7">
-        <p className="text-xs leading-5 text-foreground-muted">{qaLine}</p>
+      <div className="border-t border-brand-primary/20 bg-brand-primary/[0.035] px-5 py-5 sm:px-7 sm:py-6">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="text-sm font-medium uppercase tracking-[0.16em] text-brand-secondary">Solana Devnet QA</p>
+            <p className="mt-2 text-lg font-semibold tracking-[-0.02em] sm:text-xl">{qaStatus}</p>
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-foreground-secondary">{qaDetail}</p>
+          </div>
+          <span className="w-fit rounded-full border border-brand-primary/30 bg-brand-primary/10 px-3 py-2 text-xs font-medium uppercase tracking-[0.12em] text-brand-secondary">
+            Devnet testing
+          </span>
+        </div>
       </div>
     </section>
   );

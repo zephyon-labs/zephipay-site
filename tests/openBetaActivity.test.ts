@@ -45,7 +45,7 @@ describe("Open Beta activity homepage placement and trust boundary", () => {
     assert.ok(page.indexOf("<OpenBetaActivity />") < page.indexOf('id="runtime"'));
     assert.match(network, /Verified network activity/); assert.match(network, /Live activity will appear here/); assert.match(network, /Status pending/); assert.match(network, /No verified public activity yet/);
     assert.doesNotMatch(network, /Open Beta Activity|Mock USDC processed/);
-    assert.match(panel, /Open Beta Activity/); assert.match(panel, /Real testing across Mock Rail and Solana Devnet\./); assert.match(panel, /No production or Mainnet funds are transferred\./); assert.match(panel, /Beta activity is temporarily unavailable\./); assert.match(panel, /Not yet available/); assert.match(panel, /Devnet QA/); assert.match(panel, /live H2H\/P2P/); assert.match(panel, /No live H2H\/P2P tests yet/); assert.match(panel, /Temporarily unavailable/);
+    assert.match(panel, /Open Beta Activity/); assert.match(panel, /Real testing across Mock Rail and Solana Devnet\./); assert.match(panel, /No production or Mainnet funds are transferred\./); assert.match(panel, /Beta activity is temporarily unavailable\./); assert.match(panel, /Not yet available/); assert.match(panel, /Devnet QA/); assert.match(panel, /live H2H\/P2P/); assert.match(panel, /No live H2H\/P2P tests yet/); assert.match(panel, /Live QA telemetry syncing/);
     assert.doesNotMatch(panel, /Friends & Family|mainnet volume|production volume|Solana volume/i);
     const navigation = await source("src/config/navigation.ts"); assert.doesNotMatch(navigation, /open-beta-activity|telemetry\/open-beta/i);
   });
