@@ -15,14 +15,16 @@ export function OpenBetaActivityPanel({ activity }: { activity?: OpenBetaActivit
     ["Durable receipts", available ? String(activity.durableReceipts) : "—"],
   ] as const;
   const completionRate = !available ? "—" : zero ? "Not yet available" : `${(activity.paymentCompletionRate.basisPoints! / 100).toFixed(2)}%`;
+  const qa = activity?.devnetQa;
+  const qaLine = !available || !qa ? "Devnet QA · Temporarily unavailable" : qa.totalLiveRuns === 0 ? "Devnet QA · No live H2H/P2P tests yet" : `Devnet QA · ${qa.passed} live H2H/P2P ${qa.passed === 1 ? "test" : "tests"} passed · ${qa.invariantViolationCount} invariant ${qa.invariantViolationCount === 1 ? "violation" : "violations"}`;
 
   return (
     <section aria-labelledby="open-beta-activity-heading" className="mt-6 overflow-hidden rounded-[1.65rem] border border-brand-primary/25 bg-surface-glass shadow-[var(--shadow-soft)] backdrop-blur-2xl sm:mt-8">
       <div className="flex flex-col gap-4 border-b border-border-subtle px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-7">
         <div>
           <p className="text-sm font-medium uppercase tracking-[0.16em] text-brand-secondary">Open Beta Activity</p>
-          <h2 id="open-beta-activity-heading" className="mt-2 text-xl font-semibold tracking-[-0.03em] sm:text-2xl">Real testing. Simulated settlement.</h2>
-          <p className="mt-3 max-w-2xl text-sm leading-6 text-foreground-secondary">Measured from authenticated ZephiPay beta activity using simulated settlement. No real funds are transferred.</p>
+          <h2 id="open-beta-activity-heading" className="mt-2 text-xl font-semibold tracking-[-0.03em] sm:text-2xl">Real testing across Mock Rail and Solana Devnet.</h2>
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-foreground-secondary">Human Open Beta metrics use simulated Mock Rail settlement; Devnet QA is reported separately. No production or Mainnet funds are transferred.</p>
         </div>
         <div className="flex flex-wrap gap-2">
           <span className="rounded-full border border-brand-primary/30 bg-brand-primary/10 px-3 py-2 text-xs font-medium uppercase tracking-[0.12em] text-brand-secondary">Open Beta</span>
@@ -48,6 +50,9 @@ export function OpenBetaActivityPanel({ activity }: { activity?: OpenBetaActivit
           <p className="mt-2 text-lg font-semibold">{available ? zero ? "Open Beta activity will appear here" : "Open Beta activity measured" : "Beta activity is temporarily unavailable."}</p>
           <p className="mt-3 text-sm leading-6 text-foreground-secondary">{available ? zero ? "Metrics will populate as authenticated testers complete payments." : "These aggregate metrics come from durable Mock Rail execution and receipt records." : "The homepage and payment experience remain available while telemetry recovers."}</p>
         </div>
+      </div>
+      <div className="border-t border-border-subtle px-5 py-3 sm:px-7">
+        <p className="text-xs leading-5 text-foreground-muted">{qaLine}</p>
       </div>
     </section>
   );

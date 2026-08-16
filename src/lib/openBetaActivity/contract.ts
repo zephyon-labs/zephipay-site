@@ -8,12 +8,24 @@ export type OpenBetaActivity = Readonly<{
   mockUsdcProcessed: Readonly<{ amountRaw: string; decimals: 6 }>;
   durableReceipts: number;
   paymentCompletionRate: Readonly<{ completed: number; initiated: number; basisPoints: number | null }>;
+  devnetQa?: Readonly<{
+    totalLiveRuns: number;
+    passed: number;
+    failed: number;
+    latestResult: "RUNNING" | "PASSED" | "FAILED" | null;
+    latestActorFlow: "H2H" | null;
+    latestCanonicalPaymentFlow: "P2P" | null;
+    invariantViolationCount: number;
+    latestDurationMs: number | null;
+    latestAt: string | null;
+  }>;
 }>;
 
 export function parseOpenBetaActivityResponse(value: unknown): OpenBetaActivity | undefined {
   if (!record(value) || !exact(value, ["ok", "data"]) || value.ok !== true || !record(value.data)) return undefined;
   const data = value.data;
-  if (!exact(data, ["scope", "rail", "settlement", "generatedAt", "betaTesters", "paymentsCompleted", "mockUsdcProcessed", "durableReceipts", "paymentCompletionRate"]) ||
+  const keys = ["scope", "rail", "settlement", "generatedAt", "betaTesters", "paymentsCompleted", "mockUsdcProcessed", "durableReceipts", "paymentCompletionRate", ...(data.devnetQa === undefined ? [] : ["devnetQa"])] as const;
+  if (!exact(data, keys) ||
       data.scope !== "open_beta" || data.rail !== "mock" || data.settlement !== "simulated" ||
       typeof data.generatedAt !== "string" || !Number.isFinite(Date.parse(data.generatedAt)) ||
       !count(data.betaTesters) || !count(data.paymentsCompleted) || !count(data.durableReceipts) ||
@@ -25,7 +37,17 @@ export function parseOpenBetaActivityResponse(value: unknown): OpenBetaActivity 
   const rate = data.paymentCompletionRate.basisPoints;
   if (data.paymentCompletionRate.initiated === 0 ? rate !== null :
       !count(rate) || rate > 10_000 || rate !== Math.floor((data.paymentCompletionRate.completed * 10_000) / data.paymentCompletionRate.initiated)) return undefined;
+  if (data.devnetQa !== undefined && !validDevnetQa(data.devnetQa)) return undefined;
   return data as OpenBetaActivity;
+}
+
+function validDevnetQa(value: unknown): boolean {
+  if (!record(value) || !exact(value, ["totalLiveRuns", "passed", "failed", "latestResult", "latestActorFlow", "latestCanonicalPaymentFlow", "invariantViolationCount", "latestDurationMs", "latestAt"])) return false;
+  if (!count(value.totalLiveRuns) || !count(value.passed) || !count(value.failed) || value.passed + value.failed > value.totalLiveRuns || !count(value.invariantViolationCount)) return false;
+  if (![null, "RUNNING", "PASSED", "FAILED"].includes(value.latestResult as never) || ![null, "H2H"].includes(value.latestActorFlow as never) || ![null, "P2P"].includes(value.latestCanonicalPaymentFlow as never)) return false;
+  if (value.latestDurationMs !== null && !count(value.latestDurationMs)) return false;
+  if (value.latestAt !== null && (typeof value.latestAt !== "string" || !Number.isFinite(Date.parse(value.latestAt)))) return false;
+  return value.totalLiveRuns === 0 ? value.latestResult === null && value.latestActorFlow === null && value.latestCanonicalPaymentFlow === null && value.latestDurationMs === null && value.latestAt === null : value.latestResult !== null;
 }
 
 export function formatMockUsdc(amountRaw: string): string {
