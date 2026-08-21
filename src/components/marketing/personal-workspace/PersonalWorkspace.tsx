@@ -7,6 +7,7 @@ import { PaymentIntentWorkspace } from "@/components/product/personal/PaymentInt
 import { PaymentRequestWorkspace } from "@/components/product/personal/PaymentRequestWorkspace";
 import { PaymentRequestActivity } from "@/components/product/personal/PaymentRequestActivity";
 import { PaymentIdentityStatus } from "@/components/product/personal/PaymentIdentityStatus";
+import { ZephyonProgressPanel } from "@/components/product/personal/ZephyonProgressPanel";
 import { Button } from "@/components/ui/Button";
 import type { MoneyMode } from "@/lib/zephipay/types";
 import { cn } from "@/utils/cn";
@@ -41,6 +42,8 @@ export function PersonalWorkspace({ className, authenticated = false, recoveryId
         <p className="mt-2 text-sm text-foreground-secondary">{description}</p>
       </div>)}
     </div>
+
+    {authenticated ? <ZephyonProgressPanel /> : null}
 
     <div className="p-6 sm:p-8">
       {authenticated ? <PaymentIdentityStatus /> : null}
