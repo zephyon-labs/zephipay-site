@@ -3,7 +3,7 @@ import { readFile } from "node:fs/promises";
 import { describe, it } from "node:test";
 import { renderToStaticMarkup } from "react-dom/server";
 
-import { ZephyonProgressView, type ZpViewState } from "../src/components/product/personal/ZephyonProgressPanel";
+import { getDevelopmentZpPreview, selectPrimaryPendingMilestone, ZephyonProgressView, type ZpViewState } from "../src/components/product/personal/ZephyonProgressPanel";
 import { parseZpResponse, ZP_MILESTONE_LABELS } from "../src/lib/zp/contract";
 
 const populated = {
@@ -21,6 +21,35 @@ const populated = {
 const render = (state: ZpViewState) => renderToStaticMarkup(<ZephyonProgressView state={state} />);
 
 describe("Zephyon account progression", () => {
+  it("renders the development populated preview with its exact progression fixture", () => {
+    const state = developmentPreview("?zpPreview=populated"); assert.ok(state);
+    const html = render(state);
+    assert.match(html, />340<\/span>/); assert.match(html, /aria-valuenow="68"/); assert.match(html, />68%<\/p>/);
+    assert.match(html, /17<\/span> \/ 25/); assert.match(html, /25 payments sent/);
+    for (const label of ["First payment sent", "First payment received", "10 payments sent"]) assert.match(html, new RegExp(label));
+    assert.doesNotMatch(html, /FIRST_PAYMENT_|TEN_PAYMENTS_|TWENTY_FIVE_PAYMENTS_|ZERA/);
+  });
+
+  it("renders honest zero, loading, and error development previews", () => {
+    const zero = developmentPreview("?zpPreview=zero"), loading = developmentPreview("?zpPreview=loading"), error = developmentPreview("?zpPreview=error");
+    assert.ok(zero && loading && error);
+    const zeroHtml = render(zero), loadingHtml = render(loading), errorHtml = render(error);
+    assert.match(zeroHtml, />0%<\/p>/); assert.match(zeroHtml, /aria-valuenow="0"/);
+    assert.doesNotMatch(loadingHtml, />340<|aria-valuenow|\d+%/);
+    assert.doesNotMatch(errorHtml, />340<|aria-valuenow|\d+%|\d+ \/ \d+/);
+  });
+
+  it("makes previews unavailable outside development and retains the default fetch path", async () => {
+    const previous = process.env.NODE_ENV;
+    setNodeEnv("production");
+    try { assert.equal(getDevelopmentZpPreview("?zpPreview=populated"), undefined); }
+    finally { setNodeEnv(previous); }
+    const panel = await source("src/components/product/personal/ZephyonProgressPanel.tsx");
+    assert.match(panel, /process\.env\.NODE_ENV !== "development"/);
+    assert.match(panel, /getDevelopmentZpPreview\(window\.location\.search\)/);
+    assert.match(panel, /if \(preview\)[\s\S]*return[\s\S]*fetch\("\/api\/account\/zp"/);
+  });
+
   it("renders authenticated populated ZP without losing bigint precision", () => {
     const parsed = parseZpResponse(populated);
     assert.ok(parsed);
@@ -37,14 +66,38 @@ describe("Zephyon account progression", () => {
     const html = render({ status: "ready", data: parsed });
     assert.match(html, />0<\/span> <span[^>]*>ZP/);
     assert.match(html, /progression starts with meaningful activity/);
-    assert.match(html, /0 of 1/);
+    assert.match(html, /0<\/span> \/ 1/); assert.match(html, /aria-valuenow="0"/); assert.match(html, />0%<\/p>/);
+  });
+
+  it("selects the highest-progress primary milestone and preserves backend order on ties", () => {
+    assert.equal(selectPrimaryPendingMilestone(populated.zp.pendingMilestones)?.milestone, "TEN_PAYMENTS_SENT");
+    const tied = populated.zp.pendingMilestones.map((item) => ({ ...item, progressPercent: 25 }));
+    assert.equal(selectPrimaryPendingMilestone(tied)?.milestone, "FIRST_PAYMENT_RECEIVED");
+  });
+
+  it("makes one primary meter dominant and keeps remaining milestones secondary", () => {
+    const parsed = parseZpResponse(populated); assert.ok(parsed);
+    const html = render({ status: "ready", data: parsed });
+    assert.match(html, /Toward[\s\S]*10 payments sent[\s\S]*1<\/span> \/ 10/);
+    assert.match(html, /aria-label="10 payments sent progress"[\s\S]*aria-valuenow="10"/);
+    assert.match(html, /Also in progress[\s\S]*First payment received[\s\S]*0 \/ 1/);
+    assert.equal((html.match(/h-3 overflow-hidden rounded-full/g) ?? []).length, 1);
+    assert.equal((html.match(/h-1\.5 overflow-hidden rounded-full/g) ?? []).length, 1);
   });
 
   it("uses bounded loading and local error states without fake values", () => {
     const loading = render({ status: "loading" }), error = render({ status: "error" });
     assert.match(loading, /aria-busy="true"/); assert.match(loading, /Loading ZP progress/);
-    assert.doesNotMatch(loading, />0 ZP|0 of 1/);
+    assert.doesNotMatch(loading, />0 ZP|0 \/ 1|\d+%/);
     assert.match(error, /ZP progress is temporarily unavailable/); assert.match(error, /role="status"/);
+    assert.doesNotMatch(error, /aria-valuenow|\d+%|\d+ \/ \d+/);
+  });
+
+  it("renders achieved progress without fabricating another target", () => {
+    const parsed = parseZpResponse({ ...populated, zp: { ...populated.zp, pendingMilestones: [] } }); assert.ok(parsed);
+    const html = render({ status: "ready", data: parsed });
+    assert.match(html, /Progress achieved/); assert.match(html, /All currently available milestones are unlocked/);
+    assert.doesNotMatch(html, /role="progressbar"|Toward|Also in progress/);
   });
 
   it("centralizes friendly milestone labels and never renders raw enums", () => {
@@ -95,3 +148,12 @@ describe("Zephyon account progression", () => {
 });
 
 async function source(path: string) { return readFile(new URL(`../${path}`, import.meta.url), "utf8"); }
+
+function developmentPreview(search: string): ZpViewState | undefined {
+  const previous = process.env.NODE_ENV;
+  setNodeEnv("development");
+  try { return getDevelopmentZpPreview(search); }
+  finally { setNodeEnv(previous); }
+}
+
+function setNodeEnv(value: string | undefined) { Object.defineProperty(process.env, "NODE_ENV", { value, writable: true, configurable: true, enumerable: true }); }
