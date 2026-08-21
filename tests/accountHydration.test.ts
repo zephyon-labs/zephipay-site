@@ -12,7 +12,7 @@ describe("shared authenticated account hydration", () => {
       source("src/components/auth/AccountSession.tsx"),
       source("src/components/auth/AccountAwareBetaCta.tsx"),
     ]);
-    assert.match(layout, /<AccountHydrationProvider>\{children\}<\/AccountHydrationProvider>/);
+    assert.match(layout, /<AccountHydrationProvider><ZpHydrationProvider>\{children\}<\/ZpHydrationProvider><\/AccountHydrationProvider>/);
     assert.equal(([provider, session, cta].join("\n").match(/fetch\("\/api\/account"/g) ?? []).length, 1);
     assert.match(session, /useAccountHydration\(\)/);
     assert.match(cta, /useAccountHydration\(\)/);

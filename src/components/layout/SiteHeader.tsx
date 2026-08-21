@@ -8,6 +8,7 @@ import { BrandMark } from "@/components/ui/BrandMark";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { cn } from "@/utils/cn";
 import { AccountSession } from "@/components/auth/AccountSession";
+import { AccountProgressStatus } from "@/components/auth/AccountProgressStatus";
 
 function MenuIcon({
   open,
@@ -71,6 +72,8 @@ export function SiteHeader() {
           <BrandMark />
 
           <DesktopNavigation />
+
+          <AccountProgressStatus className="ml-auto lg:ml-0" />
 
           <div className="hidden items-center gap-2 lg:flex">
             <ThemeToggle showAdaptiveLabel={false} />
