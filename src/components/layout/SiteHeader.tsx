@@ -68,7 +68,7 @@ export function SiteHeader() {
           "backdrop-blur-2xl",
         )}
       >
-        <div className="flex h-16 items-center gap-4 px-4 sm:px-5">
+        <div className="flex h-16 items-center gap-3 px-4 sm:px-5 xl:gap-4">
           <BrandMark />
 
           <DesktopNavigation />

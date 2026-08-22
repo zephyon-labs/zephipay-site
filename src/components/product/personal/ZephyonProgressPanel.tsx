@@ -3,7 +3,7 @@
 import { useZpHydration } from "@/components/auth/ZpHydrationProvider";
 import { ZP_MILESTONE_LABELS, type ZpPendingMilestone, type ZpSummary } from "@/lib/zp/contract";
 
-export type ZpViewState = Readonly<{ status: "loading" | "error"; zp?: never }> | Readonly<{ status: "ready"; zp: ZpSummary }>;
+export type ZpViewState = Readonly<{ status: "idle" | "loading" | "error"; zp?: null }> | Readonly<{ status: "ready"; zp: ZpSummary }>;
 
 export function selectPrimaryPendingMilestone(milestones: readonly ZpPendingMilestone[]): ZpPendingMilestone | undefined {
   return milestones.reduce<ZpPendingMilestone | undefined>((selected, milestone) =>
@@ -12,7 +12,7 @@ export function selectPrimaryPendingMilestone(milestones: readonly ZpPendingMile
 
 export function ZephyonProgressPanel() {
   const hydrated = useZpHydration();
-  const state: ZpViewState = hydrated.status === "ready" ? hydrated : { status: hydrated.status === "error" ? "error" : "loading" };
+  const state: ZpViewState = hydrated.status === "ready" ? hydrated : { status: hydrated.status };
   return <ZephyonProgressView state={state} />;
 }
 
@@ -27,7 +27,7 @@ function ZpCard({ state }: Readonly<{ state: ZpViewState }>) {
   return <article aria-labelledby="zp-card-heading" className="min-w-0 overflow-hidden rounded-[1.5rem] border border-brand-primary/25 bg-surface-glass p-6 shadow-[var(--shadow-soft)] sm:p-7">
     <div className="flex flex-wrap items-start justify-between gap-4"><div><p className="text-xs font-medium uppercase tracking-[0.18em] text-brand-secondary">ZP</p><h3 id="zp-card-heading" className="mt-2 text-lg font-semibold text-foreground">Zephyon Points</h3></div><span className="rounded-full border border-brand-primary/20 bg-brand-primary/10 px-3 py-1 text-xs text-brand-secondary">Activity progression</span></div>
     {state.status === "loading" ? <div className="mt-7 min-h-72" aria-busy="true" aria-label="Loading ZP progress"><div className="h-14 w-40 max-w-full animate-pulse rounded-xl bg-surface-secondary" /><div className="mt-7 h-3 animate-pulse rounded-full bg-surface-secondary" /><div className="mt-4 h-5 w-56 max-w-full animate-pulse rounded-lg bg-surface-secondary" /><div className="mt-8 grid gap-3"><div className="h-11 animate-pulse rounded-2xl bg-surface-secondary" /><div className="h-11 animate-pulse rounded-2xl bg-surface-secondary" /></div></div> : null}
-    {state.status === "error" ? <div className="mt-7 min-h-72"><div className="h-14 w-40 max-w-full rounded-xl bg-surface-secondary/70" aria-hidden="true" /><div className="mt-7 h-3 overflow-hidden rounded-full border border-border-subtle bg-surface-secondary/70" aria-hidden="true"><span className="block h-full w-0" /></div><div className="mt-5 rounded-2xl border border-border-subtle bg-background/45 p-5"><p role="status" className="text-sm text-foreground-secondary">ZP progress is temporarily unavailable.</p></div></div> : null}
+    {state.status === "error" || state.status === "idle" ? <div className="mt-7 min-h-72"><div className="h-14 w-40 max-w-full rounded-xl bg-surface-secondary/70" aria-hidden="true" /><div className="mt-7 h-3 overflow-hidden rounded-full border border-border-subtle bg-surface-secondary/70" aria-hidden="true"><span className="block h-full w-0" /></div><div className="mt-5 rounded-2xl border border-border-subtle bg-background/45 p-5"><p role="status" className="text-sm text-foreground-secondary">ZP progress is temporarily unavailable.</p></div></div> : null}
     {state.status === "ready" ? <ZpDetails zp={state.zp} /> : null}
   </article>;
 }

@@ -47,8 +47,8 @@ describe("Zephyon account progression", () => {
     finally { setNodeEnv(previous); }
     const provider = await source("src/components/auth/ZpHydrationProvider.tsx");
     assert.match(provider, /process\.env\.NODE_ENV !== "development"/);
-    assert.match(provider, /getDevelopmentZpPreview\(window\.location\.search\)/);
-    assert.match(provider, /if \(preview\)[\s\S]*return[\s\S]*fetch\("\/api\/account\/zp"/);
+    assert.match(provider, /useSyncExternalStore\(subscribeToLocation, currentSearch, serverSearch\)/);
+    assert.match(provider, /shouldRequestZp\(accountStatus, accountKey, preview\)[\s\S]*fetch\("\/api\/account\/zp"/);
   });
 
   it("renders authenticated populated ZP without losing bigint precision", () => {
@@ -87,11 +87,12 @@ describe("Zephyon account progression", () => {
   });
 
   it("uses bounded loading and local error states without fake values", () => {
-    const loading = render({ status: "loading" }), error = render({ status: "error" });
+    const loading = render({ status: "loading" }), error = render({ status: "error" }), idle = render({ status: "idle" });
     assert.match(loading, /aria-busy="true"/); assert.match(loading, /Loading ZP progress/);
     assert.doesNotMatch(loading, />0 ZP|0 \/ 1|\d+%/);
     assert.match(error, /ZP progress is temporarily unavailable/); assert.match(error, /role="status"/);
     assert.doesNotMatch(error, /aria-valuenow|\d+%|\d+ \/ \d+/);
+    assert.match(idle, /ZP progress is temporarily unavailable/); assert.doesNotMatch(idle, /aria-busy="true"/);
   });
 
   it("renders achieved progress without fabricating another target", () => {
