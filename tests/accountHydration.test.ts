@@ -31,7 +31,8 @@ describe("shared authenticated account hydration", () => {
     assert.match(provider, /commit\(\{ type: "logout" \}\)/);
     assert.match(provider, /authenticatedRequests\.invalidate\(\)/);
     assert.match(provider, /ACCOUNT_HYDRATION_REFRESH_EVENT/);
-    assert.match(session, /onSubmit=\{beginLogout\}/);
+    assert.match(session, /onSubmit=\{submitLogout\}/);
+    assert.match(session, /startLogoutTransport\(beginLogout\)/);
     assert.doesNotMatch(provider, /localStorage|sessionStorage|email|token|cookie/i);
   });
 
@@ -46,7 +47,7 @@ describe("shared authenticated account hydration", () => {
     assert.match(response, /isAuthenticatedAccountFailure/);
     assert.match(provider, /"authenticated-unavailable"/);
     assert.match(session, /status === "loading"[\s\S]*Checking sign-in/);
-    assert.match(session, /status === "authenticated-unavailable"[\s\S]*Signed in · Account details unavailable/);
+    assert.match(session, /status === "authenticated-unavailable"[\s\S]*Signed-in session; account details unavailable/);
     const loading = session.slice(session.indexOf('if (status === "loading")'), session.indexOf('if (status === "reauthentication-required")'));
     assert.doesNotMatch(loading, /Sign in|Create account/);
     assert.match(session, /status === "reauthentication-required"[\s\S]*Session expired[\s\S]*Sign in again/);

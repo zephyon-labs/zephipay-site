@@ -191,7 +191,7 @@ export function DesktopNavigation() {
   return (
     <div
       ref={navigationRef}
-      className="ml-auto hidden lg:block"
+      className="ml-auto hidden xl:block"
       onMouseEnter={cancelScheduledClose}
       onMouseLeave={scheduleClose}
     >

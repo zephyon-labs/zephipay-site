@@ -131,7 +131,7 @@ export function MobileNavigation({
     <div
       className={cn(
         "grid overflow-hidden transition-[grid-template-rows] duration-300",
-        "lg:hidden",
+        "xl:hidden",
         open ? "grid-rows-[1fr]" : "grid-rows-[0fr]",
       )}
     >

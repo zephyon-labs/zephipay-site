@@ -1,9 +1,12 @@
 import assert from "node:assert/strict";
 import { afterEach, describe, it } from "node:test";
 import { act, create, type ReactTestRenderer } from "react-test-renderer";
+import { PathnameContext } from "next/dist/shared/lib/hooks-client-context.shared-runtime.js";
 
 import { AccountHydrationProvider, useAccountHydration } from "../src/components/auth/AccountHydrationProvider";
+import { AccountSession } from "../src/components/auth/AccountSession";
 import { AuthenticatedBoundary } from "../src/components/auth/AuthenticatedBoundary";
+import { ZpHydrationProvider, useZpHydration } from "../src/components/auth/ZpHydrationProvider";
 import { AUTH_STATE_HEADER } from "../src/lib/auth/authFailure";
 import { AuthenticatedRequestInvalidatedError, authenticatedRequests } from "../src/lib/auth/authenticatedRequests";
 import { AUTHORITY_REVALIDATION_INTERVAL_MS, AUTHORITY_REVALIDATION_SIGNAL_GAP_MS } from "../src/lib/auth/authorityRevalidation";
@@ -31,16 +34,62 @@ function Probe() {
   </div>;
 }
 
-async function mountWith(fetchImplementation: typeof fetch) {
+function ZpProbe() {
+  const state = useZpHydration();
+  return <><span id="zp-status">{state.status}</span><span id="zp-value">{state.status === "ready" ? state.zp.totalPoints : "—"}</span></>;
+}
+
+async function mountWith(fetchImplementation: typeof fetch, content = <Probe />) {
   browser = new BrowserHarness(fetchImplementation);
   browser.install();
   let renderer!: ReactTestRenderer;
-  await act(async () => { renderer = create(<AccountHydrationProvider><Probe /></AccountHydrationProvider>); mounted = renderer; });
+  await act(async () => {
+    renderer = create(<PathnameContext.Provider value="/personal"><AccountHydrationProvider>{content}</AccountHydrationProvider></PathnameContext.Provider>);
+    mounted = renderer;
+  });
   await act(async () => { browser?.runInitialTimers(); await settle(); });
   return { browser, renderer } as const;
 }
 
 describe("mounted authoritative account lifecycle", () => {
+  it("keeps the logout POST transport alive through synchronous AccountSession teardown and submits once", async () => {
+    const content = <><Probe /><AccountSession /></>;
+    const { browser: environment, renderer } = await mountWith(async () => accountResponse("account-a"), content);
+    assert.equal(text(renderer, "sensitive"), "Payment Identity:account-a");
+    const accountForm = renderer.root.findByProps({ action: "/api/auth/logout" });
+    let prevented = 0;
+
+    await act(async () => {
+      accountForm.props.onSubmit({ preventDefault: () => { prevented += 1; } });
+      accountForm.props.onSubmit({ preventDefault: () => { prevented += 1; } });
+    });
+
+    assert.equal(text(renderer, "status"), "signing-out");
+    assert.equal(renderer.root.findAllByProps({ id: "sensitive" }).length, 0);
+    assert.equal(renderer.root.findAllByProps({ action: "/api/auth/logout" }).length, 0);
+    assert.equal(environment.logoutSubmissions, 1);
+    assert.equal(environment.logoutTransportAttached, true);
+    assert.deepEqual(environment.logoutTarget, { action: "/api/auth/logout", method: "post" });
+    assert.equal(prevented, 2);
+  });
+
+  it("maps an authenticated ZP 503 to the compact unavailable state without fabricating zero", async () => {
+    const calls: string[] = [];
+    const content = <ZpHydrationProvider><ZpProbe /></ZpHydrationProvider>;
+    const { renderer } = await mountWith(async (input) => {
+      const url = String(input);
+      calls.push(url);
+      return url === "/api/account"
+        ? accountResponse("account-a")
+        : new Response(JSON.stringify({ ok: false, code: "TEMPORARILY_UNAVAILABLE", error: "Unavailable" }), { status: 503 });
+    }, content);
+    await act(async () => { await settle(); });
+
+    assert.deepEqual(calls, ["/api/account", "/api/account/zp"]);
+    assert.equal(text(renderer, "zp-status"), "error");
+    assert.equal(text(renderer, "zp-value"), "—");
+  });
+
   it("unmounts Payment Identity and all sensitive children synchronously on logout", async () => {
     const { renderer } = await mountWith(async () => accountResponse("account-a"));
     assert.equal(text(renderer, "sensitive"), "Payment Identity:account-a");
@@ -232,7 +281,9 @@ class BrowserHarness {
   private nextTimer = 0;
   private now = 10_000;
   private visibilityState: DocumentVisibilityState = "visible";
+  private logoutForm: { action: string; method: string; attached: boolean } | undefined;
   readonly hasBroadcastChannel = false;
+  logoutSubmissions = 0;
 
   constructor(private readonly fetchImplementation: typeof fetch) {}
 
@@ -244,11 +295,30 @@ class BrowserHarness {
       clearTimeout: (id: number) => this.timers.delete(id),
       setInterval: (callback: () => void) => this.timer(this.intervals, callback),
       clearInterval: (id: number) => this.intervals.delete(id),
-      location: { reload: () => undefined },
+      location: { reload: () => undefined, search: "" },
     };
     const documentValue = {
       addEventListener: (type: string, listener: () => void) => this.add(this.documentListeners, type, listener),
       removeEventListener: (type: string, listener: () => void) => this.remove(this.documentListeners, type, listener),
+      body: {
+        appendChild: (form: { action: string; method: string; attached: boolean }) => {
+          form.attached = true;
+          this.logoutForm = form;
+          return form;
+        },
+      },
+      createElement: (tagName: string) => {
+        assert.equal(tagName, "form");
+        const form = {
+          action: "",
+          method: "",
+          hidden: false,
+          attached: false,
+          submit: () => { this.logoutSubmissions += 1; },
+          remove: () => { form.attached = false; },
+        };
+        return form;
+      },
     };
     Object.defineProperty(documentValue, "visibilityState", { get: () => this.visibilityState });
     Object.defineProperty(globalThis, "window", { configurable: true, value: windowValue });
@@ -265,6 +335,8 @@ class BrowserHarness {
   }
 
   advance(milliseconds: number) { this.now += milliseconds; }
+  get logoutTransportAttached() { return this.logoutForm?.attached ?? false; }
+  get logoutTarget() { return this.logoutForm ? { action: this.logoutForm.action, method: this.logoutForm.method } : undefined; }
   runInitialTimers() { this.runDueTimers(); }
   runDueTimers() {
     for (const [id, timer] of [...this.timers]) {

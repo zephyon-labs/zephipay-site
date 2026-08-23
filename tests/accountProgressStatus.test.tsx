@@ -26,6 +26,15 @@ describe("authenticated header progression status", () => {
     assert.match(error, /Zephyon Points temporarily unavailable/); assert.match(error, />—<\/span>/);
   });
 
+  it("renders an authenticated unavailable endpoint state as ZP dash while preserving real zero", () => {
+    const unavailable = resolveZpHydration("authenticated", "account-1", { status: "error", zp: null, accountKey: "account-1" });
+    const zero = resolveZpHydration("authenticated", "account-1", { status: "ready", zp: summary("0"), accountKey: "account-1" });
+    assert.equal(unavailable.status, "error");
+    assert.match(renderToStaticMarkup(<AccountProgressStatusView state={unavailable} />), /ZP<\/span><span[^>]*>—<\/span>/);
+    assert.equal(zero.status, "ready");
+    assert.match(renderToStaticMarkup(<AccountProgressStatusView state={zero} />), /ZP<\/span><span[^>]*>0<\/span>/);
+  });
+
   it("keeps ZTS scoreless, explicitly unavailable, and links to the full progression surface", () => {
     const html = header("340");
     assert.match(html, /href="\/personal#zephyon-progress"/);
@@ -123,19 +132,22 @@ describe("authenticated header progression status", () => {
   it("keeps signed-out rendering gated and preserves header/mobile controls", async () => {
     const [status, siteHeader, session, mobile] = await Promise.all([source("src/components/auth/AccountProgressStatus.tsx"), source("src/components/layout/SiteHeader.tsx"), source("src/components/auth/AccountSession.tsx"), source("src/components/navigation/MobileNavigation.tsx")]);
     assert.match(status, /shouldShowAccountProgress\(Boolean\(account\), accountStatus, zpState\)/);
-    assert.match(siteHeader, /<AccountProgressStatus className="ml-auto lg:ml-0" \/>/); assert.match(siteHeader, /lg:hidden/);
+    assert.match(siteHeader, /<AccountProgressStatus className="ml-auto xl:ml-0" \/>/); assert.match(siteHeader, /xl:hidden/);
     assert.match(session, /cta\.label/); assert.match(session, /Log out/); assert.match(mobile, /AccountSession mobile/); assert.match(mobile, /ThemeToggle/);
     assert.match(status, /min-h-10/); assert.match(status, /shrink-0/); assert.match(status, /max-w-20 overflow-x-auto/); assert.match(status, /focus-visible:ring-2/);
   });
 
   it("keeps primary account controls stable while descriptive copy yields first", async () => {
-    const [session, siteHeader] = await Promise.all([source("src/components/auth/AccountSession.tsx"), source("src/components/layout/SiteHeader.tsx")]);
+    const [session, siteHeader, desktop, mobile] = await Promise.all([source("src/components/auth/AccountSession.tsx"), source("src/components/layout/SiteHeader.tsx"), source("src/components/navigation/DesktopNavigation.tsx"), source("src/components/navigation/MobileNavigation.tsx")]);
     assert.equal((session.match(/shrink-0 whitespace-nowrap rounded-full bg-brand-primary/g) ?? []).length, 2);
     assert.equal((session.match(/<form className="shrink-0"/g) ?? []).length, 2);
-    assert.match(session, /hidden text-foreground-secondary 2xl:inline">Signed in · Beta account/);
-    assert.match(session, /hidden text-foreground-secondary 2xl:inline">Signed in · Account details unavailable/);
-    assert.doesNotMatch(session, /text-foreground-secondary xl:inline/);
+    assert.doesNotMatch(session, /Signed in · Beta account|Verification pending/);
+    assert.doesNotMatch(session, /Signed in · Account details unavailable/);
     assert.match(siteHeader, /gap-3 px-4 sm:px-5 xl:gap-4/);
+    assert.match(siteHeader, /hidden items-center gap-2 xl:flex/);
+    assert.match(siteHeader, /"xl:hidden"/);
+    assert.match(desktop, /className="ml-auto hidden xl:block"/);
+    assert.match(mobile, /"xl:hidden"/);
   });
 
   it("uses one slim explicit capsule and keeps it persistent beside the mobile menu", async () => {
@@ -148,7 +160,7 @@ describe("authenticated header progression status", () => {
     assert.match(status, /min-h-10 shrink-0[\s\S]*gap-2[\s\S]*px-2\.5/);
     assert.doesNotMatch(status, /shadow-\[var\(--shadow-soft\)\]|border-r/);
     assert.ok(siteHeader.indexOf("<AccountProgressStatus") < siteHeader.indexOf("<button"));
-    assert.match(siteHeader, /aria-label=\{[\s\S]*Open navigation menu[\s\S]*lg:hidden/);
+    assert.match(siteHeader, /aria-label=\{[\s\S]*Open navigation menu[\s\S]*xl:hidden/);
     assert.doesNotMatch(html, /ZERA|currency|\$|ZTS\s*\d/i);
   });
 });

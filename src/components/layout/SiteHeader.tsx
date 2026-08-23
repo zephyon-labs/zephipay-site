@@ -73,9 +73,9 @@ export function SiteHeader() {
 
           <DesktopNavigation />
 
-          <AccountProgressStatus className="ml-auto lg:ml-0" />
+          <AccountProgressStatus className="ml-auto xl:ml-0" />
 
-          <div className="hidden items-center gap-2 lg:flex">
+          <div className="hidden items-center gap-2 xl:flex">
             <ThemeToggle showAdaptiveLabel={false} />
 
             <AccountSession />
@@ -102,7 +102,7 @@ export function SiteHeader() {
               "focus-visible:outline-none",
               "focus-visible:ring-2",
               "focus-visible:ring-brand-primary/45",
-              "lg:hidden",
+              "xl:hidden",
             )}
           >
             <MenuIcon open={mobileMenuOpen} />
