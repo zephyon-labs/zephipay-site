@@ -1,6 +1,7 @@
 export type PaymentErrorCode =
   | "INVALID_REQUEST"
   | "AUTHENTICATION_REQUIRED"
+  | "REAUTHENTICATION_REQUIRED"
   | "AUTHORIZATION_DENIED"
   | "NOT_FOUND"
   | "DEVNET_EXECUTION_NOT_FOUND"
@@ -22,6 +23,10 @@ export function normalizePaymentError(status: number): { status: number; body: S
 
 export function failure(status: number, error: string): { status: number; body: SafePaymentError } {
   return { status, body: { ok: false, code: codeForStatus(status), error } };
+}
+
+export function reauthenticationRequiredPaymentFailure(): { status: number; body: SafePaymentError } {
+  return { status: 401, body: { ok: false, code: "REAUTHENTICATION_REQUIRED", error: "Your session has expired. Sign in again to continue." } };
 }
 
 function codeForStatus(status: number): PaymentErrorCode {

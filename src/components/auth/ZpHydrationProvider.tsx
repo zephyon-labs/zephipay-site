@@ -3,12 +3,13 @@
 import { createContext, useContext, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from "react";
 
 import { useAccountHydration } from "@/components/auth/AccountHydrationProvider";
+import { authenticatedJson, authenticatedRequestWasInvalidated } from "@/lib/auth/authenticatedRequests";
 import { parseZpResponse, type ZpSummary } from "@/lib/zp/contract";
 
 export type ZpHydration = Readonly<{ status: "idle"; zp: null; preview?: true }> | Readonly<{ status: "loading"; zp: null; preview?: true }> | Readonly<{ status: "error"; zp: null; preview?: true }> | Readonly<{ status: "ready"; zp: ZpSummary; preview?: true }>;
 type StoredZpHydration = ZpHydration & Readonly<{ accountKey?: string }>;
 type ZpPreviewMode = "populated" | "zero" | "loading" | "error";
-type AccountStatus = "loading" | "authenticated" | "authenticated-unavailable" | "signed-out" | "error";
+type AccountStatus = "loading" | "authenticated" | "authenticated-unavailable" | "signing-out" | "signed-out" | "reauthentication-required" | "error";
 
 const idle: ZpHydration = { status: "idle", zp: null };
 const ZpHydrationContext = createContext<ZpHydration | null>(null);
@@ -23,7 +24,7 @@ function serverSearch() { return ""; }
 export function resolveZpHydration(accountStatus: AccountStatus, accountKey: string | undefined, stored: StoredZpHydration, preview?: ZpHydration): ZpHydration {
   if (preview) return preview;
   if (accountStatus === "loading") return { status: "loading", zp: null };
-  if (accountStatus === "signed-out") return idle;
+  if (accountStatus === "signed-out" || accountStatus === "signing-out" || accountStatus === "reauthentication-required") return idle;
   if (accountStatus === "authenticated-unavailable" || accountStatus === "error" || !accountKey) return { status: "error", zp: null };
   if (stored.accountKey !== accountKey) return { status: "loading", zp: null };
   return stored.status === "ready" ? { status: "ready", zp: stored.zp } : { status: stored.status, zp: null };
@@ -55,10 +56,14 @@ export function shouldRequestZp(accountStatus: AccountStatus, accountKey: string
 }
 
 export function ZpHydrationProvider({ children }: Readonly<{ children: ReactNode }>) {
-  const { account, status: accountStatus } = useAccountHydration();
+  const { account, boundaryKey, generation, status: accountStatus } = useAccountHydration();
+  const generationKey = boundaryKey ?? `${generation}:${accountStatus}`;
+  return <ZpHydrationGeneration key={generationKey} accountKey={accountStatus === "authenticated" ? account?.id : undefined} accountStatus={accountStatus}>{children}</ZpHydrationGeneration>;
+}
+
+function ZpHydrationGeneration({ accountKey, accountStatus, children }: Readonly<{ accountKey?: string; accountStatus: AccountStatus; children: ReactNode }>) {
   const locationSearch = useSyncExternalStore(subscribeToLocation, currentSearch, serverSearch);
   const [stored, setStored] = useState<StoredZpHydration>(idle);
-  const accountKey = accountStatus === "authenticated" ? account?.id : undefined;
   const previewSearch = process.env.NODE_ENV === "development" ? locationSearch : "";
   const previewEligible = accountStatus === "authenticated" || accountStatus === "authenticated-unavailable";
   const preview = previewEligible ? getDevelopmentZpPreview(previewSearch) : undefined;
@@ -68,11 +73,15 @@ export function ZpHydrationProvider({ children }: Readonly<{ children: ReactNode
     const controller = new AbortController();
     void (async () => {
       try {
-        const response = await fetch("/api/account/zp", { cache: "no-store", credentials: "same-origin", signal: controller.signal });
-        const raw: unknown = await response.json().catch(() => undefined), data = parseZpResponse(raw);
-        if (!response.ok || !data) throw new Error("unavailable");
-        if (!controller.signal.aborted) setStored({ status: "ready", zp: data.zp, accountKey });
-      } catch { if (!controller.signal.aborted) setStored({ status: "error", zp: null, accountKey }); }
+        const result = await authenticatedJson("/api/account/zp", { cache: "no-store", credentials: "same-origin", signal: controller.signal });
+        result.apply(({ response, body: raw }) => {
+          const data = parseZpResponse(raw);
+          if (!response.ok || !data) throw new Error("unavailable");
+          if (!controller.signal.aborted) setStored({ status: "ready", zp: data.zp, accountKey });
+        });
+      } catch (error) {
+        if (!authenticatedRequestWasInvalidated(error) && !controller.signal.aborted) setStored({ status: "error", zp: null, accountKey });
+      }
     })();
     return () => controller.abort();
   }, [accountKey, accountStatus, preview]);

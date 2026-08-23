@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/Button";
+import { authenticatedJson, authenticatedRequestWasInvalidated } from "@/lib/auth/authenticatedRequests";
 import { parseRecipientRecentResponse, parseRecipientResolveResponse, parseRecipientSearchResponse, type PublicRecipient, type RecentPaymentIdentity } from "@/lib/recipients/contract";
 import { parsePaymentIntentResponse, type PaymentIntent } from "@/lib/paymentIntents/contract";
 import { canReachDirectoryHandoff, trustModeFor } from "@/lib/recipients/recipientState";
@@ -29,9 +30,8 @@ export function RecipientExperience({ onDirectorySelected, onUseAdvancedWallet, 
   useEffect(() => () => { searchController.current?.abort(); resolveController.current?.abort(); }, []);
   useEffect(() => {
     const controller = new AbortController();
-    fetch("/api/recipients/recent", { cache: "no-store", credentials: "same-origin", signal: controller.signal })
-      .then(async (response) => ({ response, raw: await response.json().catch(() => undefined) }))
-      .then(({ response, raw }) => { const parsed = parseRecipientRecentResponse(raw); if (response.ok && parsed) setRecents(parsed.recipients); })
+    authenticatedJson("/api/recipients/recent", { cache: "no-store", credentials: "same-origin", signal: controller.signal })
+      .then((result) => { result.apply(({ response, body: raw }) => { const parsed = parseRecipientRecentResponse(raw); if (response.ok && parsed) setRecents(parsed.recipients); }); })
       .catch(() => undefined);
     return () => controller.abort();
   }, []);
@@ -51,20 +51,21 @@ export function RecipientExperience({ onDirectorySelected, onUseAdvancedWallet, 
     const sequence = ++requestSequence.current;
     clearSelection(); setResult(undefined); setStatus("loading");
     try {
-      const response = await fetch("/api/recipients/search", {
+      const result = await authenticatedJson("/api/recipients/search", {
         method: "POST", credentials: "same-origin", cache: "no-store", signal: controller.signal,
         headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username: submitted }),
       });
-      const raw: unknown = await response.json().catch(() => undefined);
       if (controller.signal.aborted || sequence !== requestSequence.current) return;
-      if (response.status === 429) { setStatus("rate_limited"); return; }
-      if (response.status === 400) { setStatus("invalid"); return; }
-      const parsed = parseRecipientSearchResponse(raw);
-      if (!response.ok || !parsed) { setStatus("error"); return; }
-      if (parsed.recipients.length === 0) { setStatus("empty"); return; }
-      setResult(parsed.recipients[0]); setStatus("found");
-    } catch {
-      if (!controller.signal.aborted && sequence === requestSequence.current) setStatus("error");
+      result.apply(({ response, body: raw }) => {
+        if (response.status === 429) { setStatus("rate_limited"); return; }
+        if (response.status === 400) { setStatus("invalid"); return; }
+        const parsed = parseRecipientSearchResponse(raw);
+        if (!response.ok || !parsed) { setStatus("error"); return; }
+        if (parsed.recipients.length === 0) { setStatus("empty"); return; }
+        setResult(parsed.recipients[0]); setStatus("found");
+      });
+    } catch (error) {
+      if (!authenticatedRequestWasInvalidated(error) && !controller.signal.aborted && sequence === requestSequence.current) setStatus("error");
     }
   }
 
@@ -76,18 +77,19 @@ export function RecipientExperience({ onDirectorySelected, onUseAdvancedWallet, 
     const sequence = ++requestSequence.current;
     clearSelection(); setStatus("resolving");
     try {
-      const response = await fetch(`/api/recipients/${encodeURIComponent(recipient.accountId)}`, {
+      const result = await authenticatedJson(`/api/recipients/${encodeURIComponent(recipient.accountId)}`, {
         cache: "no-store", credentials: "same-origin", signal: controller.signal,
       });
-      const raw: unknown = await response.json().catch(() => undefined);
       if (controller.signal.aborted || sequence !== requestSequence.current) return;
-      const parsed = parseRecipientResolveResponse(raw);
-      if (!response.ok || !parsed || parsed.recipient.payabilityState !== "available") {
-        setStatus("selection_error"); return;
-      }
-      setSelected(parsed.recipient); setTrustAcknowledged(false); setStatus("found");
-    } catch {
-      if (!controller.signal.aborted && sequence === requestSequence.current) setStatus("selection_error");
+      result.apply(({ response, body: raw }) => {
+        const parsed = parseRecipientResolveResponse(raw);
+        if (!response.ok || !parsed || parsed.recipient.payabilityState !== "available") {
+          setStatus("selection_error"); return;
+        }
+        setSelected(parsed.recipient); setTrustAcknowledged(false); setStatus("found");
+      });
+    } catch (error) {
+      if (!authenticatedRequestWasInvalidated(error) && !controller.signal.aborted && sequence === requestSequence.current) setStatus("selection_error");
     }
   }
 
@@ -173,16 +175,18 @@ function DirectoryHandoff({ recipient, trustAcknowledged, onChange, onAdvanced, 
   async function submit(event: React.FormEvent) {
     event.preventDefault(); if (busy) return;
     if (!/^(?:0|[1-9]\d*)(?:\.\d{1,6})?$/.test(amount) || amount === "0") { setError("Enter a positive USDC amount with no more than 6 decimal places."); return; }
-    key.current ??= crypto.randomUUID(); setBusy(true); setError(undefined);
+    key.current ??= crypto.randomUUID(); setBusy(true); setError(undefined); let current = true;
     try {
-      const response = await fetch("/api/payment-intents", { method:"POST",credentials:"same-origin",
+      const result = await authenticatedJson("/api/payment-intents", { method:"POST",credentials:"same-origin",
         headers:{"Content-Type":"application/json","Idempotency-Key":key.current},
         body:JSON.stringify({recipientType:"payment_identity",recipientAccountId:recipient.accountId,amount,purpose:purpose.trim()||null,...(trustAcknowledged?{trustAcknowledgment:{acknowledged:true}}:{})}) });
-      const raw: unknown = await response.json().catch(() => undefined); const parsed=parsePaymentIntentResponse(raw);
-      if (!response.ok || !parsed) throw new Error(typeof raw === "object" && raw && "error" in raw && typeof raw.error === "string" ? raw.error : "Unable to create the payment intent.");
-      onIntentCreated(parsed.paymentIntent);
-    } catch (reason) { setError(reason instanceof Error ? reason.message : "Unable to create the payment intent."); }
-    finally { setBusy(false); }
+      result.apply(({ response, body: raw }) => {
+        const parsed=parsePaymentIntentResponse(raw);
+        if (!response.ok || !parsed) throw new Error(typeof raw === "object" && raw && "error" in raw && typeof raw.error === "string" ? raw.error : "Unable to create the payment intent.");
+        onIntentCreated(parsed.paymentIntent);
+      });
+    } catch (reason) { if (authenticatedRequestWasInvalidated(reason)) current = false; else setError(reason instanceof Error ? reason.message : "Unable to create the payment intent."); }
+    finally { if (current) setBusy(false); }
   }
   return <section className="rounded-[1.4rem] border border-brand-primary/25 bg-brand-primary/[0.07] p-5">
     <p className="text-xs font-medium uppercase tracking-[0.16em] text-brand-secondary">Recipient selected</p>

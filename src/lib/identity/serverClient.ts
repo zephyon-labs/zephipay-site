@@ -1,27 +1,29 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
-import { authConfigured, getAuth0 } from "@/lib/auth0";
+import { authConfigured } from "@/lib/auth0";
+import { REAUTHENTICATION_REQUIRED_MESSAGE } from "@/lib/auth/authFailure";
+import { isReauthenticationRequiredError } from "@/lib/auth/auth0Errors";
+import { ApplicationSessionUnavailableError, getApplicationAccessToken, getApplicationSession } from "@/lib/auth/serverAuthority";
 import { parseIdentityReadResponse, parseIdentityWriteResponse, type IdentityFailure, type IdentitySuccess } from "./contract";
 import { classifyIdentityFailure } from "./errors";
 
 export type IdentityApiResult = Readonly<{ status: number; body: IdentitySuccess | IdentityFailure }>;
 export async function callIdentityApi(method: "GET" | "PUT", body?: unknown): Promise<IdentityApiResult> {
   if (!authConfigured()) return failure(503, "NOT_CONFIGURED", "Payment Identity is not configured.");
-  const auth0 = getAuth0();
-  if (!await auth0.getSession()) return failure(401, "AUTHENTICATION_REQUIRED", "Sign in is required.");
+  if (!await getApplicationSession()) return reauthenticationRequired();
   const backendUrl = process.env.ZEPHIPAY_BACKEND_URL?.trim(); const audience = process.env.AUTH0_AUDIENCE?.trim();
   if (!backendUrl || !audience) return failure(503, "NOT_CONFIGURED", "Payment Identity is not configured.");
   const requestId = randomUUID();
   try {
-    const { token } = await auth0.getAccessToken({ audience, scope: "read:account" });
+    const { token } = await getApplicationAccessToken({ audience, scope: "read:account" });
     const response = await fetch(new URL("/api/account/identity", backendUrl), { method, headers: { Accept: "application/json", Authorization: `Bearer ${token}`,
       "X-Request-Id": requestId, ...(body === undefined ? {} : { "Content-Type": "application/json" }) }, body: body === undefined ? undefined : JSON.stringify(body), cache: "no-store", signal: AbortSignal.timeout(5_000) });
     if (!response.headers.get("content-type")?.toLowerCase().includes("application/json")) return unavailable(requestId, response.status);
     const raw: unknown = await response.json().catch(() => undefined);
-    if (!response.ok) return normalizeError(response.status, raw, requestId);
+    if (!response.ok) return response.status === 401 ? reauthenticationRequired() : normalizeError(response.status, raw, requestId);
     const parsed = method === "GET" ? parseIdentityReadResponse(raw) : parseIdentityWriteResponse(raw);
     return parsed ? { status: response.status, body: parsed } : unavailable(requestId, response.status);
-  } catch { return unavailable(requestId); }
+  } catch (error) { return isReauthenticationRequiredError(error) || error instanceof ApplicationSessionUnavailableError ? reauthenticationRequired() : unavailable(requestId); }
 }
 
 function normalizeError(status: number, value: unknown, requestId: string): IdentityApiResult {
@@ -35,5 +37,6 @@ function unavailable(requestId: string, upstreamStatus?: number) {
   console.warn("Payment Identity authoritative read failed.", { requestId, category: "TEMPORARILY_UNAVAILABLE", ...(upstreamStatus ? { upstreamStatus } : {}) });
   return failure(503, "TEMPORARILY_UNAVAILABLE", "Payment Identity is temporarily unavailable.");
 }
+function reauthenticationRequired(): IdentityApiResult { return failure(401, "REAUTHENTICATION_REQUIRED", REAUTHENTICATION_REQUIRED_MESSAGE); }
 function failure(status: number, code: IdentityFailure["code"], error: string): IdentityApiResult { return { status, body: { ok: false, code, error } }; }
 function record(value: unknown): value is Record<string, unknown> { return typeof value === "object" && value !== null && !Array.isArray(value); }

@@ -2,13 +2,12 @@ import "server-only";
 
 import { Auth0Client } from "@auth0/nextjs-auth0/server";
 
+import { AUTH_SESSION_ABSOLUTE_DURATION_SECONDS, AUTH_SESSION_COOKIE_NAME, authorizationScope, removeRefreshCapability } from "@/lib/auth/sessionSafety";
+import { AUTH0_SDK_ROUTES } from "@/lib/auth/authRouteSurface";
+
 const required = ["AUTH0_DOMAIN", "AUTH0_CLIENT_ID", "AUTH0_CLIENT_SECRET", "AUTH0_SECRET", "APP_BASE_URL", "AUTH0_AUDIENCE"] as const;
 
 export const paymentScopes = "read:payments write:payments";
-
-function authorizationScope(): string {
-  return `${process.env.AUTH0_SCOPE?.trim() || "openid profile email read:account"} ${paymentScopes}`;
-}
 
 export function authConfigured(): boolean {
   return required.every((name) => Boolean(process.env[name]?.trim()));
@@ -21,17 +20,19 @@ export function getAuth0(): Auth0Client {
   client ??= new Auth0Client({
     authorizationParameters: {
       audience: process.env.AUTH0_AUDIENCE,
-      scope: authorizationScope(),
+      scope: authorizationScope(process.env.AUTH0_SCOPE, paymentScopes),
     },
     appBaseUrl: process.env.APP_BASE_URL,
     signInReturnToPath: "/personal",
     enableAccessTokenEndpoint: false,
+    enableConnectAccountEndpoint: false,
+    routes: AUTH0_SDK_ROUTES,
+    beforeSessionSaved: removeRefreshCapability,
     tokenRefreshBuffer: 60,
     session: {
-      rolling: true,
-      inactivityDuration: 8 * 60 * 60,
-      absoluteDuration: 7 * 24 * 60 * 60,
-      cookie: { sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/" },
+      rolling: false,
+      absoluteDuration: AUTH_SESSION_ABSOLUTE_DURATION_SECONDS,
+      cookie: { name: AUTH_SESSION_COOKIE_NAME, sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/" },
     },
   });
   return client;

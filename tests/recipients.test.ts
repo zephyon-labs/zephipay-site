@@ -86,8 +86,9 @@ describe("recipient BFF and UI invariants", () => {
     const search = await source("src/app/api/recipients/search/route.ts");
     const resolve = await source("src/app/api/recipients/[accountId]/route.ts");
     const response = await source("src/lib/recipients/routeResponse.ts");
-    assert.match(client, /import "server-only"/); assert.match(client, /getSession\(\)/);
-    assert.match(client, /getAccessToken\(\{ audience, scope: "read:account" \}\)/);
+    assert.match(client, /import "server-only"/); assert.match(client, /getApplicationSession\(\)/);
+    assert.match(client, /getApplicationAccessToken\(\{ audience, scope: "read:account" \}\)/);
+    assert.match(client, /recipientReauthenticationRequired/);
     assert.match(client, /Authorization: `Bearer \$\{token\}`/); assert.match(client, /AbortSignal\.timeout\(5_000\)/);
     assert.match(client, /cache: "no-store"/); assert.doesNotMatch(client, /token[^\n]*body/);
     assert.match(search, /hasTrustedOrigin/); assert.match(search, /parseRecipientSearchInput/);

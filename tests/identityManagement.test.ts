@@ -38,7 +38,7 @@ describe("Economic Identity site contract", () => {
     const client = await readFile(new URL("../src/lib/identity/serverClient.ts", import.meta.url), "utf8");
     const errors = await readFile(new URL("../src/lib/identity/errors.ts", import.meta.url), "utf8");
     assert.match(route, /hasTrustedOrigin\(request\)/); assert.match(route, /parseIdentityWriteInput/); assert.match(route, /private, no-store/);
-    assert.match(client, /getSession\(\)/); assert.match(client, /getAccessToken/); assert.match(client, /AbortSignal\.timeout\(5_000\)/);
+    assert.match(client, /getApplicationSession\(\)/); assert.match(client, /getApplicationAccessToken/); assert.match(client, /REAUTHENTICATION_REQUIRED/); assert.match(client, /AbortSignal\.timeout\(5_000\)/);
     assert.match(client, /cache: "no-store"/); assert.match(errors, /USERNAME_UNAVAILABLE/); assert.match(errors, /VERSION_CONFLICT/);
     assert.doesNotMatch(route, /Authorization/);
   });
@@ -46,7 +46,7 @@ describe("Economic Identity site contract", () => {
   it("provides the approved workspace, accessibility, trust copy, and authority boundaries", async () => {
     const page = await readFile(new URL("../src/app/personal/identity/page.tsx", import.meta.url), "utf8");
     const ui = await readFile(new URL("../src/components/product/personal/IdentityInterface.tsx", import.meta.url), "utf8");
-    assert.match(page, /getSession\(\)/); assert.match(page, /returnTo=%2Fpersonal%2Fidentity/);
+    assert.match(page, /getApplicationSession\(\)/); assert.match(page, /SignedOutProtectedPage returnTo="\/personal\/identity"/);
     for (const phrase of ["Create your Payment Identity", "Save changes", "Reload latest", "You have unsaved changes", "Identity verification has not been completed", "Verification incomplete", "Identity verified", "Identity restricted", "Available for payments", "Not currently available", "Payment availability restricted", "Verified does not mean public", "verification onboarding is not yet available in this beta", "Authentication, email verification, and beta authorization are not KYC"]) assert.match(ui, new RegExp(phrase));
     assert.match(ui, /<fieldset>/); assert.match(ui, /aria-live="polite"/); assert.match(ui, /aria-invalid/); assert.match(ui, /document\.getElementById\(first\)\?\.focus/);
     assert.doesNotMatch(ui, /Trust Score|Zephyon Trust Score|Verify now|wallet address|actor subject|transaction history/iu);

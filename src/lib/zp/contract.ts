@@ -7,7 +7,7 @@ export const ZP_MILESTONE_LABELS: Readonly<Record<ZpMilestone, string>> = {
 export type ZpPendingMilestone = Readonly<{ milestone: ZpMilestone; dimension: "SENT" | "RECEIVED"; current: string; target: string; progressPercent: number }>;
 export type ZpSummary = Readonly<{ totalPoints: string; sentCount: string; receivedCount: string; policyVersion: number; unlockedMilestones: readonly ZpMilestone[]; pendingMilestones: readonly ZpPendingMilestone[] }>;
 export type ZpSuccess = Readonly<{ ok: true; zp: ZpSummary; requestId: string }>;
-export type ZpFailure = Readonly<{ ok: false; code: "AUTHENTICATION_REQUIRED" | "NOT_CONFIGURED" | "TEMPORARILY_UNAVAILABLE"; error: string }>;
+export type ZpFailure = Readonly<{ ok: false; code: "AUTHENTICATION_REQUIRED" | "REAUTHENTICATION_REQUIRED" | "NOT_CONFIGURED" | "TEMPORARILY_UNAVAILABLE"; error: string }>;
 
 const DECIMAL = /^(?:0|[1-9]\d*)$/;
 export function parseZpResponse(value: unknown): ZpSuccess | undefined {

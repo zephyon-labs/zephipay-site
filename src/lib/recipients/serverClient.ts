@@ -2,9 +2,11 @@ import "server-only";
 
 import { randomUUID } from "node:crypto";
 
-import { authConfigured, getAuth0 } from "@/lib/auth0";
+import { authConfigured } from "@/lib/auth0";
+import { isReauthenticationRequiredError } from "@/lib/auth/auth0Errors";
+import { ApplicationSessionUnavailableError, getApplicationAccessToken, getApplicationSession } from "@/lib/auth/serverAuthority";
 import { parseRecipientRecentResponse, parseRecipientResolveResponse, parseRecipientSearchResponse, type RecipientRecentSuccess, type RecipientResolveSuccess, type RecipientSearchSuccess } from "./contract";
-import { normalizeRecipientError, recipientFailure, type SafeRecipientError } from "./errors";
+import { normalizeRecipientError, recipientFailure, recipientReauthenticationRequired, type SafeRecipientError } from "./errors";
 
 export type RecipientApiResult = Readonly<{
   status: number;
@@ -13,7 +15,7 @@ export type RecipientApiResult = Readonly<{
 
 export async function requireRecipientSession(): Promise<RecipientApiResult | undefined> {
   if (!authConfigured()) return recipientFailure(503, "Recipient search is not configured.");
-  return await getAuth0().getSession() ? undefined : recipientFailure(401, "Sign in is required.");
+  return await getApplicationSession() ? undefined : recipientReauthenticationRequired();
 }
 
 export async function callRecipientApi(input: Readonly<{
@@ -24,13 +26,12 @@ export async function callRecipientApi(input: Readonly<{
   body?: unknown;
 }>): Promise<RecipientApiResult> {
   if (!authConfigured()) return recipientFailure(503, "Recipient search is not configured.");
-  const auth0 = getAuth0();
-  if (!await auth0.getSession()) return recipientFailure(401, "Sign in is required.");
+  if (!await getApplicationSession()) return recipientReauthenticationRequired();
   const backendUrl = process.env.ZEPHIPAY_BACKEND_URL?.trim();
   const audience = process.env.AUTH0_AUDIENCE?.trim();
   if (!backendUrl || !audience) return recipientFailure(503, "Recipient search is not configured.");
   try {
-    const { token } = await auth0.getAccessToken({ audience, scope: "read:account" });
+    const { token } = await getApplicationAccessToken({ audience, scope: "read:account" });
     const response = await fetch(new URL(input.path, backendUrl), {
       method: input.method,
       headers: {
@@ -46,10 +47,11 @@ export async function callRecipientApi(input: Readonly<{
       return recipientFailure(503, "Recipient search is temporarily unavailable.");
     }
     const raw: unknown = await response.json().catch(() => undefined);
-    if (!response.ok) return normalizeRecipientError(response.status);
+    if (!response.ok) return response.status === 401 ? recipientReauthenticationRequired() : normalizeRecipientError(response.status);
     const parsed = input.response === "search" ? parseRecipientSearchResponse(raw) : input.response === "resolve" ? parseRecipientResolveResponse(raw) : parseRecipientRecentResponse(raw);
     return parsed ? { status: response.status, body: parsed } : recipientFailure(503, "Recipient search is temporarily unavailable.");
-  } catch {
+  } catch (error) {
+    if (isReauthenticationRequiredError(error) || error instanceof ApplicationSessionUnavailableError) return recipientReauthenticationRequired();
     return recipientFailure(503, "Recipient search is temporarily unavailable.");
   }
 }

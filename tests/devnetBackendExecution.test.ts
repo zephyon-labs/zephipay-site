@@ -23,13 +23,14 @@ test("BFF forwards only the exact authenticated Devnet contract",async()=>{
   const post=await source("src/app/api/payment-intents/[id]/devnet/execute/route.ts"),get=await source("src/app/api/payment-intents/[id]/devnet/execution/route.ts"),proxy=await source("src/lib/paymentIntents/backendProxy.ts");
   assert.match(post,/hasTrustedOrigin/);assert.match(post,/requestHash/);assert.match(post,/expectedVersion/);assert.match(post,/mode/);assert.match(post,/solana-devnet/);
   for(const forbidden of["mint","decimals","provider","signer","blockhash","commitmentId","signedTransaction"])assert.doesNotMatch(post,new RegExp(forbidden));
-  assert.match(get,/callExecutionApi/);assert.match(proxy,/getAccessToken/);assert.match(proxy,/cache:"no-store"/);
+  assert.match(get,/callExecutionApi/);assert.match(proxy,/getApplicationAccessToken/);assert.match(proxy,/cache: "no-store"/);
 });
 
 test("UI posts once and recovers uncertain outcomes through GET only",async()=>{
   const workspace=await source("src/components/product/personal/PaymentIntentWorkspace.tsx"),bar=await source("src/components/product/personal/DevnetTestBar.tsx");
   assert.match(workspace,/devnetPostAttempted\.current=true/);assert.match(workspace,/will not submit again/);assert.match(workspace,/setTimeout\(poll,2500\)/);assert.match(workspace,/setTimeout\(poll,4000\)/);assert.match(workspace,/c\.abort\(\)/);
-  const uncertain=workspace.slice(workspace.indexOf("catch{setError(\"The execution response was uncertain"),workspace.indexOf("const raw:unknown",workspace.indexOf("catch{setError(\"The execution response was uncertain")));
+  const uncertainStart=workspace.indexOf("setError(\"The execution response was uncertain");
+  const uncertain=workspace.slice(uncertainStart,workspace.indexOf("const {response,body:raw}=result",uncertainStart));
   assert.match(uncertain,/readDevnetExecution/);assert.doesNotMatch(uncertain,/method:"POST"/);
   assert.match(workspace,/unknown_reconciliation_required/);assert.match(workspace,/checking Solana before taking any further action/);assert.match(workspace,/currently disabled or unavailable/);assert.match(workspace,/not downgraded/);
   assert.match(bar,/does not sign this payment/);assert.match(bar,/solanaExplorerTransactionUrl/);assert.doesNotMatch(`${workspace}\n${bar}`,/sendTransaction|signMessage|signTransaction|mainnet-beta/);

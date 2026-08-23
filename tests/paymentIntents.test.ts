@@ -73,8 +73,9 @@ describe("BFF and UI security invariants", () => {
     const client = await source("src/lib/paymentIntents/serverClient.ts");
     const auth = await source("src/lib/auth0.ts");
     assert.match(client, /import "server-only"/);
-    assert.match(client, /getSession\(\)/);
-    assert.match(client, /getAccessToken\(\{ audience, scope: paymentScopes \}\)/);
+    assert.match(client, /getApplicationSession\(\)/);
+    assert.match(client, /getApplicationAccessToken\(\{ audience, scope: paymentScopes \}\)/);
+    assert.match(client, /reauthenticationRequiredPaymentFailure/);
     assert.match(client, /Authorization: `Bearer \$\{token\}`/);
     assert.match(client, /AbortSignal\.timeout\(5_000\)/);
     assert.match(client, /cache: "no-store"/);

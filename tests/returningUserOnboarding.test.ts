@@ -46,7 +46,7 @@ describe("returning-user and first-run lifecycle", () => {
   it("Try again makes a fresh uncached authoritative read without mutation", async () => {
     const identity = await source("src/components/product/personal/IdentityInterface.tsx");
     assert.match(identity, /async function load\(\)/);
-    assert.match(identity, /fetch\("\/api\/account\/identity", \{ cache: "no-store" \}\)/);
+    assert.match(identity, /authenticatedJson\("\/api\/account\/identity", \{ cache: "no-store", credentials: "same-origin" \}\)/);
     assert.match(identity, /<Action onClick=\{\(\) => void load\(\)\}>Try again<\/Action>/);
     const loadBody = identity.slice(identity.indexOf("async function load()"), identity.indexOf("useEffect("));
     assert.doesNotMatch(loadBody, /method: "PUT"|method: "POST"/);
@@ -54,12 +54,15 @@ describe("returning-user and first-run lifecycle", () => {
 
   it("recovers settlement and the same receipt after transient reads without another execute", async () => {
     const payment = await source("src/components/product/personal/PaymentIntentWorkspace.tsx");
+    const continuation = await source("src/lib/paymentIntents/authenticatedContinuation.ts");
     assert.match(payment, /setTimeout\(poll,4000\)/);
     assert.match(payment, /setTimeout\(recover,2000\)/);
-    assert.match(payment, /if\(parsed\.status==="settled"\)await readReceipt\(id,signal\)/);
+    assert.match(payment, /if\(parsed\.status==="settled"\)receiptRequest=readReceipt\(id,signal,result\.authority\)/);
+    assert.match(payment, /if\(receiptRequest\)await receiptRequest/);
     assert.match(payment, /if\(mutationInFlight\.current\)return/);
     assert.equal((payment.match(/\/execute`/g) ?? []).length, 2);
     assert.equal((payment.match(/\/devnet\/execute`/g) ?? []).length, 1);
+    assert.match(continuation, /confirmation\.followUpJson\(/);
     assert.doesNotMatch(payment, /\/api\/send/);
   });
 });

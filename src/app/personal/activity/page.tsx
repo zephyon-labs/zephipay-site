@@ -2,6 +2,7 @@ import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { AccountAwareBetaCta } from "@/components/auth/AccountAwareBetaCta";
+import { AuthenticatedBoundary } from "@/components/auth/AuthenticatedBoundary";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { AmbientBackground } from "@/components/marketing/AmbientBackground";
 import { ActivityInterfacePreview } from "@/components/product/personal";
@@ -177,7 +178,7 @@ export default function PersonalActivityPage() {
             </p>
           </div>
 
-          <ActivityInterfacePreview />
+          <AuthenticatedBoundary fallback={<p className="rounded-[2rem] border border-border-default bg-background/55 p-8 text-foreground-secondary">Sign in deliberately to view authoritative account activity.</p>}><ActivityInterfacePreview /></AuthenticatedBoundary>
         </Container>
       </Section>
 

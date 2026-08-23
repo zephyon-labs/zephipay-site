@@ -8,7 +8,7 @@ import { betaCtaState, type BetaCtaState } from "@/lib/betaCtaState";
 import { useAccountHydration } from "@/components/auth/AccountHydrationProvider";
 
 type LinkButtonProps = Extract<ButtonProps, { href: string }>;
-type Props = Omit<LinkButtonProps, "children" | "external" | "href"> & Readonly<{
+type Props = Omit<LinkButtonProps, "children" | "external" | "fullDocument" | "href"> & Readonly<{
   appearance?: "button" | "footer-link" | "custom-link";
   rightIcon?: ReactNode;
 }>;
@@ -29,12 +29,12 @@ export function AccountAwareBetaCta({
 
   if (appearance === "footer-link") {
     const className = "text-sm text-foreground-secondary transition-colors duration-200 hover:text-foreground";
-    return <Link className={className} href={href}>{label}</Link>;
+    return signedIn ? <Link className={className} href={href}>{label}</Link> : <a className={className} href={href}>{label}</a>;
   }
 
   if (appearance === "custom-link") {
-    return <Link className={buttonProps.className} href={href}>{label}{buttonProps.rightIcon}</Link>;
+    return signedIn ? <Link className={buttonProps.className} href={href}>{label}{buttonProps.rightIcon}</Link> : <a className={buttonProps.className} href={href}>{label}{buttonProps.rightIcon}</a>;
   }
 
-  return <Button {...buttonProps} href={href}>{label}</Button>;
+  return <Button {...buttonProps} href={href} fullDocument={!signedIn}>{label}</Button>;
 }

@@ -26,10 +26,13 @@ describe("legacy Personal workspace execution cleanup", () => {
     await assert.rejects(access(new URL("../src/lib/zephipay/client.ts", import.meta.url)));
   });
 
-  it("preserves Auth0 enforcement at the canonical handoff destination", async () => {
+  it("preserves local session enforcement before the deliberate Auth0 handoff", async () => {
     const page = await source("src/app/personal/send/page.tsx");
-    assert.match(page, /getAuth0\(\)\.getSession\(\)/);
-    assert.match(page, /redirect\("\/auth\/login\?returnTo=%2Fpersonal%2Fsend"\)/);
+    assert.match(page, /getApplicationSession\(\)/);
+    assert.match(page, /protectedRouteDecision\(Boolean\(session\), "\/personal\/send"\)/);
+    assert.match(page, /route\.kind === "local-signed-out-gate"/);
+    assert.match(page, /<SignedOutProtectedPage returnTo="\/personal\/send"/);
+    assert.doesNotMatch(page, /redirect\("\/auth\/login/);
   });
 });
 

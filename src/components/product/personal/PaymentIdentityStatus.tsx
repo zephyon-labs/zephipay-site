@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { IdentitySuccess } from "@/lib/identity/contract";
+import { authenticatedJson, authenticatedRequestWasInvalidated } from "@/lib/auth/authenticatedRequests";
 
 type State = "loading" | "configured" | "incomplete" | "unavailable";
 
@@ -9,13 +10,14 @@ export function PaymentIdentityStatus() {
   const [state, setState] = useState<State>("loading");
   useEffect(() => {
     const controller = new AbortController();
-    fetch("/api/account/identity", { cache: "no-store", credentials: "same-origin", signal: controller.signal })
-      .then(async (response) => {
-        const body: unknown = await response.json().catch(() => undefined);
-        if (!response.ok || !isSuccess(body)) return setState("unavailable");
-        setState(body.identity ? "configured" : "incomplete");
+    authenticatedJson("/api/account/identity", { cache: "no-store", credentials: "same-origin", signal: controller.signal })
+      .then((result) => {
+        result.apply(({ response, body }) => {
+          if (!response.ok || !isSuccess(body)) return setState("unavailable");
+          setState(body.identity ? "configured" : "incomplete");
+        });
       })
-      .catch(() => { if (!controller.signal.aborted) setState("unavailable"); });
+      .catch((error) => { if (!authenticatedRequestWasInvalidated(error) && !controller.signal.aborted) setState("unavailable"); });
     return () => controller.abort();
   }, []);
 

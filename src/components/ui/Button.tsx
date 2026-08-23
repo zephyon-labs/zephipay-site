@@ -38,6 +38,7 @@ type LinkButtonProps = SharedButtonProps &
   Omit<AnchorHTMLAttributes<HTMLAnchorElement>, keyof SharedButtonProps> & {
     href: string;
     external?: boolean;
+    fullDocument?: boolean;
     disabled?: boolean;
   };
 
@@ -118,6 +119,7 @@ export function Button(props: ButtonProps) {
     const {
       href,
       external = false,
+      fullDocument = false,
       disabled = false,
       ...anchorProps
     } = rest as LinkButtonProps;
@@ -131,14 +133,14 @@ export function Button(props: ButtonProps) {
       tabIndex: disabled ? -1 : anchorProps.tabIndex,
     };
 
-    if (external) {
+    if (external || fullDocument) {
       return (
         <a
           {...anchorProps}
           {...sharedLinkProps}
           href={href}
-          target={anchorProps.target ?? "_blank"}
-          rel={anchorProps.rel ?? "noreferrer"}
+          target={external ? anchorProps.target ?? "_blank" : anchorProps.target}
+          rel={external ? anchorProps.rel ?? "noreferrer" : anchorProps.rel}
         >
           <ButtonContent
             loading={loading}

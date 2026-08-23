@@ -48,7 +48,7 @@ describe("Zephyon account progression", () => {
     const provider = await source("src/components/auth/ZpHydrationProvider.tsx");
     assert.match(provider, /process\.env\.NODE_ENV !== "development"/);
     assert.match(provider, /useSyncExternalStore\(subscribeToLocation, currentSearch, serverSearch\)/);
-    assert.match(provider, /shouldRequestZp\(accountStatus, accountKey, preview\)[\s\S]*fetch\("\/api\/account\/zp"/);
+    assert.match(provider, /shouldRequestZp\(accountStatus, accountKey, preview\)[\s\S]*authenticatedJson\("\/api\/account\/zp"/);
   });
 
   it("renders authenticated populated ZP without losing bigint precision", () => {
@@ -135,17 +135,17 @@ describe("Zephyon account progression", () => {
 
   it("mounts only for authenticated Personal workspaces and uses the same-origin BFF", async () => {
     const [workspace, panel] = await Promise.all([source("src/components/marketing/personal-workspace/PersonalWorkspace.tsx"), source("src/components/product/personal/ZephyonProgressPanel.tsx")]);
-    assert.match(workspace, /authenticated \? <ZephyonProgressPanel \/> : null/);
+    assert.match(workspace, /authenticated \? <AuthenticatedBoundary><ZephyonProgressPanel \/><\/AuthenticatedBoundary> : null/);
     assert.equal((workspace.match(/<ZephyonProgressPanel \/>/g) ?? []).length, 1);
     const provider = await source("src/components/auth/ZpHydrationProvider.tsx");
     assert.doesNotMatch(panel, /fetch\(|\/api\/account\/zp/);
-    assert.match(provider, /fetch\("\/api\/account\/zp"/); assert.match(provider, /credentials: "same-origin"/); assert.match(provider, /cache: "no-store"/);
+    assert.match(provider, /authenticatedJson\("\/api\/account\/zp"/); assert.match(provider, /credentials: "same-origin"/); assert.match(provider, /cache: "no-store"/);
   });
 
   it("keeps the server boundary authenticated, uncached, bounded, and sanitized", async () => {
     const [route, client] = await Promise.all([source("src/app/api/account/zp/route.ts"), source("src/lib/zp/serverClient.ts")]);
     assert.match(route, /private, no-store/); assert.match(route, /callZpApi/); assert.doesNotMatch(route, /Authorization|ZEPHIPAY_BACKEND_URL/);
-    assert.match(client, /getSession\(\)/); assert.match(client, /getAccessToken/); assert.match(client, /Authorization: `Bearer \$\{token\}`/);
+    assert.match(client, /getApplicationSession\(\)/); assert.match(client, /getApplicationAccessToken/); assert.match(client, /REAUTHENTICATION_REQUIRED/); assert.match(client, /Authorization: `Bearer \$\{token\}`/);
     assert.match(client, /new URL\("\/api\/account\/zp", backendUrl\)/); assert.match(client, /AbortSignal\.timeout\(5_000\)/); assert.match(client, /cache: "no-store"/);
     assert.match(client, /ZP progress is temporarily unavailable/);
   });

@@ -1,7 +1,11 @@
-export type SafeRecipientError = Readonly<{ ok: false; error: string }>;
+export type SafeRecipientError = Readonly<{ ok: false; error: string; code?: "REAUTHENTICATION_REQUIRED" }>;
 
 export function recipientFailure(status: number, error: string): { status: number; body: SafeRecipientError } {
   return { status, body: { ok: false, error } };
+}
+
+export function recipientReauthenticationRequired(): { status: number; body: SafeRecipientError } {
+  return { status: 401, body: { ok: false, code: "REAUTHENTICATION_REQUIRED", error: "Your session has expired. Sign in again to continue." } };
 }
 
 export function normalizeRecipientError(status: number): { status: number; body: SafeRecipientError } {

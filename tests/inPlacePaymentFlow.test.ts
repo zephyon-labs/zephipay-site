@@ -28,7 +28,8 @@ describe("in-place Personal payment flow", () => {
   it("preserves backend-authoritative recipient resolution and trust", async () => {
     const recipient = await source("src/components/product/personal/PaymentComposeForm.tsx");
     assert.match(recipient, /\/api\/recipients\/search/);
-    assert.match(recipient, /\/api\/recipients\/\$\{encodeURIComponent\(found\.recipients\[0\]\.accountId\)\}/);
+    assert.match(recipient, /searchResult\.followUpJson\(`\/api\/recipients\/\$\{encodeURIComponent\(accountId\)\}/);
+    assert.match(recipient, /resolveResult\.apply\(/);
     assert.match(recipient, /trustModeForRecipient\(recipient\)/);
     assert.match(recipient, /trustAcknowledged/);
     assert.doesNotMatch(recipient, /localStorage|sessionStorage/);
@@ -68,11 +69,13 @@ describe("in-place Personal payment flow", () => {
     const page = await source("src/app/personal/page.tsx");
     const direct = await source("src/app/personal/send/page.tsx");
     const personal = await source("src/components/marketing/personal-workspace/PersonalWorkspace.tsx");
-    assert.match(page, /authConfigured\(\) && Boolean\(await getAuth0\(\)\.getSession\(\)\)/);
+    assert.match(page, /Boolean\(await getApplicationSession\(\)\)/);
     assert.match(page, /isPaymentIntentId\(rawIntent\)/);
-    assert.match(page, /<PersonalWorkspace authenticated=\{authenticated\} recoveryId=\{recoveryId\} \/>/);
+    assert.match(page, /<PersonalWorkspace recoveryId=\{recoveryId\} \/>/);
+    assert.match(personal, /useAccountHydration\(\)/);
     assert.match(personal, /\/auth\/login\?returnTo=%2Fpersonal%23personal-workspace/);
     assert.match(direct, /isPaymentIntentId/);
+    assert.match(direct, /<ProtectedAccountBoundary returnTo="\/personal\/send">/);
     assert.match(direct, /<PersonalSendExperience recoveryId=\{recoveryId\} \/>/);
   });
 });

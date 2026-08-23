@@ -115,7 +115,7 @@ describe("authenticated header progression status", () => {
     assert.match(provider, /resolveZpHydration\(accountStatus, accountKey, stored, preview\)/);
     assert.doesNotMatch(provider, /setTimeout|clearTimeout/);
     assert.match(provider, /window\.addEventListener\("popstate", onChange\)/);
-    assert.equal((`${provider}\n${panel}`.match(/fetch\("\/api\/account\/zp"/g) ?? []).length, 1);
+    assert.equal((`${provider}\n${panel}`.match(/authenticatedJson\("\/api\/account\/zp"/g) ?? []).length, 1);
     assert.doesNotMatch(panel, /fetch\(|parseZpResponse/);
     assert.doesNotMatch(provider, /setInterval|poll|Authorization|ZEPHIPAY_BACKEND_URL/);
   });

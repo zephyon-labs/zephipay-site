@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import type { Discoverability, IdentityFailure, IdentitySuccess, PaymentIdentity, PayabilityState, VerificationState } from "@/lib/identity/contract";
 import { ACCOUNT_HYDRATION_REFRESH_EVENT } from "@/components/auth/AccountHydrationProvider";
+import { authenticatedJson, authenticatedRequestWasInvalidated } from "@/lib/auth/authenticatedRequests";
 
 type FormState = { username: string; displayName: string; avatarUrl: string; discoverability: Discoverability };
 type FieldErrors = Partial<Record<"username" | "displayName" | "avatarUrl", string>>;
@@ -19,12 +20,17 @@ export function IdentityInterface({ emailVerified }: { emailVerified: boolean })
 
   async function load() {
     setLoading(true); setLoadError(""); setConflict(false);
+    let current = true;
     try {
-      const response = await fetch("/api/account/identity", { cache: "no-store" }); const body: unknown = await response.json().catch(() => undefined);
-      if (!response.ok || !isSuccess(body)) { setLoadError(failureMessage(body)); return; }
-      setIdentity(body.identity); setForm(body.identity ? toForm(body.identity) : EMPTY); setEditing(false); setSetupStarted(false); setNotice("");
-    } catch { setLoadError("Payment Identity is temporarily unavailable. Try again."); }
-    finally { setLoading(false); }
+      const result = await authenticatedJson("/api/account/identity", { cache: "no-store", credentials: "same-origin" });
+      result.apply(({ response, body }) => {
+        if (!response.ok || !isSuccess(body)) { setLoadError(failureMessage(body)); return; }
+        setIdentity(body.identity); setForm(body.identity ? toForm(body.identity) : EMPTY); setEditing(false); setSetupStarted(false); setNotice("");
+      });
+    } catch (error) {
+      if (authenticatedRequestWasInvalidated(error)) current = false;
+      else setLoadError("Payment Identity is temporarily unavailable. Try again.");
+    } finally { if (current) setLoading(false); }
   }
   useEffect(() => { const timer = window.setTimeout(() => void load(), 0); return () => window.clearTimeout(timer); }, []);
 
@@ -35,18 +41,24 @@ export function IdentityInterface({ emailVerified }: { emailVerified: boolean })
     const first = nextErrors.username ? "identity-username" : nextErrors.displayName ? "identity-display-name" : nextErrors.avatarUrl ? "identity-avatar" : undefined;
     if (first) { document.getElementById(first)?.focus(); return; }
     setSaving(true);
+    let current = true;
     try {
-      const response = await fetch("/api/account/identity", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({
+      const result = await authenticatedJson("/api/account/identity", { method: "PUT", credentials: "same-origin", headers: { "Content-Type": "application/json" }, body: JSON.stringify({
         username: form.username.trim(), displayName: form.displayName.trim().replace(/\s+/g, " "), ...(form.avatarUrl.trim() ? { avatarUrl: form.avatarUrl.trim() } : {}),
         discoverability: form.discoverability, ...(identity ? { expectedVersion: identity.version } : {}),
       }) });
-      const body: unknown = await response.json().catch(() => undefined);
-      if (response.ok && isSuccess(body) && body.identity) { setIdentity(body.identity); setForm(toForm(body.identity)); setEditing(false); setNotice("Your Payment Identity was saved."); window.dispatchEvent(new Event(ACCOUNT_HYDRATION_REFRESH_EVENT)); return; }
-      if (isFailure(body) && body.code === "USERNAME_UNAVAILABLE") { setErrors({ username: "That username is unavailable. Choose another." }); document.getElementById("identity-username")?.focus(); }
-      else if (isFailure(body) && body.code === "VERSION_CONFLICT") { setConflict(true); setNotice("Your Payment Identity changed in another session. Reload the latest version before saving again."); }
-      else setNotice(failureMessage(body));
-    } catch { setNotice("Payment Identity is temporarily unavailable. Your changes were not saved."); }
-    finally { setSaving(false); }
+      let saved = false;
+      result.apply(({ response, body }) => {
+        if (response.ok && isSuccess(body) && body.identity) { saved = true; setIdentity(body.identity); setForm(toForm(body.identity)); setEditing(false); setNotice("Your Payment Identity was saved."); return; }
+        if (isFailure(body) && body.code === "USERNAME_UNAVAILABLE") { setErrors({ username: "That username is unavailable. Choose another." }); document.getElementById("identity-username")?.focus(); }
+        else if (isFailure(body) && body.code === "VERSION_CONFLICT") { setConflict(true); setNotice("Your Payment Identity changed in another session. Reload the latest version before saving again."); }
+        else setNotice(failureMessage(body));
+      });
+      if (saved) result.authority.run(() => { window.dispatchEvent(new Event(ACCOUNT_HYDRATION_REFRESH_EVENT)); });
+    } catch (error) {
+      if (authenticatedRequestWasInvalidated(error)) current = false;
+      else setNotice("Payment Identity is temporarily unavailable. Your changes were not saved.");
+    } finally { if (current) setSaving(false); }
   }
 
   if (loading) return <IdentityPageState emailVerified={emailVerified}><WorkspaceShell><p role="status" className="p-8 text-sm text-foreground-secondary">Loading your Payment Identity…</p></WorkspaceShell></IdentityPageState>;

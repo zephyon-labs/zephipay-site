@@ -48,7 +48,8 @@ describe("Personal Send open-beta presentation", () => {
       source("src/components/product/personal/PaymentComposeForm.tsx"),
       source("src/lib/paymentIntents/backendProxy.ts"),
     ]);
-    assert.match(workspace, /if\(parsed\.status==="settled"\)await readReceipt\(id,signal\)/);
+    assert.match(workspace, /if\(parsed\.status==="settled"\)receiptRequest=readReceipt\(id,signal,result\.authority\)/);
+    assert.match(workspace, /if\(receiptRequest\)await receiptRequest/);
     assert.match(workspace, /execution\?\.status!=="settled"&&devnetExecution\?\.status!=="settled"/);
     assert.doesNotMatch(executable.join("\n"), /\/api\/send/);
   });

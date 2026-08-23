@@ -25,10 +25,13 @@ describe("shared authenticated account hydration", () => {
       source("src/components/auth/AccountSession.tsx"),
     ]);
     assert.match(provider, /cache: "no-store"/);
-    assert.match(provider, /activeRequest\.current\?\.abort\(\)/);
-    assert.match(provider, /setAccount\(null\)[\s\S]*setStatus\("signed-out"\)/);
+    assert.match(provider, /hydrationFence\.current\.invalidate\(\)/);
+    assert.match(provider, /hydrationFence\.current\.mayCommit\(ticket, snapshotRef\.current\)/);
+    assert.match(provider, /commit\(\{ type: "signed-out" \}\)/);
+    assert.match(provider, /commit\(\{ type: "logout" \}\)/);
+    assert.match(provider, /authenticatedRequests\.invalidate\(\)/);
     assert.match(provider, /ACCOUNT_HYDRATION_REFRESH_EVENT/);
-    assert.match(session, /onSubmit=\{clear\}/);
+    assert.match(session, /onSubmit=\{beginLogout\}/);
     assert.doesNotMatch(provider, /localStorage|sessionStorage|email|token|cookie/i);
   });
 
@@ -44,8 +47,9 @@ describe("shared authenticated account hydration", () => {
     assert.match(provider, /"authenticated-unavailable"/);
     assert.match(session, /status === "loading"[\s\S]*Checking sign-in/);
     assert.match(session, /status === "authenticated-unavailable"[\s\S]*Signed in · Account details unavailable/);
-    const loading = session.slice(session.indexOf('if (status === "loading")'), session.indexOf('if (status === "authenticated-unavailable")'));
+    const loading = session.slice(session.indexOf('if (status === "loading")'), session.indexOf('if (status === "reauthentication-required")'));
     assert.doesNotMatch(loading, /Sign in|Create account/);
+    assert.match(session, /status === "reauthentication-required"[\s\S]*Session expired[\s\S]*Sign in again/);
   });
 
   it("keeps Payment Identity authoritative and refreshes presentation only after a successful mutation", async () => {
@@ -56,12 +60,12 @@ describe("shared authenticated account hydration", () => {
       source("src/lib/identity/serverClient.ts"),
       source("src/components/product/personal/PaymentIntentWorkspace.tsx"),
     ]);
-    assert.match(identity, /fetch\("\/api\/account\/identity"/);
+    assert.match(identity, /authenticatedJson\("\/api\/account\/identity"/);
     assert.match(identity, /window\.dispatchEvent\(new Event\(ACCOUNT_HYDRATION_REFRESH_EVENT\)\)/);
     assert.match(identityRoute, /callIdentityApi\("PUT"/);
     assert.match(identityClient, /Authorization: `Bearer \$\{token\}`/);
     assert.match(payment, /\/api\/payment-intents/);
-    assert.doesNotMatch(provider, /authorize|scope|payment-intents|execute|receipt|identity\/route/i);
+    assert.doesNotMatch(provider, /Authorization:|paymentScopes|\/api\/payment-intents|\/execute|\/receipt|identity\/route/i);
   });
 
   it("leaves email verification as server-session presentation, separate from account ownership", async () => {

@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 
+import { AuthenticatedBoundary } from "@/components/auth/AuthenticatedBoundary";
+import { useAccountHydration } from "@/components/auth/AccountHydrationProvider";
 import { ActivityInterfacePreview } from "@/components/product/personal";
 import { PaymentIntentWorkspace } from "@/components/product/personal/PaymentIntentWorkspace";
 import { PaymentRequestWorkspace } from "@/components/product/personal/PaymentRequestWorkspace";
@@ -27,8 +29,11 @@ function EmptyState({ title, description }: { title: string; description: string
   </div>;
 }
 
-export function PersonalWorkspace({ className, authenticated = false, recoveryId }: PersonalWorkspaceProps) {
+export function PersonalWorkspace({ className, recoveryId }: PersonalWorkspaceProps) {
   const [activeMode, setActiveMode] = useState<MoneyMode>("send");
+  const { boundaryKey, status } = useAccountHydration();
+  const authenticated = Boolean(boundaryKey);
+  const signInAvailable = status === "signed-out" || status === "reauthentication-required";
 
   return <div className={cn("overflow-hidden rounded-[2rem] border border-border-default bg-surface-glass shadow-[var(--shadow-medium)] backdrop-blur-2xl", className)}>
     <div className="grid gap-px border-b border-border-subtle bg-border-subtle md:grid-cols-3">
@@ -43,10 +48,10 @@ export function PersonalWorkspace({ className, authenticated = false, recoveryId
       </div>)}
     </div>
 
-    {authenticated ? <ZephyonProgressPanel /> : null}
+    {authenticated ? <AuthenticatedBoundary><ZephyonProgressPanel /></AuthenticatedBoundary> : null}
 
     <div className="p-6 sm:p-8">
-      {authenticated ? <PaymentIdentityStatus /> : null}
+      {authenticated ? <AuthenticatedBoundary><PaymentIdentityStatus /></AuthenticatedBoundary> : null}
       <div className="flex flex-col gap-5 border-b border-border-subtle pb-7 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-brand-secondary">Personal</p>
@@ -60,23 +65,23 @@ export function PersonalWorkspace({ className, authenticated = false, recoveryId
 
       <div className="py-8">
         {activeMode === "send" ? authenticated
-          ? <PaymentIntentWorkspace inPlace recoveryId={recoveryId} />
+          ? <AuthenticatedBoundary><PaymentIntentWorkspace inPlace recoveryId={recoveryId} /></AuthenticatedBoundary>
           : <section className="rounded-[1.5rem] border border-border-default bg-background/55 p-6">
               <p className="text-xs font-medium uppercase tracking-[0.16em] text-brand-secondary">Authenticated beta</p>
-              <h3 className="mt-3 text-xl font-semibold">Sign in before entering payment details</h3>
-              <p className="mt-3 max-w-2xl text-sm leading-6 text-foreground-secondary">Payment Identity resolution, review, execution, receipts, and activity use your authenticated ZephiPay account.</p>
-              <Button className="mt-6" href="/auth/login?returnTo=%2Fpersonal%23personal-workspace">Sign in to send</Button>
+              <h3 className="mt-3 text-xl font-semibold">{signInAvailable ? "Sign in before entering payment details" : "Account state is unavailable"}</h3>
+              <p className="mt-3 max-w-2xl text-sm leading-6 text-foreground-secondary">No payment, recipient, receipt, or account state is shown until the canonical account is authoritative.</p>
+              {signInAvailable ? <Button className="mt-6" href="/auth/login?returnTo=%2Fpersonal%23personal-workspace" fullDocument>Sign in to send</Button> : null}
             </section>
           : null}
         {activeMode === "request" ? authenticated
-          ? <PaymentRequestWorkspace />
-          : <section className="rounded-[1.5rem] border border-border-default bg-background/55 p-6"><p className="text-xs font-medium uppercase tracking-[0.16em] text-brand-secondary">Authenticated beta</p><h3 className="mt-3 text-xl font-semibold">Sign in to request money</h3><p className="mt-3 max-w-2xl text-sm leading-6 text-foreground-secondary">Requests are created from your authenticated ZephiPay account.</p><Button className="mt-6" href="/auth/login?returnTo=%2Fpersonal%23personal-workspace">Sign in to request</Button></section>
+          ? <AuthenticatedBoundary><PaymentRequestWorkspace /></AuthenticatedBoundary>
+          : <section className="rounded-[1.5rem] border border-border-default bg-background/55 p-6"><p className="text-xs font-medium uppercase tracking-[0.16em] text-brand-secondary">Authenticated beta</p><h3 className="mt-3 text-xl font-semibold">{signInAvailable ? "Sign in to request money" : "Account state is unavailable"}</h3><p className="mt-3 max-w-2xl text-sm leading-6 text-foreground-secondary">No request or recipient state is shown until the canonical account is authoritative.</p>{signInAvailable ? <Button className="mt-6" href="/auth/login?returnTo=%2Fpersonal%23personal-workspace" fullDocument>Sign in to request</Button> : null}</section>
           : null}
         {activeMode === "transfer" ? <EmptyState title="Transfer is not available in this beta." description="Transfers between your ZephiPay-linked accounts will be available after owned accounts and balances are supported." /> : null}
       </div>
 
       <div id="personal-activity" className="scroll-mt-32 border-t border-border-subtle pt-8">
-        {authenticated ? <><ActivityInterfacePreview /><PaymentRequestActivity /></> : <EmptyState title="Sign in to view activity." description="Authoritative payment history is available after authentication." />}
+        {authenticated ? <AuthenticatedBoundary><ActivityInterfacePreview /><PaymentRequestActivity /></AuthenticatedBoundary> : <EmptyState title={signInAvailable ? "Sign in to view activity." : "Account activity is unavailable."} description="Authoritative payment and request history is shown only for the current canonical account." />}
       </div>
     </div>
   </div>;

@@ -2,9 +2,11 @@ import "server-only";
 
 import { randomUUID } from "node:crypto";
 
-import { authConfigured, getAuth0, paymentScopes } from "@/lib/auth0";
+import { authConfigured, paymentScopes } from "@/lib/auth0";
+import { isReauthenticationRequiredError } from "@/lib/auth/auth0Errors";
+import { ApplicationSessionUnavailableError, getApplicationAccessToken, getApplicationSession } from "@/lib/auth/serverAuthority";
 import { parsePaymentIntentResponse, type PaymentIntentSuccess } from "./contract";
-import { failure, normalizePaymentError } from "./errors";
+import { failure, normalizePaymentError, reauthenticationRequiredPaymentFailure } from "./errors";
 
 export type PaymentIntentApiResult = Readonly<{
   status: number;
@@ -13,7 +15,7 @@ export type PaymentIntentApiResult = Readonly<{
 
 export async function requirePaymentSession(): Promise<PaymentIntentApiResult | undefined> {
   if (!authConfigured()) return failure(503, "Payment service is not configured.");
-  return await getAuth0().getSession() ? undefined : failure(401, "Sign in is required.");
+  return await getApplicationSession() ? undefined : reauthenticationRequiredPaymentFailure();
 }
 
 export async function callPaymentIntentApi(input: Readonly<{
@@ -24,15 +26,14 @@ export async function callPaymentIntentApi(input: Readonly<{
   body?: unknown;
 }>): Promise<PaymentIntentApiResult> {
   if (!authConfigured()) return failure(503, "Payment service is not configured.");
-  const auth0 = getAuth0();
-  if (!await auth0.getSession()) return failure(401, "Sign in is required.");
+  if (!await getApplicationSession()) return reauthenticationRequiredPaymentFailure();
   const backendUrl = process.env.ZEPHIPAY_BACKEND_URL?.trim();
   const audience = process.env.AUTH0_AUDIENCE?.trim();
   if (!backendUrl || !audience) return failure(503, "Payment service is not configured.");
   const requestId = boundedRequestId(input.requestId);
 
   try {
-    const { token } = await auth0.getAccessToken({ audience, scope: paymentScopes });
+    const { token } = await getApplicationAccessToken({ audience, scope: paymentScopes });
     const headers: Record<string, string> = {
       Accept: "application/json",
       Authorization: `Bearer ${token}`,
@@ -56,10 +57,11 @@ export async function callPaymentIntentApi(input: Readonly<{
       const parsed = parsePaymentIntentResponse(upstream);
       return parsed ? { status: response.status, body: parsed } : failure(502, "Payment service returned an invalid response.");
     }
-    const normalized = normalizePaymentError(response.status);
+    const normalized = response.status === 401 ? reauthenticationRequiredPaymentFailure() : normalizePaymentError(response.status);
     console.warn("Payment intent upstream request failed.", { category: normalized.body.code, requestId, status: response.status });
     return normalized;
-  } catch {
+  } catch (error) {
+    if (isReauthenticationRequiredError(error) || error instanceof ApplicationSessionUnavailableError) return reauthenticationRequiredPaymentFailure();
     console.warn("Payment intent upstream request failed.", { category: "TEMPORARILY_UNAVAILABLE", requestId, status: 503 });
     return failure(503, "Payment service is temporarily unavailable.");
   }

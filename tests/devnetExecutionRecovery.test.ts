@@ -22,11 +22,11 @@ test("Devnet execution absence is non-definitive while genuine payment absence r
 
 test("BFF distinguishes only the backend's exact no-execution response", async () => {
   const proxy = await source("src/lib/paymentIntents/backendProxy.ts");
-  assert.match(proxy, /code\?:unknown}\)\.code==="DEVNET_NOT_FOUND"/);
-  assert.match(proxy, /error\?:unknown}\)\.error==="Devnet execution was not found\."/);
-  assert.match(proxy, /code:"DEVNET_EXECUTION_NOT_FOUND",error:"No Devnet execution has started yet\."/);
+  assert.match(proxy, /code\?: unknown }\)\.code === "DEVNET_NOT_FOUND"/);
+  assert.match(proxy, /error\?: unknown }\)\.error === "Devnet execution was not found\."/);
+  assert.match(proxy, /code: "DEVNET_EXECUTION_NOT_FOUND", error: "No Devnet execution has started yet\."/);
   assert.match(proxy, /normalizePaymentError\(response\.status\)/);
-  assert.match(proxy, /input\.method==="GET"/);
+  assert.match(proxy, /input\.method === "GET"/);
 });
 
 test("status check and preserved-intent recovery keep no-execution state on review without POST", async () => {
@@ -35,10 +35,12 @@ test("status check and preserved-intent recovery keep no-execution state on revi
   assert.match(workspace, /Devnet execution is currently unavailable\. No transaction has been submitted\./);
   assert.match(workspace, /onClick=\{checkDevnetStatus}/);
   assert.match(workspace, /role="status"/);
-  assert.match(workspace, /await readDevnetExecution\(recoveryId,c\.signal\);devnetPostAttempted\.current=true;setDevnetAttempted\(true\)/);
+  assert.match(workspace, /if\(paymentIntent\.status==="processing"\)followUp=readDevnetExecution\(recoveryId,c\.signal,result\.authority\)/);
+  assert.match(workspace, /if\(followUp\)await followUp;result\.authority\.run\(\(\)=>/);
+  assert.match(workspace, /devnetPostAttempted\.current=true;setDevnetAttempted\(true\)/);
   assert.doesNotMatch(workspace, /e\.code!=="NOT_FOUND"/);
   const check = workspace.slice(workspace.indexOf("async function checkDevnetStatus"), workspace.indexOf("function rememberIntent"));
-  assert.match(check, /readDevnetExecution\(intent\.id\)/);
+  assert.match(check, /readDevnetExecution\(intent\.id,undefined,authority\)/);
   assert.match(check, /catch\(e\)/);
   assert.doesNotMatch(check, /method:"POST"|\/devnet\/execute/);
 });
