@@ -4,6 +4,7 @@ import { authConfigured } from "@/lib/auth0";
 import { REAUTHENTICATION_REQUIRED_MESSAGE } from "@/lib/auth/authFailure";
 import { isReauthenticationRequiredError } from "@/lib/auth/auth0Errors";
 import { ApplicationSessionUnavailableError, getApplicationAccessToken, getApplicationSession } from "@/lib/auth/serverAuthority";
+import { ACCOUNT_READ_SCOPE } from "@/lib/auth/sessionSafety";
 import { parseZpResponse, type ZpFailure, type ZpSuccess } from "./contract";
 
 export type ZpApiResult = Readonly<{ status: number; body: ZpSuccess | ZpFailure }>;
@@ -14,7 +15,7 @@ export async function callZpApi(): Promise<ZpApiResult> {
   if (!backendUrl || !audience) return failure(503, "NOT_CONFIGURED", "ZP progress is not configured.");
   const requestId = randomUUID();
   try {
-    const { token } = await getApplicationAccessToken({ audience, scope: "read:account" });
+    const { token } = await getApplicationAccessToken({ audience, scope: ACCOUNT_READ_SCOPE });
     const response = await fetch(new URL("/api/account/zp", backendUrl), { headers: { Accept: "application/json", Authorization: `Bearer ${token}`, "X-Request-Id": requestId }, cache: "no-store", signal: AbortSignal.timeout(5_000) });
     const raw: unknown = response.headers.get("content-type")?.toLowerCase().includes("application/json") ? await response.json().catch(() => undefined) : undefined;
     if (!response.ok) return response.status === 401 ? reauthenticationRequired() : unavailable(requestId, response.status);

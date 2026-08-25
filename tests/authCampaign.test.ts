@@ -57,9 +57,12 @@ describe("account BFF contract", () => {
     const route = await readFile(new URL("../src/app/api/account/route.ts", import.meta.url), "utf8");
     const auth = await readFile(new URL("../src/lib/auth0.ts", import.meta.url), "utf8");
     assert.match(route, /Authorization: `Bearer \$\{token\}`/);
+    assert.match(route, /getApplicationAccessToken\(\{ audience, scope: ACCOUNT_READ_SCOPE \}\)/);
     assert.match(route, /no-store, private/);
     assert.doesNotMatch(route, /NEXT_PUBLIC_ZEPHIPAY_API_URL/);
     assert.match(auth, /enableAccessTokenEndpoint: false/);
     assert.match(auth, /sameSite: "lax"/);
+    const sessionSafety = await readFile(new URL("../src/lib/auth/sessionSafety.ts", import.meta.url), "utf8");
+    assert.match(sessionSafety, /ACCOUNT_WRITE_SCOPE = "write:account"/);
   });
 });

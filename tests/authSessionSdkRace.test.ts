@@ -21,7 +21,7 @@ const session: SessionData = {
     idToken: "opaque-id-token",
     refreshToken: "must-not-persist",
     expiresAt: Math.floor(Date.now() / 1000) + 3600,
-    scope: "openid profile email read:account read:payments write:payments",
+    scope: "openid profile email read:account write:account read:payments write:payments",
   },
   internal: { sid: "auth0-session-a", createdAt: Math.floor(Date.now() / 1000) },
 };
@@ -52,7 +52,7 @@ describe("Auth0 4.26.0 stateless logout-race boundary", () => {
     const scope = authorizationScope("openid profile email offline_access read:account", "read:payments write:payments");
     assert.equal(scope.split(" ").includes("offline_access"), false);
     const sparseScope = authorizationScope("offline_access custom:scope", "read:payments write:payments").split(" ");
-    assert.deepEqual(["openid", "profile", "email", "read:account"].every((required) => sparseScope.includes(required)), true);
+    assert.deepEqual(["openid", "profile", "email", "read:account", "write:account"].every((required) => sparseScope.includes(required)), true);
     assert.equal(sparseScope.includes("custom:scope"), true);
     assert.equal(sparseScope.includes("offline_access"), false);
     const sanitized = await removeRefreshCapability(session);

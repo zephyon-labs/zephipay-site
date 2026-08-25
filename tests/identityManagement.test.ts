@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import { describe, it } from "node:test";
 
 import { parseIdentityReadResponse, parseIdentityWriteResponse } from "../src/lib/identity/contract";
+import { identityRequiresReauthentication, identityScopeFor } from "../src/lib/identity/authorization";
 import { parseIdentityWriteInput, toBackendIdentityWrite } from "../src/lib/identity/requests";
 
 const identity = {
@@ -33,12 +34,24 @@ describe("Economic Identity site contract", () => {
     assert.equal(parseIdentityWriteInput({ username: "Alice_01", displayName: "Alice", avatarUrl: "http://example.com/a.png", discoverability: "private" }), undefined);
   });
 
+  it("uses independent read and mutation scopes with bounded stale-session reauthentication", () => {
+    assert.equal(identityScopeFor("GET"), "read:account");
+    assert.equal(identityScopeFor("PUT"), "write:account");
+    const insufficient = 'Bearer realm="api", error="insufficient_scope", scope="write:account"';
+    assert.equal(identityRequiresReauthentication("GET", 401, null), true);
+    assert.equal(identityRequiresReauthentication("PUT", 401, null), true);
+    assert.equal(identityRequiresReauthentication("PUT", 403, insufficient), true);
+    assert.equal(identityRequiresReauthentication("PUT", 403, null), false);
+    assert.equal(identityRequiresReauthentication("GET", 403, insufficient), false);
+    assert.equal(identityRequiresReauthentication("PUT", 409, insufficient), false);
+  });
+
   it("keeps the BFF authenticated, same-origin, bounded, uncached, and server-only", async () => {
     const route = await readFile(new URL("../src/app/api/account/identity/route.ts", import.meta.url), "utf8");
     const client = await readFile(new URL("../src/lib/identity/serverClient.ts", import.meta.url), "utf8");
     const errors = await readFile(new URL("../src/lib/identity/errors.ts", import.meta.url), "utf8");
     assert.match(route, /hasTrustedOrigin\(request\)/); assert.match(route, /parseIdentityWriteInput/); assert.match(route, /private, no-store/);
-    assert.match(client, /getApplicationSession\(\)/); assert.match(client, /getApplicationAccessToken/); assert.match(client, /REAUTHENTICATION_REQUIRED/); assert.match(client, /AbortSignal\.timeout\(5_000\)/);
+    assert.match(client, /getApplicationSession\(\)/); assert.match(client, /getApplicationAccessToken\(\{ audience, scope: identityScopeFor\(method\) \}\)/); assert.match(client, /identityRequiresReauthentication\(method, response\.status, response\.headers\.get\("www-authenticate"\)\)/); assert.match(client, /REAUTHENTICATION_REQUIRED/); assert.match(client, /AbortSignal\.timeout\(5_000\)/);
     assert.match(client, /cache: "no-store"/); assert.match(errors, /USERNAME_UNAVAILABLE/); assert.match(errors, /VERSION_CONFLICT/);
     assert.doesNotMatch(route, /Authorization/);
   });

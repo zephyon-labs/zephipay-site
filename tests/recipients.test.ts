@@ -87,7 +87,8 @@ describe("recipient BFF and UI invariants", () => {
     const resolve = await source("src/app/api/recipients/[accountId]/route.ts");
     const response = await source("src/lib/recipients/routeResponse.ts");
     assert.match(client, /import "server-only"/); assert.match(client, /getApplicationSession\(\)/);
-    assert.match(client, /getApplicationAccessToken\(\{ audience, scope: "read:account" \}\)/);
+    assert.match(client, /input\.response === "recent" \? "read:payments" : ACCOUNT_READ_SCOPE/);
+    assert.match(client, /getApplicationAccessToken\(\{ audience, scope \}\)/);
     assert.match(client, /recipientReauthenticationRequired/);
     assert.match(client, /Authorization: `Bearer \$\{token\}`/); assert.match(client, /AbortSignal\.timeout\(5_000\)/);
     assert.match(client, /cache: "no-store"/); assert.doesNotMatch(client, /token[^\n]*body/);

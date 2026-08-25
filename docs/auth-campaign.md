@@ -2,7 +2,7 @@
 
 Auth0 proves authentication; ZephiPay owns the canonical account and immutable `actor_subject`. The backend resolves only validated issuer plus subject. Email never links accounts.
 
-Create one Auth0 API with the exact `AUTH0_AUDIENCE`, RS256, and `read:account`. Create one Regular Web Application using Universal Login. Configure:
+Create one Auth0 API with the exact `AUTH0_AUDIENCE`, RS256, and distinct `read:account` and `write:account` permissions. Permit the first-party Regular Web Application using Universal Login to request both account permissions. Account reads request `read:account`; Payment Identity and destination mutations request `write:account`. Existing sessions without `write:account` remain read-capable but must deliberately sign in again before an account mutation can succeed. Configure:
 
 - callbacks: `http://localhost:3000/auth/callback`, `https://zephipay.com/auth/callback`
 - logout URLs: `http://localhost:3000`, `https://zephipay.com`
@@ -42,7 +42,9 @@ Deploy the v2 session transition forward-only and drain the old application vers
 
 Direct rollback to the pre-remediation rolling-cookie behavior is forbidden. A compatible rollback must either understand and preserve the v2 migration and ordering rules, or deliberately invalidate all site sessions and require reauthentication. Do not restore legacy writers as a rollback mechanism.
 
-The backend requires explicit `AUTH_ENABLED=true`, `POSTGRES_ENABLED=true`, `DATABASE_URL`, exact HTTPS `AUTH0_ISSUER` with trailing slash, `AUTH0_AUDIENCE`, and `AUTH0_REQUIRED_SCOPE`. It verifies RS256 with rotating cached JWKS and exact issuer/audience, then provisions under a transaction-scoped issuer/subject lock. Security events remain append-only and matching email never merges accounts.
+The backend requires explicit `AUTH_ENABLED=true`, `POSTGRES_ENABLED=true`, `DATABASE_URL`, exact HTTPS `AUTH0_ISSUER` with trailing slash, `AUTH0_AUDIENCE`, the backward-compatible account-read setting `AUTH0_REQUIRED_SCOPE`, and the additive account-write setting `AUTH0_WRITE_ACCOUNT_SCOPE`. It verifies RS256 with rotating cached JWKS and exact issuer/audience, then provisions under a transaction-scoped issuer/subject lock. Security events remain append-only and matching email never merges accounts. `read:account`, `write:account`, `read:payments`, and `write:payments` are independent capabilities; none implies another.
+
+For Mainnet, receiving-destination mutation must additionally require a designed recent-auth/step-up and destination-ownership security policy. `write:account` alone is only the bounded controlled-beta authorization boundary. AUTHZ-003 also remains open: the standard web session continues to request `write:payments` until later incremental, device-aware, or transaction-specific authority work.
 
 The schema lacks authentication-evidence/email snapshot columns, so those values are not persisted or fabricated. `account_sessions` is not populated because a stable UUID session identifier is not guaranteed end to end. Future native clients use Authorization Code with PKCE and do not share site cookies. Future KYC/KYB attaches to the canonical account without changing `actor_subject`.
 

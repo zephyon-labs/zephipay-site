@@ -5,6 +5,7 @@ import { randomUUID } from "node:crypto";
 import { authConfigured } from "@/lib/auth0";
 import { isReauthenticationRequiredError } from "@/lib/auth/auth0Errors";
 import { ApplicationSessionUnavailableError, getApplicationAccessToken, getApplicationSession } from "@/lib/auth/serverAuthority";
+import { ACCOUNT_READ_SCOPE } from "@/lib/auth/sessionSafety";
 import { parseRecipientRecentResponse, parseRecipientResolveResponse, parseRecipientSearchResponse, type RecipientRecentSuccess, type RecipientResolveSuccess, type RecipientSearchSuccess } from "./contract";
 import { normalizeRecipientError, recipientFailure, recipientReauthenticationRequired, type SafeRecipientError } from "./errors";
 
@@ -31,7 +32,8 @@ export async function callRecipientApi(input: Readonly<{
   const audience = process.env.AUTH0_AUDIENCE?.trim();
   if (!backendUrl || !audience) return recipientFailure(503, "Recipient search is not configured.");
   try {
-    const { token } = await getApplicationAccessToken({ audience, scope: "read:account" });
+    const scope = input.response === "recent" ? "read:payments" : ACCOUNT_READ_SCOPE;
+    const { token } = await getApplicationAccessToken({ audience, scope });
     const response = await fetch(new URL(input.path, backendUrl), {
       method: input.method,
       headers: {

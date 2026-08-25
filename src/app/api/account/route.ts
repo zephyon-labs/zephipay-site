@@ -6,6 +6,7 @@ import { authConfigured } from "@/lib/auth0";
 import { authenticatedResponseHeaders, reauthenticationRequiredFailure } from "@/lib/auth/authFailure";
 import { isReauthenticationRequiredError } from "@/lib/auth/auth0Errors";
 import { ApplicationSessionUnavailableError, getApplicationAccessToken, getApplicationSession } from "@/lib/auth/serverAuthority";
+import { ACCOUNT_READ_SCOPE } from "@/lib/auth/sessionSafety";
 import { isAccountResponse } from "@/lib/accountResponse";
 
 const headers = { "Cache-Control": "no-store, private", Pragma: "no-cache" };
@@ -15,10 +16,11 @@ export async function GET() {
   const session = await getApplicationSession();
   if (!session) return safeReauthenticationError();
   const backendUrl = process.env.ZEPHIPAY_BACKEND_URL?.trim();
-  if (!backendUrl) return safeError(503, "Account service is not configured.", true);
+  const audience = process.env.AUTH0_AUDIENCE?.trim();
+  if (!backendUrl || !audience) return safeError(503, "Account service is not configured.", true);
 
   try {
-    const { token } = await getApplicationAccessToken();
+    const { token } = await getApplicationAccessToken({ audience, scope: ACCOUNT_READ_SCOPE });
     const response = await fetch(new URL("/api/account/me", backendUrl), {
       headers: { Authorization: `Bearer ${token}`, "X-Request-Id": randomUUID() },
       cache: "no-store",
