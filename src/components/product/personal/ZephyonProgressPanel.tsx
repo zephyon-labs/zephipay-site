@@ -18,18 +18,27 @@ export function ZephyonProgressPanel() {
 
 export function ZephyonProgressView({ state }: Readonly<{ state: ZpViewState }>) {
   return <section id="zephyon-progress" aria-labelledby="zephyon-progression-heading" className="scroll-mt-28 border-b border-border-subtle bg-background/55 p-6 sm:p-8">
-    <div className="mb-6 max-w-2xl"><p className="text-xs font-medium uppercase tracking-[0.18em] text-brand-secondary">Account progression</p><h2 id="zephyon-progression-heading" className="mt-2 text-2xl font-semibold tracking-[-0.035em] text-foreground">Your Zephyon progress</h2></div>
+    <div className="mb-6 max-w-2xl"><p className="text-xs font-medium uppercase tracking-[0.18em] text-brand-secondary">Participation &amp; trust</p><h2 id="zephyon-progression-heading" className="mt-2 text-2xl font-semibold tracking-[-0.035em] text-foreground">Your Zephyon profile</h2></div>
     <div className="grid gap-4 lg:grid-cols-[1.45fr_0.55fr]"><ZpCard state={state} /><ZtsCard /></div>
   </section>;
 }
 
 function ZpCard({ state }: Readonly<{ state: ZpViewState }>) {
+  const unavailable = state.status === "error" || state.status === "idle";
   return <article aria-labelledby="zp-card-heading" className="min-w-0 overflow-hidden rounded-[1.5rem] border border-brand-primary/25 bg-surface-glass p-6 shadow-[var(--shadow-soft)] sm:p-7">
-    <div className="flex flex-wrap items-start justify-between gap-4"><div><p className="text-xs font-medium uppercase tracking-[0.18em] text-brand-secondary">ZP</p><h3 id="zp-card-heading" className="mt-2 text-lg font-semibold text-foreground">Zephyon Points</h3></div><span className="rounded-full border border-brand-primary/20 bg-brand-primary/10 px-3 py-1 text-xs text-brand-secondary">Activity progression</span></div>
+    <div className="flex flex-wrap items-start justify-between gap-4"><div><p className="text-xs font-medium uppercase tracking-[0.18em] text-brand-secondary">ZP</p><h3 id="zp-card-heading" className="mt-2 text-lg font-semibold text-foreground">Zephyon Points</h3></div><span className="rounded-full border border-brand-primary/20 bg-brand-primary/10 px-3 py-1 text-xs text-brand-secondary">{unavailable ? "Projection unavailable" : "Activity progression"}</span></div>
     {state.status === "loading" ? <div className="mt-7 min-h-72" aria-busy="true" aria-label="Loading ZP progress"><div className="h-14 w-40 max-w-full animate-pulse rounded-xl bg-surface-secondary" /><div className="mt-7 h-3 animate-pulse rounded-full bg-surface-secondary" /><div className="mt-4 h-5 w-56 max-w-full animate-pulse rounded-lg bg-surface-secondary" /><div className="mt-8 grid gap-3"><div className="h-11 animate-pulse rounded-2xl bg-surface-secondary" /><div className="h-11 animate-pulse rounded-2xl bg-surface-secondary" /></div></div> : null}
-    {state.status === "error" || state.status === "idle" ? <div className="mt-7 min-h-72"><div className="h-14 w-40 max-w-full rounded-xl bg-surface-secondary/70" aria-hidden="true" /><div className="mt-7 h-3 overflow-hidden rounded-full border border-border-subtle bg-surface-secondary/70" aria-hidden="true"><span className="block h-full w-0" /></div><div className="mt-5 rounded-2xl border border-border-subtle bg-background/45 p-5"><p role="status" className="text-sm text-foreground-secondary">ZP progress is temporarily unavailable.</p></div></div> : null}
+    {unavailable ? <ZpUnavailableState /> : null}
     {state.status === "ready" ? <ZpDetails zp={state.zp} /> : null}
   </article>;
+}
+
+function ZpUnavailableState() {
+  return <div role="status" className="mt-7 rounded-[1.25rem] border border-brand-primary/15 bg-background/45 p-5 sm:p-6">
+    <p aria-label="ZP unavailable" className="text-4xl font-semibold tracking-[-0.045em] text-foreground sm:text-5xl">ZP <span aria-hidden="true" className="text-foreground-secondary">—</span></p>
+    <p className="mt-5 max-w-xl text-sm leading-6 text-foreground-secondary">Authoritative ZP projection is not currently available for this stage of the Controlled Beta.</p>
+    <p className="mt-2 max-w-xl text-sm leading-6 text-foreground-muted">No point value or milestone progress is shown without authoritative projection.</p>
+  </div>;
 }
 
 function ZpDetails({ zp }: Readonly<{ zp: ZpSummary }>) {

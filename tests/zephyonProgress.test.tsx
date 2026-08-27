@@ -38,6 +38,7 @@ describe("Zephyon account progression", () => {
     assert.match(zeroHtml, />0%<\/p>/); assert.match(zeroHtml, /aria-valuenow="0"/);
     assert.doesNotMatch(loadingHtml, />340<|aria-valuenow|\d+%/);
     assert.doesNotMatch(errorHtml, />340<|aria-valuenow|\d+%|\d+ \/ \d+/);
+    assert.match(errorHtml, /Projection unavailable/);
   });
 
   it("makes previews unavailable outside development and retains the default fetch path", async () => {
@@ -59,6 +60,7 @@ describe("Zephyon account progression", () => {
     assert.match(html, /First payment sent/);
     assert.match(html, /First payment received/);
     assert.match(html, /10 payments sent/);
+    assert.doesNotMatch(html, /Projection unavailable|ZP unavailable/);
   });
 
   it("renders a polished authenticated zero state with honest progress", () => {
@@ -68,6 +70,7 @@ describe("Zephyon account progression", () => {
     assert.match(html, />0<\/span> <span[^>]*>ZP/);
     assert.match(html, /progression starts with meaningful activity/);
     assert.match(html, /0<\/span> \/ 1/); assert.match(html, /aria-valuenow="0"/); assert.match(html, />0%<\/p>/);
+    assert.doesNotMatch(html, /Projection unavailable|ZP unavailable/);
   });
 
   it("selects the highest-progress primary milestone and preserves backend order on ties", () => {
@@ -86,13 +89,25 @@ describe("Zephyon account progression", () => {
     assert.equal((html.match(/h-1\.5 overflow-hidden rounded-full/g) ?? []).length, 1);
   });
 
-  it("uses bounded loading and local error states without fake values", () => {
+  it("keeps loading distinct and renders unavailable as a complete intentional state without fake values", () => {
     const loading = render({ status: "loading" }), error = render({ status: "error" }), idle = render({ status: "idle" });
     assert.match(loading, /aria-busy="true"/); assert.match(loading, /Loading ZP progress/);
-    assert.doesNotMatch(loading, />0 ZP|0 \/ 1|\d+%/);
-    assert.match(error, /ZP progress is temporarily unavailable/); assert.match(error, /role="status"/);
-    assert.doesNotMatch(error, /aria-valuenow|\d+%|\d+ \/ \d+/);
-    assert.match(idle, /ZP progress is temporarily unavailable/); assert.doesNotMatch(idle, /aria-busy="true"/);
+    assert.doesNotMatch(loading, />0 ZP|0 \/ 1|\d+%|Projection unavailable/);
+    for (const unavailable of [error, idle]) {
+      assert.match(unavailable, /Projection unavailable/);
+      assert.match(unavailable, /role="status"/);
+      assert.match(unavailable, /aria-label="ZP unavailable"[^>]*>ZP <span[^>]*>—<\/span>/);
+      assert.match(unavailable, /Authoritative ZP projection is not currently available for this stage of the Controlled Beta/);
+      assert.match(unavailable, /No point value or milestone progress is shown without authoritative projection/);
+      assert.doesNotMatch(unavailable, /aria-busy|animate-pulse|role="progressbar"|aria-valuenow|\d+%|\d+ \/ \d+|Toward|Also in progress|Unlocked|Activity progression|>0<|>340</);
+    }
+  });
+
+  it("uses a profile heading that accurately covers distinct participation and trust primitives", () => {
+    const html = render({ status: "error" });
+    assert.match(html, /Participation &amp; trust/);
+    assert.match(html, /Your Zephyon profile/);
+    assert.doesNotMatch(html, /Your Zephyon progress/);
   });
 
   it("renders achieved progress without fabricating another target", () => {
@@ -123,7 +138,7 @@ describe("Zephyon account progression", () => {
     const parsed = parseZpResponse(populated); assert.ok(parsed);
     const html = render({ status: "ready", zp: parsed.zp });
     assert.match(html, /Zephyon Trust Score/); assert.match(html, /Trust profile coming soon/); assert.match(html, /No trust score is available yet/);
-    assert.doesNotMatch(html, /ZERA|redeem|cash value|reward|trust tier|risk rating/i);
+    assert.doesNotMatch(html, /ZERA|redeem|cash value|reward|trust tier|trust level|risk rating|ZTS\s*\d/i);
   });
 
   it("strictly rejects malformed API payloads", () => {

@@ -106,7 +106,10 @@ describe("authenticated header progression status", () => {
       assert.equal(state.status, "error");
       assert.equal(shouldRequestZp("authenticated-unavailable", undefined, preview), false);
       assert.equal(shouldShowAccountProgress(false, "authenticated-unavailable", state), false);
-      assert.match(renderToStaticMarkup(<ZephyonProgressView state={state} />), /ZP progress is temporarily unavailable/);
+      const panel = renderToStaticMarkup(<ZephyonProgressView state={state} />);
+      assert.match(panel, /Projection unavailable/);
+      assert.match(panel, /Authoritative ZP projection is not currently available/);
+      assert.doesNotMatch(panel, /role="progressbar"|aria-valuenow|>0</);
     } finally { setNodeEnv(previous); }
   });
 
