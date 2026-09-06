@@ -56,7 +56,7 @@ export function PersonalWorkspace({ className, recoveryId }: PersonalWorkspacePr
         <div>
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-brand-secondary">Personal</p>
           <h2 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-foreground">Move money</h2>
-          <p className="mt-3 max-w-2xl leading-7 text-foreground-secondary">Send, request, or transfer through one clear experience. Every result shown here is tied to authoritative account and payment data.</p>
+          <p className="mt-3 max-w-2xl leading-7 text-foreground-secondary">Superteam Round 1 supports Send. Request and Transfer are not included in this beta round.</p>
         </div>
         <div role="tablist" aria-label="Move money" className="inline-flex rounded-full border border-border-default bg-background/65 p-1">
           {modes.map((mode) => <button key={mode.id} type="button" role="tab" aria-selected={activeMode === mode.id} onClick={() => setActiveMode(mode.id)} className={cn("rounded-full px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary/45",activeMode === mode.id ? "bg-foreground text-background" : "text-foreground-secondary hover:text-foreground")}>{mode.label}</button>)}
@@ -73,10 +73,7 @@ export function PersonalWorkspace({ className, recoveryId }: PersonalWorkspacePr
               {signInAvailable ? <Button className="mt-6" href="/auth/login?returnTo=%2Fpersonal%23personal-workspace" fullDocument>Sign in to send</Button> : null}
             </section>
           : null}
-        {activeMode === "request" ? authenticated
-          ? <AuthenticatedBoundary><PaymentRequestWorkspace /></AuthenticatedBoundary>
-          : <section className="rounded-[1.5rem] border border-border-default bg-background/55 p-6"><p className="text-xs font-medium uppercase tracking-[0.16em] text-brand-secondary">Authenticated beta</p><h3 className="mt-3 text-xl font-semibold">{signInAvailable ? "Sign in to request money" : "Account state is unavailable"}</h3><p className="mt-3 max-w-2xl text-sm leading-6 text-foreground-secondary">No request or recipient state is shown until the canonical account is authoritative.</p>{signInAvailable ? <Button className="mt-6" href="/auth/login?returnTo=%2Fpersonal%23personal-workspace" fullDocument>Sign in to request</Button> : null}</section>
-          : null}
+        {activeMode === "request" ? <PaymentRequestWorkspace /> : null}
         {activeMode === "transfer" ? <EmptyState title="Transfer is not available in this beta." description="Transfers between your ZephiPay-linked accounts will be available after owned accounts and balances are supported." /> : null}
       </div>
 

@@ -49,8 +49,8 @@ export const navigationSections: NavigationSection[] = [
           },
           {
             label: "Verified receipts",
-            href: "/personal/receipts",
-            description: "Access trusted payment records.",
+            href: "/personal/activity#activity-interface",
+            description: "Select a payment to view its durable receipt.",
           },
         ],
       },

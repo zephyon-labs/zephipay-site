@@ -111,11 +111,11 @@ describe("BFF and UI security invariants", () => {
     assert.match(ui, /requestHash:intent\.requestHash,expectedVersion:intent\.version/);
     assert.match(ui, /requestHash:confirmed\.requestHash,expectedVersion:confirmed\.version/);
     assert.match(ui, /\/execute/);assert.match(ui,/\[200,202\]/);assert.match(ui,/>Send payment<\/Button>/);
-    assert.match(ui, /if\(mutationInFlight\.current\)return/);
+    assert.match(ui, /if\(mutationInFlight\.current\|\|mockPostAttempted\.current\|\|intent\|\|recoveryId\)return/);
     assert.match(ui, /paymentCreationFingerprint/);
     assert.match(ui, /creationAttemptFor/);
     assert.match(ui, /\/personal\/send\?intent=/);
-    assert.match(ui, /router\.replace\("\/personal\/send"\)/);
+    assert.match(ui, /window\.history\.replaceState\(null,"","\/personal\/send"\)/);
     assert.match(ui, /PaymentComposeForm/);
     assert.doesNotMatch(ui, /Advanced Wallet|Mock Rail only/);
     assert.match(ui, /Send on Solana Devnet/);

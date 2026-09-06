@@ -10,10 +10,10 @@ describe("in-place Personal payment flow", () => {
     assert.doesNotMatch(personal, /router\.(?:push|replace)\("\/personal\/send/);
   });
 
-  it("keeps compose mounted through review so Back restores entered values", async () => {
+  it("preserves draft input on Back while guarding execution attempts", async () => {
     const flow = await source("src/components/product/personal/PaymentIntentWorkspace.tsx");
     assert.match(flow, /className=\{intent\|\|devnetDraft\?"hidden":undefined\}>\{compose\}/);
-    assert.match(flow, /function backToCompose\(\)\{setIntent\(undefined\)/);
+    assert.match(flow, /function backToCompose\(\)\{if\(mockPostAttempted\.current\|\|devnetPostAttempted\.current\)return;setIntent\(undefined\)/);
     assert.doesNotMatch(flow, /function backToCompose[^}]*setResetKey/);
     assert.match(flow, /<PaymentComposeForm key=\{resetKey\}/);
   });
@@ -21,7 +21,7 @@ describe("in-place Personal payment flow", () => {
   it("does not navigate the in-place flow during review or execution", async () => {
     const flow = await source("src/components/product/personal/PaymentIntentWorkspace.tsx");
     assert.match(flow, /window\.history\.replaceState\(null,"",`\/personal\?intent=/);
-    assert.match(flow, /else router\.replace\(`\/personal\/send\?intent=/);
+    assert.match(flow, /else window\.history\.replaceState\(null,"",`\/personal\/send\?intent=/);
     assert.doesNotMatch(flow, /AdvancedWallet|onIntent=/);
   });
 

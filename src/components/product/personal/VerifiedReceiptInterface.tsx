@@ -174,26 +174,30 @@ export function VerifiedReceiptInterface() {
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <p className="text-xs font-medium uppercase tracking-[0.18em] text-brand-secondary">
-              Product interface
+              Unavailable preview
             </p>
 
             <h3 className="mt-2 text-xl font-semibold tracking-[-0.03em]">
-              Receipt explorer
+              Receipt explorer preview
             </h3>
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
             <span className="rounded-full border border-brand-primary/25 bg-brand-primary/[0.08] px-3 py-1.5 text-xs font-medium text-brand-secondary">
-              Solana Devnet
+              Preview only
             </span>
 
             <span className="rounded-full border border-border-default bg-surface-glass px-3 py-1.5 text-xs text-foreground-secondary">
-              Test funds only
+              No account data loaded
             </span>
           </div>
         </div>
       </div>
 
+      <p className="border-b border-border-subtle px-6 py-5 text-sm leading-6 sm:px-8" role="note">
+        This is an unavailable preview, not your account receipt history. No receipt count is loaded here.{" "}
+        <Link className="text-brand-secondary underline" href="/personal/activity#activity-interface">View real payment receipts in Personal Activity</Link>.
+      </p>
       <div className="border-b border-border-subtle bg-surface-glass px-6 py-6 sm:px-8">
         <div className="relative">
           <span className="pointer-events-none absolute inset-y-0 left-4 flex items-center text-foreground-muted">
@@ -204,7 +208,7 @@ export function VerifiedReceiptInterface() {
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             type="search"
-            placeholder="Search by person, amount, purpose, receipt ID, or transaction"
+            placeholder="Preview search (not connected to your receipts)"
             className="h-13 w-full rounded-2xl border border-border-default bg-background/70 pl-11 pr-4 text-sm text-foreground outline-none transition placeholder:text-foreground-muted focus:border-brand-primary/45 focus:ring-2 focus:ring-brand-primary/10"
           />
         </div>
@@ -298,7 +302,7 @@ export function VerifiedReceiptInterface() {
             </div>
 
             <span className="text-xs text-foreground-muted">
-              0 records
+              Preview controls only
             </span>
           </div>
 
@@ -309,12 +313,12 @@ export function VerifiedReceiptInterface() {
               </div>
 
               <h5 className="mt-6 text-xl font-semibold">
-                No receipts to display
+                This preview does not load your receipts
               </h5>
 
               <p className="mt-4 text-sm leading-7 text-foreground-secondary">
-                Authenticated payment receipts matching {searchSummary} will
-                appear here after supported transactions complete.
+                The explorer for {searchSummary} is not connected to account history.
+                Open Personal Activity and select a receipt-bearing payment to view its durable receipt.
               </p>
 
               <div className="mt-7 flex flex-wrap justify-center gap-3">

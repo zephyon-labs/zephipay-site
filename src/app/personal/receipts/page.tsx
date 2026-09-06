@@ -215,6 +215,10 @@ export default function PersonalReceiptsPage() {
             </p>
           </div>
 
+          <p className="mb-6 rounded-2xl border border-border-default p-5 text-foreground-secondary">
+            This receipt explorer is a preview and does not display account records. Use Personal Activity to open real durable payment receipts.
+          </p>
+          <Button href="/personal/activity#activity-interface" className="mb-6">Open Personal Activity</Button>
           <VerifiedReceiptInterface />
         </Container>
       </Section>
