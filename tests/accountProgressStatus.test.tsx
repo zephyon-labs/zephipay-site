@@ -121,7 +121,7 @@ describe("authenticated header progression status", () => {
 
   it("fetches once only after usable authentication and masks stale account state", async () => {
     const [provider, panel, layout] = await Promise.all([source("src/components/auth/ZpHydrationProvider.tsx"), source("src/components/product/personal/ZephyonProgressPanel.tsx"), source("src/app/layout.tsx")]);
-    assert.match(layout, /<AccountHydrationProvider><ZpHydrationProvider>/);
+    assert.match(layout, /<AccountHydrationProvider><SendDraftProvider><ZpHydrationProvider>/);
     assert.match(provider, /accountStatus === "authenticated" \? account\?\.id : undefined/);
     assert.match(provider, /shouldRequestZp\(accountStatus, accountKey, preview\)/);
     assert.match(provider, /resolveZpHydration\(accountStatus, accountKey, stored, preview\)/);

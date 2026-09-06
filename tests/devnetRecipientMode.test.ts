@@ -12,7 +12,7 @@ test("accepts only canonical Solana destination syntax", () => {
   assert.equal(isCanonicalSolanaAddressInput("not-a-solana-address"), false);
 });
 
-test("makes Devnet wallet a primary Send mode while preserving Request", async () => {
+test("retains Devnet and Request contracts behind Round 1 availability", async () => {
   const compose = await source("src/components/product/personal/PaymentComposeForm.tsx");
   const request = await source("src/components/product/personal/PaymentRequestWorkspace.tsx");
   assert.match(compose, /ZephiPay username/);
@@ -27,7 +27,7 @@ test("keeps page support copy consistent with the selected mode through review",
   assert.match(experience, /recipientMode === "solana-devnet"/);
   assert.match(experience, /ZephiPay Devnet/);
   assert.match(experience, /Circle USDC · Solana Devnet/);
-  assert.match(experience, /secure Devnet payment lifecycle/);
+  assert.match(experience, /ROUND_ONE_DEVNET_NOTICE/);
   assert.match(experience, /ZephiPay Beta/);
   assert.match(experience, /Mock Rail · simulated settlement/);
 });

@@ -40,11 +40,11 @@ describe("payment creation attempts", () => {
   it("guards rapid mutations and resolves execution conflicts by reading authority", async () => {
     const source = await readFile(new URL("../src/components/product/personal/PaymentIntentWorkspace.tsx", import.meta.url), "utf8");
     const continuation = await readFile(new URL("../src/lib/paymentIntents/authenticatedContinuation.ts", import.meta.url), "utf8");
-    assert.match(source, /if\(mutationInFlight\.current\)return/);
-    assert.match(source, /if\(!intent\|\|mutationInFlight\.current\)return/);
-    assert.match(source, /if\(response\.status===409\)\{followUp=readExecution\(confirmed\.id,undefined,executionResult\.authority\);return\}/);
+    assert.match(source, /if\(mutationInFlight\.current\|\|mockPostAttempted\.current\|\|intent\|\|recoveryId\)return/);
+    assert.match(source, /if\(!intent\|\|mutationInFlight\.current\|\|mockPostAttempted\.current\)return/);
+    assert.match(source, /if\(response\.status===409\)\{needsExecutionRecovery=false;followUp=readExecution\(confirmed\.id,undefined,executionResult\.authority\);return\}/);
     assert.match(source, /if\(followUp\)await followUp/);
-    assert.match(source, /function startAnother\(\)\{creationAttempt\.current=undefined/);
+    assert.match(source, /mockPostAttempted\.current=false;setMockAttempted\(false\);creationAttempt\.current=undefined/);
     assert.match(source, /beginConfirmedPaymentFollowUp\(confirmation,"standard"/);
     assert.match(source, /beginConfirmedPaymentFollowUp\(confirmation,"solana-devnet"/);
     assert.match(continuation, /confirmation\.followUpJson\(/);

@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { AccountHydrationProvider } from "@/components/auth/AccountHydrationProvider";
+import { SendDraftProvider } from "@/components/product/personal/SendDraftProvider";
 import { ZpHydrationProvider } from "@/components/auth/ZpHydrationProvider";
 
 const geistSans = Geist({
@@ -77,7 +78,7 @@ export default function RootLayout({
           `}
         </Script>
 
-        <ThemeProvider><AccountHydrationProvider><ZpHydrationProvider>{children}</ZpHydrationProvider></AccountHydrationProvider></ThemeProvider>
+        <ThemeProvider><AccountHydrationProvider><SendDraftProvider><ZpHydrationProvider>{children}</ZpHydrationProvider></SendDraftProvider></AccountHydrationProvider></ThemeProvider>
       </body>
     </html>
   );
