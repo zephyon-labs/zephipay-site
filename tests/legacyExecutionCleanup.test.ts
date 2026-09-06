@@ -16,7 +16,7 @@ describe("legacy Personal workspace execution cleanup", () => {
     const canonical = await source("src/components/product/personal/PaymentIntentWorkspace.tsx");
     assert.doesNotMatch(workspace, /sendPayment|\/api\/send|executePayment|selectedRail|providerIdempotencyKey/);
     assert.match(canonical, /\/confirm/);
-    assert.match(canonical, /\/execute/);
+    assert.match(canonical, /beginConfirmedPaymentFollowUp/);
     assert.match(canonical, /\/execution/);
     assert.match(canonical, /\/receipt/);
     assert.doesNotMatch(canonical, /\/api\/send|selectedRail|providerIdempotencyKey/);

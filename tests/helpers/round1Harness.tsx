@@ -95,7 +95,7 @@ export class PaymentApi {
     if (url === "/api/payment-intents/" + INTENT_ID) return json({ ok: true, paymentIntent: this.paymentIntent });
     if (url.endsWith("/confirm")) {
       this.paymentIntent = { ...this.paymentIntent, status: "processing", version: "1" };
-      return json({ ok: true, paymentIntent: this.paymentIntent });
+      return json({ ok: true, applied: true, paymentIntent: this.paymentIntent });
     }
     if (url.endsWith("/devnet/execute")) throw new Error("A Round 1 Devnet execution POST must never occur.");
     if (url.endsWith("/execute")) {
