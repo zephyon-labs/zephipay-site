@@ -60,8 +60,9 @@ describe("returning-user and first-run lifecycle", () => {
     assert.match(payment, /if\(parsed\.status==="settled"\)receiptRequest=readReceipt\(id,signal,result\.authority\)/);
     assert.match(payment, /if\(receiptRequest\)await receiptRequest/);
     assert.match(payment, /if\(mutationInFlight\.current\|\|mockPostAttempted\.current\|\|intent\|\|recoveryId\)return/);
-    assert.equal((payment.match(/\/execute`/g) ?? []).length, 2);
-    assert.equal((payment.match(/\/devnet\/execute`/g) ?? []).length, 1);
+    assert.equal((payment.match(/\/execute`/g) ?? []).length, 0);
+    assert.match(continuation, /const execute = confirmed\.status === "processing"/);
+    assert.match(continuation, /method: "GET"/);
     assert.match(continuation, /confirmation\.followUpJson\(/);
     assert.doesNotMatch(payment, /\/api\/send/);
   });

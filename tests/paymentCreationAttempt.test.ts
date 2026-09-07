@@ -41,14 +41,15 @@ describe("payment creation attempts", () => {
     const source = await readFile(new URL("../src/components/product/personal/PaymentIntentWorkspace.tsx", import.meta.url), "utf8");
     const continuation = await readFile(new URL("../src/lib/paymentIntents/authenticatedContinuation.ts", import.meta.url), "utf8");
     assert.match(source, /if\(mutationInFlight\.current\|\|mockPostAttempted\.current\|\|intent\|\|recoveryId\)return/);
-    assert.match(source, /if\(!intent\|\|mutationInFlight\.current\|\|mockPostAttempted\.current\)return/);
+    assert.match(source, /if\(!intent\|\|intent\.status!=="awaiting_confirmation"\|\|mutationInFlight\.current\|\|mockPostAttempted\.current\)return/);
     assert.match(source, /if\(response\.status===409\)\{needsExecutionRecovery=false;followUp=readExecution\(confirmed\.id,undefined,executionResult\.authority\);return\}/);
     assert.match(source, /if\(followUp\)await followUp/);
     assert.match(source, /mockPostAttempted\.current=false;setMockAttempted\(false\);creationAttempt\.current=undefined/);
     assert.match(source, /beginConfirmedPaymentFollowUp\(confirmation,"standard"/);
     assert.match(source, /beginConfirmedPaymentFollowUp\(confirmation,"solana-devnet"/);
     assert.match(continuation, /confirmation\.followUpJson\(/);
-    assert.equal((source.match(/\/execute`,\{method:"POST"/g) ?? []).length, 2);
-    assert.equal((source.match(/\/devnet\/execute`,\{method:"POST"/g) ?? []).length, 1);
+    assert.equal((source.match(/\/execute`,\{method:"POST"/g) ?? []).length, 0);
+    assert.match(continuation, /const execute = confirmed\.status === "processing"/);
+    assert.match(continuation, /method: "GET"/);
   });
 });

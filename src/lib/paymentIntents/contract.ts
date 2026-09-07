@@ -1,4 +1,4 @@
-export const PAYMENT_INTENT_STATUSES = ["awaiting_confirmation", "processing"] as const;
+export const PAYMENT_INTENT_STATUSES = ["awaiting_confirmation", "processing", "unknown", "completed", "failed"] as const;
 
 export type PaymentIntentStatus = (typeof PAYMENT_INTENT_STATUSES)[number];
 

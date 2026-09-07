@@ -13,7 +13,7 @@ describe("in-place Personal payment flow", () => {
   it("preserves draft input on Back while guarding execution attempts", async () => {
     const flow = await source("src/components/product/personal/PaymentIntentWorkspace.tsx");
     assert.match(flow, /className=\{intent\|\|devnetDraft\?"hidden":undefined\}>\{compose\}/);
-    assert.match(flow, /function backToCompose\(\)\{if\(mockPostAttempted\.current\|\|devnetPostAttempted\.current\)return;setIntent\(undefined\)/);
+    assert.match(flow, /function backToCompose\(\)\{if\(mockPostAttempted\.current\|\|devnetPostAttempted\.current\|\|intent&&intent\.status!=="awaiting_confirmation"\)return;setIntent\(undefined\)/);
     assert.doesNotMatch(flow, /function backToCompose[^}]*setResetKey/);
     assert.match(flow, /<PaymentComposeForm key=\{resetKey\}/);
   });
@@ -47,7 +47,7 @@ describe("in-place Personal payment flow", () => {
   it("reuses canonical execution, polling, receipt, and activity behavior", async () => {
     const flow = await source("src/components/product/personal/PaymentIntentWorkspace.tsx");
     assert.match(flow, /\/confirm/);
-    assert.match(flow, /\/execute/);
+    assert.match(flow, /beginConfirmedPaymentFollowUp/);
     assert.match(flow, /setTimeout\(poll,2500\)/);
     assert.match(flow, /setTimeout\(poll,4000\)/);
     assert.match(flow, /if\(polling\.current\)return/);

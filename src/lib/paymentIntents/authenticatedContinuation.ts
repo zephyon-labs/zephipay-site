@@ -17,16 +17,20 @@ export function beginConfirmedPaymentFollowUp(
   confirmation.apply(({ response, body }) => {
     const parsed = parsePaymentIntentResponse(body);
     const confirmed = parsed?.paymentIntent;
-    if (!response.ok || !confirmed || (rail === "solana-devnet" && confirmed.recipientType !== "direct_wallet")) {
+    if (!response.ok || !confirmed || confirmed.status === "awaiting_confirmation" || (rail === "solana-devnet" && confirmed.recipientType !== "direct_wallet")) {
       throw new Error(readError(body, rail === "solana-devnet" ? "Unable to confirm the Devnet payment." : "Unable to confirm the payment."));
     }
     onConfirmed(confirmed);
     const encodedId = encodeURIComponent(confirmed.id);
+    // A confirmation replay may already be completed, failed, or unresolved.
+    // Only a newly applied PROCESSING confirmation carries execution authority.
+    const execute = confirmed.status === "processing" && parsed.applied === true;
+    const path = rail === "solana-devnet" ? `/api/payment-intents/${encodedId}/devnet` : `/api/payment-intents/${encodedId}`;
     followUp = {
       confirmed,
       response: confirmation.followUpJson(
-        rail === "solana-devnet" ? `/api/payment-intents/${encodedId}/devnet/execute` : `/api/payment-intents/${encodedId}/execute`,
-        {
+        `${path}/${execute ? "execute" : "execution"}`,
+        execute ? {
           method: "POST",
           credentials: "same-origin",
           headers: { "Content-Type": "application/json" },
@@ -35,7 +39,7 @@ export function beginConfirmedPaymentFollowUp(
             expectedVersion: confirmed.version,
             ...(rail === "solana-devnet" ? { mode: "solana-devnet" } : {}),
           }),
-        },
+        } : { method: "GET", credentials: "same-origin", cache: "no-store" },
       ),
     };
   });

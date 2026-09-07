@@ -46,7 +46,7 @@ test("routes wallet review through the backend-owned Devnet contract", async () 
   const workspace = await source("src/components/product/personal/PaymentIntentWorkspace.tsx");
   const devnetBoundary = workspace.slice(workspace.indexOf("devnetView="), workspace.indexOf("return <div>", workspace.indexOf("devnetView=")));
   assert.match(devnetBoundary, /Send on Solana Devnet/);
-  assert.match(workspace, /requestHash:confirmed\.requestHash,expectedVersion:confirmed\.version,mode:"solana-devnet"/);
+  assert.match(await source("src/lib/paymentIntents/authenticatedContinuation.ts"), /requestHash: confirmed\.requestHash,[\s\S]*expectedVersion: confirmed\.version,[\s\S]*mode: "solana-devnet"/);
   assert.match(workspace, /devnet\/execution/);
   assert.doesNotMatch(workspace, /sendTransaction|signMessage|signTransaction|mainnet-beta/);
   assert.doesNotMatch(workspace, /Advanced Wallet/);

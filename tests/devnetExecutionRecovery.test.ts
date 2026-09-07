@@ -35,8 +35,8 @@ test("status check and preserved-intent recovery keep no-execution state on revi
   assert.match(workspace, /Devnet execution is currently unavailable\. No transaction has been submitted\./);
   assert.match(workspace, /onClick=\{checkDevnetStatus}/);
   assert.match(workspace, /role="status"/);
-  assert.match(workspace, /if\(paymentIntent\.status==="processing"\)followUp=readDevnetExecution\(recoveryId,c\.signal,result\.authority\)/);
-  assert.match(workspace, /if\(followUp\)await followUp;result\.authority\.run\(\(\)=>/);
+  assert.match(workspace, /if\(paymentIntent\.status!=="awaiting_confirmation"\)followUp=readDevnetExecution\(recoveryId,c\.signal,result\.authority\)/);
+  assert.match(workspace, /if\(followUp\)\{try\{await followUp\}catch\(reason\)/);
   assert.match(workspace, /devnetPostAttempted\.current=true;setDevnetAttempted\(true\)/);
   assert.doesNotMatch(workspace, /e\.code!=="NOT_FOUND"/);
   const check = workspace.slice(workspace.indexOf("async function checkDevnetStatus"), workspace.indexOf("function rememberIntent"));
