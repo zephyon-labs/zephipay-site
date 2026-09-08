@@ -239,23 +239,22 @@ describe("Round 1 mounted uncertain Mock execution", () => {
   }
 });
 
-describe("Round 1 mounted Devnet availability", () => {
-  it("disables new public Devnet initiation and guards even a stale/programmatic compose callback", async () => {
+describe("Controlled beta mounted Devnet availability", () => {
+  it("enables Devnet selection and preserves its typed draft across same-account revalidation", async () => {
     mounted = await mountPayment();
     const { api, renderer, browser } = mounted;
     const mode = buttons(renderer, "Solana Devnet wallet")[0];
-    assert.equal(mode.props.disabled, true);
-    await act(async () => mode.props.onClick());
-    assert.equal(buttons(renderer, "Review payment")[0].props.disabled, true);
+    assert.equal(mode.props.disabled, false);
+    await click(renderer, "Solana Devnet wallet");
+    assert.equal(buttons(renderer, "Review payment")[0].props.disabled, false);
     await populateWallet();
     browser.advance();
     await act(async () => { browser.signal("focus"); await flush(); });
     assert.equal(buttons(renderer, "Solana Devnet wallet")[0].props["aria-pressed"], true);
     assert.equal(field(renderer, "Solana wallet address").props.value, "11111111111111111111111111111111");
     assert.equal(field(renderer, "0.00").props.value, "2");
-    await review(renderer);
     assert.equal(api.mutations().length, 0);
-    assert.match(text(renderer.root), /New Solana Devnet payments are not included/);
+    assert.match(text(renderer.root), /available for controlled beta testing/);
     async function populateWallet() {
       await act(async () => field(renderer, "Solana wallet address").props.onChange({ target: { value: "11111111111111111111111111111111" } }));
       await act(async () => field(renderer, "0.00").props.onChange({ target: { value: "2" } }));
@@ -267,9 +266,10 @@ describe("Round 1 mounted Devnet availability", () => {
       const api = new PaymentApi(); api.paymentIntent = intent(status, true);
       mounted = await mountPayment({ api, url: "/personal/send?intent=" + INTENT_ID });
       const { renderer } = mounted;
-      assert.equal(buttons(renderer, "Send on Solana Devnet").length, 0);
+      assert.equal(buttons(renderer, "Send on Solana Devnet").length, status === "awaiting_confirmation" ? 1 : 0);
       assert.equal(buttons(renderer, "Send payment").length, 0);
-      assert.equal(buttons(renderer, "Back").length, 0);
+      assert.equal(buttons(renderer, "Back").length, status === "awaiting_confirmation" ? 1 : 0);
+      assert.equal(api.mutations().length, 0, "Recovery must not implicitly confirm or execute");
       await click(renderer, "Check Devnet status");
       assert.ok(api.calls.some(call => call.url.endsWith("/devnet/execution")));
       assert.equal(api.mutations().length, 0);

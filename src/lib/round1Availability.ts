@@ -1,7 +1,7 @@
-// Round 1 accepts Username / Mock Rail Send only. Keep the existing contracts
-// and read-only recovery paths available while new mutations are unavailable.
+// Controlled beta enables the existing Devnet Send path. Request mutations
+// remain unavailable; existing payment and request recovery stays available.
 export const ROUND_ONE_REQUESTS_AVAILABLE = false;
-export const ROUND_ONE_DEVNET_EXECUTION_AVAILABLE = false;
+export const ROUND_ONE_DEVNET_EXECUTION_AVAILABLE = true;
 
 export const ROUND_ONE_REQUEST_NOTICE = "Request payments are not included in Superteam Round 1. Existing requests remain available to view.";
-export const ROUND_ONE_DEVNET_NOTICE = "New Solana Devnet payments are not included in Superteam Round 1. Existing payments remain available for status and receipt checks.";
+export const ROUND_ONE_DEVNET_NOTICE = "Solana Devnet payments are available for controlled beta testing. Devnet assets have no real-world value.";

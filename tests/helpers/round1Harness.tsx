@@ -72,6 +72,7 @@ export class PaymentApi {
   devnetStatus: DevnetExecutionStatus = "unknown_reconciliation_required";
   executionFailure: "lost" | "invalid-json" | "invalid-shape" | "unavailable" | undefined;
   executionReadsUnavailable = false;
+  allowDevnetExecution = false;
   receiptUnavailable = false;
   recipientVerified = true;
   activity: unknown[] = [];
@@ -89,7 +90,7 @@ export class PaymentApi {
     if (url === "/api/recipients/search") return json({ ok: true, recipients: [resolved] });
     if (url === "/api/recipients/" + RECIPIENT_ID) return json({ ok: true, recipient: resolved });
     if (url === "/api/payment-intents" && method === "POST") {
-      this.paymentIntent = { ...intent(), amount: String(body?.amount), purpose: body?.purpose as string | null };
+      this.paymentIntent = { ...intent("awaiting_confirmation", typeof body?.recipient === "string"), ...(typeof body?.recipient === "string" ? { recipient: body.recipient } : {}), amount: String(body?.amount), purpose: body?.purpose as string | null };
       return json({ ok: true, paymentIntent: this.paymentIntent });
     }
     if (url === "/api/payment-intents/" + INTENT_ID) return json({ ok: true, paymentIntent: this.paymentIntent });
@@ -97,15 +98,15 @@ export class PaymentApi {
       this.paymentIntent = { ...this.paymentIntent, status: "processing", version: "1" };
       return json({ ok: true, applied: true, paymentIntent: this.paymentIntent });
     }
-    if (url.endsWith("/devnet/execute")) throw new Error("A Round 1 Devnet execution POST must never occur.");
+    if (url.endsWith("/devnet/execute") && !this.allowDevnetExecution) throw new Error("This test must not initiate Devnet execution.");
     if (url.endsWith("/execute")) {
       if (this.executionFailure === "lost") throw new TypeError("The response was lost after contact.");
       if (this.executionFailure === "invalid-json") return new Response("{", { headers: { "Content-Type": "application/json" } });
       if (this.executionFailure === "invalid-shape") return json({ ok: true, execution: { status: "settled" } });
       if (this.executionFailure === "unavailable") return json({ ok: false }, 503);
-      return json(execution(this.status), 202);
+      return json(url.endsWith("/devnet/execute") ? devnetExecution(this.devnetStatus) : execution(this.status), 202);
     }
-    if (url.endsWith("/devnet/execution")) return json(devnetExecution(this.devnetStatus));
+    if (url.endsWith("/devnet/execution")) return this.executionReadsUnavailable ? json({ ok: false }, 503) : json(devnetExecution(this.devnetStatus));
     if (url.endsWith("/execution")) return this.executionReadsUnavailable ? json({ ok: false }, 503) : json(execution(this.status));
     if (url.endsWith("/receipt")) return this.receiptUnavailable ? json({ ok: false }, 503) : json(receipt(this.paymentIntent.recipientType === "direct_wallet"));
     throw new Error("Unexpected test request: " + method + " " + url);
