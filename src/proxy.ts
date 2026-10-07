@@ -1,7 +1,7 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
-import { authConfigured, getAuth0 } from "@/lib/auth0";
+import { authConfigured, createSiteAuth0, getAuth0 } from "@/lib/auth0";
 import { AUTH_STATE_HEADER } from "@/lib/auth/authFailure";
 import { authRouteBoundary } from "@/lib/auth/authRouteSurface";
 import {
@@ -13,6 +13,10 @@ import {
   expireRejectedSessionCookies,
 } from "@/lib/auth/sessionCookies";
 import { applicationSessionOrdering } from "@/lib/auth/sessionOrdering";
+
+import { callControlledBackend, controlledConfirmationEnabled } from "@/lib/controlledConfirmation/client";
+import { controlledCallback } from "@/lib/controlledConfirmation/sdkFlow";
+import { revokeControlledSession } from "@/lib/controlledConfirmation/revocation";
 
 const authenticatedApiPrefixes = ["/api/account", "/api/activity", "/api/payment-intents", "/api/payment-requests", "/api/recipients"] as const;
 
@@ -48,7 +52,18 @@ export async function proxy(request: NextRequest) {
     return response;
   }
 
-  const response = await getAuth0().middleware(request);
+  let sdk=getAuth0();
+  if(pathname==="/auth/logout" || (controlledConfirmationEnabled() && pathname==="/auth/callback")) {
+    const previous=await sdk.getSession(request);
+    if(pathname==="/auth/logout") {
+      try { await revokeControlledSession(previous,callControlledBackend); }
+      catch { return NextResponse.json({error:"Sign out could not be completed. Retry to revoke the confirmation session."},{status:503,headers:{"Cache-Control":"private, no-store"}}); }
+    }
+    if(pathname==="/auth/callback")sdk=createSiteAuth0(controlledCallback(request,previous,callControlledBackend));
+  }
+  let response: NextResponse;
+  try { response=await sdk.middleware(request); }
+  catch { response=NextResponse.redirect(new URL("/personal/send?controlled=1&confirmation=session-changed",request.url),303); expireRejectedSessionCookies(response,request.cookies); return response; }
   if (pathname === "/auth/login") applyLoginGestureCookies(request, response);
   else if (pathname === "/auth/callback") applyCallbackCompletionCookies(request, response);
   else if (pathname === "/auth/logout") applyExplicitLogoutCookies(response, request.cookies);
