@@ -35,9 +35,16 @@ test("controlled UI: callback readiness requires explicit consent, double click 
   await act(async()=>view!.unmount());view=undefined;await mount();assert.match(label(),/Payment confirmed/);
   assert.equal(calls.filter(v=>v==="confirm").length,1,"refresh only recovers existing confirmation");
 });
-test("controlled UI: ineligible recipient cannot prepare or confirm",async()=>{
+test("controlled UI: ineligible payment cannot prepare or confirm or claim no execution",async()=>{
   globalThis.fetch=async()=>{assert.fail("ineligible flow must not call any payment route");};
-  await mount(false);assert.match(label(),/Recipient not yet eligible/);assert.equal(view!.root.findAllByType("button").length,0);
+  await mount(false);assert.match(label(),/This payment is no longer eligible/);assert.equal(view!.root.findAllByType("button").length,0);
+  assert.doesNotMatch(label(),/Execution has not occurred|no funds have moved/);
+});
+test("controlled UI: authoritative ineligibility does not claim no execution",async()=>{
+  globalThis.fetch=async()=>response("INELIGIBLE");await mount();
+  assert.match(label(),/This payment is no longer eligible/);
+  assert.doesNotMatch(label(),/Execution has not occurred|no funds have moved/);
+  assert.equal(button("Confirm payment"),undefined);assert.equal(button("Continue with authentication"),undefined);
 });
 test("controlled UI: session generation change fences a delayed confirmed response",async()=>{
   let finish:((response:Response)=>void)|undefined;
@@ -45,9 +52,11 @@ test("controlled UI: session generation change fences a delayed confirmed respon
   authenticatedRequests.invalidate();await act(async()=>{finish!(response("CONFIRMED"));await flush();});
   assert.doesNotMatch(label(),/Payment confirmed/);
 });
-for(const state of ["EXPIRED","SESSION_CHANGED","AUTHENTICATION_REQUIRED"] as const)test(`controlled UI: ${state} is truthful and has no confirm action`,async()=>{
+for(const state of ["EXPIRED","SESSION_CHANGED","AUTHENTICATION_REQUIRED","REVOKED"] as const)test(`controlled UI: ${state} is truthful and has no confirm action`,async()=>{
   globalThis.fetch=async()=>response(state);await mount();assert.equal(button("Confirm payment"),undefined);assert.equal(button("Continue with authentication"),undefined);
-  assert.match(label(),state==="EXPIRED"?/Confirmation expired/:state==="SESSION_CHANGED"?/Session changed/:/Additional authentication required/);
+  assert.match(label(),state==="EXPIRED"?/Confirmation expired/:state==="AUTHENTICATION_REQUIRED"?/Authentication incomplete/:/Session changed/);
+  assert.match(label(),/This confirmation cannot continue here\. Start a new eligible payment\./);
+  assert.doesNotMatch(label(),/retry confirmation/i);
 });
 function session():SessionData {return withWebSessionReference({user:{sub:"auth0|alice"},tokenSet:{accessToken:"test-access",idToken:"test-id",expiresAt:Math.floor(Date.now()/1000)+300},internal:{sid:"provider-id-not-our-session",createdAt:Math.floor(Date.now()/1000)}});}
 test("Site callback port refuses SDK errors, missing/changed sessions and unknown binding references",async()=>{

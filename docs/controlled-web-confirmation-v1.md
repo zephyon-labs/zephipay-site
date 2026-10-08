@@ -32,6 +32,8 @@ Only direct-wallet Solana Devnet USDC TEST preparations qualify. Username/synthe
 
 Normal Send and Devnet execution remain separate. The controlled UI shows payment details, authentication readiness, expiry/session-change states, and “Payment confirmed” with explicit no-execution context. It does not call ordinary payment confirm/execute or infer a receipt. No Runtime approval, message/blockhash preparation, wallet/sponsor contact, broadcast, reconciliation, Mainnet, funds movement or ZERA activation is available in this composition.
 
+Controlled recovery reads the authoritative payment intent before offering a ceremony. Only an `awaiting_confirmation` direct-wallet payment can enter that UI. Processing, unknown, completed and failed payments stop at this lifecycle boundary without ordinary execution/receipt follow-up or polling, and display ineligibility without a no-execution/no-funds assertion. Ordinary recovery retains its execution and receipt reads, polling and terminal rendering. A stranded SDK transaction (`AUTHENTICATION_REQUIRED` on return), expired ceremony, changed session or revoked session explains that confirmation cannot continue here and a new eligible payment is required. Status recovery remains available for ambiguous outcomes; it does not replace or renew a ceremony.
+
 ## Reproduce validation
 
 Install both candidate checkouts with their lockfiles. Start a disposable PostgreSQL database, apply all migrations and the reviewed role provisioning script. Set `TEST_DATABASE_URL` to that database and `CONTROLLED_SITE_SOURCE` to the absolute Site candidate directory. Never use live databases or provider tenants.

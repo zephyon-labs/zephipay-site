@@ -5,9 +5,9 @@ import { Button } from "@/components/ui/Button";
 import type { WebState } from "@/lib/controlledConfirmation/handoffContract";
 
 export const confirmationLabels: Record<WebState["state"],string> = {
-  READY:"Ready to confirm",AUTHENTICATION_REQUIRED:"Additional authentication required",CONFIRMABLE:"Ready to confirm",
-  CONFIRMED:"Payment confirmed",EXPIRED:"Confirmation expired",SESSION_CHANGED:"Session changed — retry confirmation",
-  INELIGIBLE:"Recipient not yet eligible for controlled confirmation",REVOKED:"Session changed — retry confirmation",
+  READY:"Ready to confirm",AUTHENTICATION_REQUIRED:"Authentication incomplete",CONFIRMABLE:"Ready to confirm",
+  CONFIRMED:"Payment confirmed",EXPIRED:"Confirmation expired",SESSION_CHANGED:"Session changed",
+  INELIGIBLE:"Controlled confirmation unavailable",REVOKED:"Session changed",
 };
 export function ControlledConfirmation({paymentId,eligible}:{paymentId:string;eligible:boolean}) {
   const [state,setState]=useState<WebState["state"]>(eligible?"READY":"INELIGIBLE");
@@ -31,9 +31,11 @@ export function ControlledConfirmation({paymentId,eligible}:{paymentId:string;el
     if(typeof window!=="undefined")window.addEventListener("pageshow",restore);
     return()=>{mounted.current=false;if(typeof window!=="undefined")window.removeEventListener("pageshow",restore);};
   },[act]);
+  const unavailable=!eligible || state==="INELIGIBLE";
+  const cannotContinue=state==="AUTHENTICATION_REQUIRED" || state==="EXPIRED" || state==="SESSION_CHANGED" || state==="REVOKED";
   return <section className="rounded-2xl border border-border-default p-6" aria-label="Controlled confirmation">
-    <h3 className="text-2xl font-semibold" role="status">{busy?"Confirming":confirmationLabels[state]}</h3>
-    <p className="mt-4">This controlled confirmation records your consent. Execution has not occurred and no funds have moved.</p>
+    <h3 className="text-2xl font-semibold" role="status">{unavailable?confirmationLabels.INELIGIBLE:busy?"Confirming":confirmationLabels[state]}</h3>
+    <p className="mt-4">{unavailable?"This payment is no longer eligible for controlled confirmation.":cannotContinue?"This confirmation cannot continue here. Start a new eligible payment.":"This controlled confirmation records your consent. Execution has not occurred and no funds have moved."}</p>
     {error?<p role="alert" className="mt-4">{error}</p>:null}
     {eligible?<div className="mt-5 flex flex-wrap gap-3">
       {state==="READY"&&!error?<form action={`/api/payment-intents/${paymentId}/controlled-confirmation/start`} method="post" onSubmit={event=>{if(pending.current)event.preventDefault();else{pending.current=true;setBusy(true);}}}>
