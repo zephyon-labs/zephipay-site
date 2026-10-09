@@ -76,7 +76,7 @@ describe("in-place Personal payment flow", () => {
     assert.match(personal, /\/auth\/login\?returnTo=%2Fpersonal%23personal-workspace/);
     assert.match(direct, /isPaymentIntentId/);
     assert.match(direct, /<ProtectedAccountBoundary returnTo="\/personal\/send">/);
-    assert.match(direct, /<PersonalSendExperience recoveryId=\{recoveryId\} \/>/);
+    assert.match(direct, /<PersonalSendExperience recoveryId=\{recoveryId\} controlled=\{controlled\} \/>/);
   });
 });
 

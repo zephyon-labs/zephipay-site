@@ -18,7 +18,10 @@ describe("preserved payment intent recovery", () => {
     assert.match(source, /recoveryId&&!intent\?<Shell step="Recovery"/);
     assert.match(source, />Check again<\/Button>/);
     assert.match(source, /No payment action will be repeated/);
-    const recoveryEffect = source.slice(source.indexOf("useEffect(()=>{if(!recoveryId)"), source.indexOf("useEffect(()=>{if(!intent||!execution"));
+    const recoveryStart = source.indexOf("useEffect(()=>{if(!recoveryId)");
+    const recoveryEnd = source.indexOf("useEffect(", recoveryStart + 1);
+    assert(recoveryStart >= 0 && recoveryEnd > recoveryStart, "Inspect exactly the mounted recovery effect");
+    const recoveryEffect = source.slice(recoveryStart, recoveryEnd);
     assert.doesNotMatch(recoveryEffect, /\/confirm|\/execute|method:"POST"/);
   });
 });

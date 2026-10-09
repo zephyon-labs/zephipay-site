@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { afterEach, describe, it } from "node:test";
 import { act, type ReactTestRenderer } from "react-test-renderer";
 import { usePathname, useRouter } from "next/navigation";
-import { ProtectedAccountBoundary } from "../src/components/auth/AuthenticatedBoundary";
+import { AuthenticatedBoundary, ProtectedAccountBoundary } from "../src/components/auth/AuthenticatedBoundary";
 import { PersonalWorkspace } from "../src/components/marketing/personal-workspace/PersonalWorkspace";
 import { ActivityInterfacePreview } from "../src/components/product/personal/ActivityInterfacePreview";
 import { PersonalSendExperience } from "../src/components/product/personal/PersonalSendExperience";
@@ -20,7 +20,7 @@ function ReceiptExitRoutes() {
   return <>
     <button onClick={() => router.push("/personal/send")}>Return to Send</button>
     {pathname === "/personal" ? <PersonalWorkspace /> : pathname === "/personal/activity"
-      ? <ProtectedAccountBoundary returnTo="/personal/activity"><ActivityInterfacePreview /></ProtectedAccountBoundary>
+      ? <AuthenticatedBoundary><ActivityInterfacePreview /></AuthenticatedBoundary>
       : <p>Another page</p>}
   </>;
 }

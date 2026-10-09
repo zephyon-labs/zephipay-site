@@ -58,7 +58,7 @@ test("component is user-initiated, read-only, accessible, responsive, and Devnet
 test("Devnet bar is embedded directly below the active recipient selector",async()=>{
   const page=await readFile(new URL("../src/app/personal/send/page.tsx",import.meta.url),"utf8");
   const compose=await readFile(new URL("../src/components/product/personal/PaymentComposeForm.tsx",import.meta.url),"utf8");
-  assert(page.includes("<PersonalSendExperience recoveryId={recoveryId} />"));
+  assert(page.includes("<PersonalSendExperience recoveryId={recoveryId} controlled={controlled} />"));
   assert(compose.indexOf("Solana Devnet wallet")<compose.indexOf("<DevnetTestBar"));
   assert(compose.indexOf("<DevnetTestBar")<compose.indexOf("Recipient wallet"));
   assert.match(compose,/devnetMode\?<DevnetTestBar[^>]*embedded/);
