@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { authenticatedJson, authenticatedRequestWasInvalidated } from "@/lib/auth/authenticatedRequests";
 import { Button } from "@/components/ui/Button";
 import type { WebState } from "@/lib/controlledConfirmation/handoffContract";
+import { ControlledRuntime } from "./ControlledRuntime";
 
 export const confirmationLabels: Record<WebState["state"],string> = {
   READY:"Ready to confirm",AUTHENTICATION_REQUIRED:"Authentication incomplete",CONFIRMABLE:"Ready to confirm",
@@ -12,9 +13,10 @@ export const confirmationLabels: Record<WebState["state"],string> = {
 export function ControlledConfirmation({paymentId,eligible}:{paymentId:string;eligible:boolean}) {
   const [state,setState]=useState<WebState["state"]>(eligible?"READY":"INELIGIBLE");
   const [busy,setBusy]=useState(false),[error,setError]=useState<string>();
+  const [observation,setObservation]=useState(0);
   const pending=useRef(false), mounted=useRef(false);
   const act=useCallback(async(action:"prepare"|"recover"|"confirm")=>{
-    if(pending.current || !eligible)return;pending.current=true;setBusy(true);setError(undefined);
+    if(pending.current || !eligible)return;pending.current=true;setBusy(true);setError(undefined);setObservation(value=>value+1);
     try {
       const result=await authenticatedJson(`/api/payment-intents/${paymentId}/controlled-confirmation`,{method:"POST",credentials:"same-origin",cache:"no-store",headers:{"Content-Type":"application/json"},body:JSON.stringify({action})});
       result.apply(({response,body})=>{
@@ -44,5 +46,7 @@ export function ControlledConfirmation({paymentId,eligible}:{paymentId:string;el
       {state==="CONFIRMABLE"&&!error?<Button onClick={()=>void act("confirm")} disabled={busy}>Confirm payment</Button>:null}
       <Button variant="outline" onClick={()=>void act("recover")} disabled={busy}>Recover confirmation status</Button>
     </div>:null}
+    {eligible && !busy && (state==="CONFIRMED" || state==="EXPIRED" || state==="SESSION_CHANGED" || state==="REVOKED" || error) ?
+      <ControlledRuntime key={observation} paymentId={paymentId} confirmed={state==="CONFIRMED" && !error}/> : null}
   </section>;
 }
