@@ -101,7 +101,8 @@ test("controlled Send mounts the non-value UI through refresh and back/forward w
     await act(async()=>{h.browser.navigate("/personal/send?controlled=1");await wait();});
     await act(async()=>{h.browser.navigate(`/personal/send?controlled=1&intent=${INTENT_ID}`);await wait();});
     assert.match(JSON.stringify(h.renderer.toJSON()),/Payment confirmed/);
-    assert(actions.every(a=>a==="prepare"));
+    assert(actions.every(a=>a==="prepare" || a==="runtime-recover"));
+    assert(actions.includes("runtime-recover"),"navigation reads policy status without evaluating");
     assert(!api.calls.some(c=>/\/confirm$|\/executions?|\/receipt$/.test(c.url)),"no ordinary confirmation, execution, or receipt read");
   } finally {await h.close();}
 });

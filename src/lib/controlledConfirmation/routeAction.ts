@@ -1,12 +1,14 @@
 import type { SessionData } from "@auth0/nextjs-auth0/types";
 import type { WebCall } from "./sdkFlow";
 import { toWebSession, webSessionReference } from "./session";
-import { webUuid } from "./handoffContract";
+import { webUuid, type HandoffBody } from "./handoffContract";
+import { validateRuntimeResult, type ControlledRuntimeAction, type ControlledRuntimeResult } from "./runtimeContract";
 
 /** The mounted BFF route's authority-loading ports are server composition, never body fields. */
 export async function controlledRouteAction(request: Request, id: string, ports: {
   enabled: boolean; trustedOrigin: (request: Request)=>boolean;
   session: ()=>Promise<SessionData|null>; call: WebCall;
+  runtime?: (action: ControlledRuntimeAction, body: HandoffBody)=>Promise<ControlledRuntimeResult>;
 }) {
   const headers={"Cache-Control":"private, no-store"};
   if(!ports.enabled)return Response.json({error:"Unavailable."},{status:404,headers});
@@ -21,7 +23,13 @@ export async function controlledRouteAction(request: Request, id: string, ports:
     const chunks:Uint8Array[]=[];let size=0;
     for(;;){const {done,value}=await reader.read();if(done)break;size+=value.byteLength;if(size>100){await reader.cancel();throw new Error();}chunks.push(value);}
     const input=JSON.parse(Buffer.concat(chunks).toString("utf8"));
-    if(Object.keys(input).join()!=="action" || !["prepare","recover","confirm"].includes(input.action))throw new Error();
+    if(Object.keys(input).join()!=="action" || !["prepare","recover","confirm","runtime-evaluate","runtime-recover"].includes(input.action))throw new Error();
+    if(input.action==="runtime-evaluate" || input.action==="runtime-recover") {
+      if(!ports.runtime)return Response.json({error:"Unavailable."},{status:404,headers});
+      const result=validateRuntimeResult(await ports.runtime(input.action,{paymentId:id,session:toWebSession(session)}));
+      if(result.paymentId!==id)throw new Error();
+      return Response.json(result,{headers});
+    }
     return Response.json(await ports.call(input.action,{paymentId:id,session:toWebSession(session)}),{headers});
   } catch {return Response.json({error:"Recover confirmation state. If your session changed, sign in again."},{status:409,headers});}
 }

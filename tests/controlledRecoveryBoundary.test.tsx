@@ -56,7 +56,7 @@ test("controlled recovery: eligible payment retains authentication, explicit con
   await click(h.renderer, "Confirm payment");
   assert.match(text(h.renderer.root), /Payment confirmed/);
   assert.match(text(h.renderer.root), /Execution has not occurred and no funds have moved/);
-  assert.deepEqual(fixture.actions, ["prepare", "recover", "confirm"]);
+  assert.deepEqual(fixture.actions, ["prepare", "recover", "confirm", "runtime-recover"]);
   assert.deepEqual(paymentCalls(fixture.api).map(c => c.url), [paymentUrl, ...fixture.actions.map(() => `${paymentUrl}/controlled-confirmation`)]);
 });
 
@@ -87,7 +87,7 @@ for (const state of ["AUTHENTICATION_REQUIRED", "SESSION_CHANGED", "EXPIRED", "R
     assert.equal(buttons(h.renderer, "Confirm payment").length, 0);
     await click(h.renderer, "Recover confirmation status");
     assert.match(text(h.renderer.root), newPaymentCopy);
-    assert.deepEqual(fixture.actions, ["prepare", "recover"], "recovery does not replace a ceremony or create consent");
+    assert.deepEqual(fixture.actions, state === "AUTHENTICATION_REQUIRED" ? ["prepare", "recover"] : ["prepare", "runtime-recover", "recover", "runtime-recover"], "recovery reads history without replacing a ceremony or creating consent or policy decisions");
     assert(!paymentCalls(fixture.api).some(c => /\/confirm$|\/executions?|\/receipt$/.test(c.url)));
   });
 }
